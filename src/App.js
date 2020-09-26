@@ -1,8 +1,12 @@
 import React, { useEffect } from "react";
+import { Router } from "react-router-dom";
 import * as testAPI from "./api/TestAPI";
-import "./App.css";
+import Routes from "./Routes";
+import { createBrowserHistory } from "history";
+import CreditList from "./views/CreditList/index";
 
-function App() {
+import "./App.css";
+const App = () => {
   useEffect(() => {
     async function testFetch() {
       const test = await testAPI.test();
@@ -11,7 +15,7 @@ function App() {
 
     testFetch();
   }, []);
-  return <div>test page</div>;
-}
+  return <CreditList />;
+};
 
 export default App;
