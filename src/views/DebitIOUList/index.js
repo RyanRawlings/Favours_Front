@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import "./style.scss";
 import Paper from "@material-ui/core/Paper";
@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee, faTrash } from '@fortawesome/free-solid-svg-icons';
 import NavMenu from "../../components/NavMenu/index";
 import IOUListButtonGroup from "../../components/IOUListButtonGroup/index";
+import * as testAPI from "../../api/TestAPI";
 
 
 const useStyles = makeStyles(theme => ({
@@ -25,9 +26,76 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const fetchDebitIOUList = async () => {
+  const result = await testAPI.debitIOUList().then(_=>_.json());
+  return result;
+}
+
 export default function DebitIOUList() {
+  const [favours, setFavours] = useState([]);
+  
+  useEffect(() => {
+    async function fetchDebitIOUList() {
+      const test = await testAPI.debitIOUList();
+      console.log("testData+++++", test);
+    }
+    
+    fetchDebitIOUList();
+  }, []);
+  // const [favours, setFavours] = useState([]);
+
+  // useEffect(() => {
+  //   async function loadDebitIOUList() {
+  //   const debitIOUListToShow = await fetchDebitIOUList().then(extractData);
+    
+  //   const componentPromises = debitIOUListToShow.map(
+  //     async data => {
+  //       const List = await importList(data);
+  //       return (
+  //       <React.Fragment key={favour._id}>
+  //       <Card key={favour._id}>
+  //         <CardContent key={favour._id}>
+  //           <div  className="card" key={favour._id}>
+  //             <Avatar key={favour._id}></Avatar>
+  //             <div className="card_description" key={favour._id} >{favour.favourDescription}</div>
+  //             <div className="card_right" key={favour._id} >{favour.favourDateStamp}</div>
+  //             <div className="btn" key={favour._id} >
+  //               <Button key={favour._id}><FontAwesomeIcon key={favour._id} icon={faTrash} /></Button>
+  //             </div>
+  //           </div>
+  //         </CardContent>
+  //       </Card>
+  //   </React.Fragment>);
+    
+  //       })      
+  //   loadDebitIOUList(); 
+  //   };
+  //   fetchDebitIOUList();
+  // }, []);
+
   const classes = useStyles();
-  const [tag, setTag] = useState(0);
+  // // const [tag, setTag] = useState(0);
+
+  // let itemsToRender;
+  // if (data) {
+  //   itemsToRender = data.map(favour => {
+  //     <React.Fragment key={favour._id}>
+  //       <Card key={favour._id}>
+  //         <CardContent key={favour._id}>
+  //           <div  className="card" key={favour._id}>
+  //             <Avatar key={favour._id}></Avatar>
+  //             <div className="card_description" key={favour._id} >{favour.favourDescription}</div>
+  //             <div className="card_right" key={favour._id} >{favour.favourDateStamp}</div>
+  //             <div className="btn" key={favour._id} >
+  //               <Button key={favour._id}><FontAwesomeIcon key={favour._id} icon={faTrash} /></Button>
+  //             </div>
+  //           </div>
+  //         </CardContent>
+  //       </Card>
+  //   </React.Fragment>
+  //     })
+  //   };
+  
   return (
     <div className={classes.root}>
       <div className="container">
@@ -36,23 +104,8 @@ export default function DebitIOUList() {
           <Paper className={classes.container}>
             <div className="container_right_bottom">
             <IOUListButtonGroup />
-              <div className="cards_container">
-                <Card>
-                  <CardContent>
-                    <div className="card">
-                      <div className="card_left">
-                        <Avatar></Avatar>
-                        <div className="card_description">
-                          You owe Jeff a <FontAwesomeIcon icon={faCoffee} />
-                        </div>
-                      </div>
-                      <div className="card_right">03/08/2020</div>
-                      <div className="btn">
-                        <Button><FontAwesomeIcon icon={faTrash} /></Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>                
+              <div className="cards_container">                
+              {/* {itemsToRender}      */}
               </div>
             </div>
           </Paper>

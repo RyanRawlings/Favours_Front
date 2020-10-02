@@ -16,11 +16,6 @@ import Testing from "./components/NavMenu/index";
 // const Profile = () => import("./views/Profile/index");
 
 const Routes = () => {
-
-  // const PrivateRoute = ({}) => (
-
-  // )
-
   return (
     // <Suspense fallback={<div>loading</div>}>    
     <BrowserRouter>      
