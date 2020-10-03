@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   appBar: {
-    backgroundColor: "#002134",
+    backgroundColor: "#1B9AAA",
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -60,6 +60,8 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   drawerOpen: {
+    color: "white",
+    backgroundColor: '#292F36',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -67,6 +69,8 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   drawerClose: {
+    color: "white",
+    backgroundColor: '#292F36',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -78,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   toolbar: {
+    backgroundColor: "#292F36",
     width: "100%",
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -91,6 +96,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(1.5),
+  },
+  icons: {
+    color: "white"
   }
 
 }));
@@ -112,6 +120,10 @@ const getTitle = (location) => {
           return "My Profile";            
       case '/leaderboard':
           return "Leaderboard"; 
+      case '/login':
+          return "Login";
+      case '/signup':
+          return "Sign up";                     
 
   }
 }
@@ -178,20 +190,6 @@ export default function NavMenu() {
           </IconButton>
         </div>
         <Divider />
-        {/* <List>
-          {[['Public Request', '/public_request'], ['IOU List', '/credit_list'], ['Profile', '/profile' ], ['Leaderboard', '/leaderboard']].map((text, index) => (
-              <ListItem button key={text[0]}>
-                <Link to={text[1]}>
-                    <ListItemIcon>
-                      <EmojiPeopleIcon
-                        className={classes.icons}
-                        color="action"
-                      ></EmojiPeopleIcon>                
-                    </ListItemIcon>
-                    </Link>
-                    <ListItemText primary={text[0]} />          
-              </ListItem>      
-          ))}         */}
         <ListItem button key="Public Request">
           <Link to={"/public_request"}>
               <ListItemIcon>

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 
 const useStyles = makeStyles(theme => ({
@@ -21,31 +20,34 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block'    
   },
   loginbtn: {  
+    width: "80px",
+    textAlign: "center",
     backgroundColor: "white",
     marginRight: "3%",
     borderColor: "white",
     display: "inline-block",
+    textTransform: "capitalize",
     '&:hover': {
       color: '#FFF',      
-      border: "1px",
-      borderColor: "white",
+      border: "1px solid white",
   }
   },
   signupbtn: {  
+    width: "80px",
+    textAlign: "center",
     backgroundColor: "white",
     display: "inline-block",
     borderColor: "white",
+    textTransform: "capitalize",
     '&:hover': {
       color: '#FFF',
-      border: "1px",
-      borderColor: "white",
+      border: "1px solid white",
   }
   },
 }));
 
 export default function LoginSignupButtonGroup() {
   const classes = useStyles();
-  const [tag, setTag] = useState(0);
   return (
         <div className={classes.btnGroup}>            
               <Button className={classes.loginbtn} href={'/login'}>Login</Button>

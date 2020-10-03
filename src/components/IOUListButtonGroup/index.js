@@ -27,6 +27,16 @@ const useStyles = makeStyles(theme => ({
   filterIcon_credit: {
     marginLeft: "10%",
     color: "red"
+    },
+    button: {
+      width: "100px",
+      backgroundColor: "#1B9AAA",
+      color: "white",
+      borderColor: "white",
+      '&:hover': {
+        color: 'black'
+      }
+
     }
 
 }));
@@ -36,9 +46,9 @@ export default function IOUListButtonGroup() {
   return (
         <div className={classes.listlinks}>
             <ButtonGroup className={classes.buttons}>
-              <Button href={'/all_list'}>All</Button>
-              <Button href={'/all_list/debit_list'}>Debit <FontAwesomeIcon className={classes.filterIcon_debit} icon={faThumbsUp} /></Button>
-              <Button href={'/all_list/credit_list'}>Credit <FontAwesomeIcon className={classes.filterIcon_credit} icon={faThumbsDown} /></Button>
+              <Button href={'/all_list'} className={classes.button}>All</Button>
+              <Button href={'/all_list/debit_list'} className={classes.button}>Debit <FontAwesomeIcon className={classes.filterIcon_debit} icon={faThumbsUp} /></Button>
+              <Button href={'/all_list/credit_list'} className={classes.button}>Credit <FontAwesomeIcon className={classes.filterIcon_credit} icon={faThumbsDown} /></Button>
             </ButtonGroup>
         </div>
      );

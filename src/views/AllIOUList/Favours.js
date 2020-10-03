@@ -21,6 +21,15 @@ const useStyles = makeStyles(theme => ({
     },
     container: {
       margin: "20px"
+
+    },
+    card_container: {
+      position: "relative",
+      top: "0",
+      transition: "top ease 0.5s",
+      '&:hover': {      
+          backgroundColor: "black"        
+      }
     },
     icons: {
       transform: "translateY(-0.1em)"
@@ -39,8 +48,8 @@ const Favours = ({ favours, loading}) => {
     }
 
     return favours? favours.map((data, key) => 
-              <Card className={classes.container} key={key + '-card'}>
-                <CardContent key={key + '-cardContent'}>
+              <Card className={classes.card_container} key={key + '-card'}>
+                <CardContent className={classes.card_container} key={key + '-cardContent'}>
                   <div className="card" key={key+ '-cardDiv'}>
                     <Avatar key={key+ '-avatar'}></Avatar>
                     <div className="card_left" key={key+ '-cardDescription'} >{data.FavourDescription}</div>
