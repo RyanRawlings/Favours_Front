@@ -65,13 +65,20 @@ export default function Login() {
   const storedJwt = localStorage.getItem('token');
   const [jwt, setJwt] = useState(storedJwt || null);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");  
   
   const handleSubmit = async function (event) {
     event.preventDefault();
     const response = await APIServices.login({email,password});
-    console.log(response);    
-    return false;    
+    Cookie.set(response);   
+    
+    return ({token: response.token
+            ,user: {
+                    id: response._id,
+                    firstname: response.firstname,
+                    email: response.email
+                   }
+            });    
   }
 
   return (

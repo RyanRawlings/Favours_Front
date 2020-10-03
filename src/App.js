@@ -5,10 +5,18 @@ import { createBrowserHistory } from "history";
 import "./App.css";
 
 const App = () => {
-  const [userData, setUserData] = useState({
-    token: undefined,
-    user: undefined
-  });
+  
+  // useEffect(() => {
+  //   const checkLoggedIn = async () => {
+  //     let token = localStorage.getItem('auth-token');
+  //     if (token === null) {
+  //       localStorage.setItem('auth-token', "");
+  //       token = "";
+  //     }
+  //     const tokenRes = await
+
+  //   }
+  // })
 
   useEffect(() => {
     async function testFetch() {

@@ -11,7 +11,9 @@ import { faCoffee, faTrash } from '@fortawesome/free-solid-svg-icons';
 import NavMenu from "../../components/NavMenu/index";
 import IOUListButtonGroup from "../../components/IOUListButtonGroup/index";
 import * as testAPI from "../../api/TestAPI";
-
+import LoadingGif from "../../assets/images/loading.gif";
+import styles from '../../index.css';
+import Pagination from '../AllIOUList/Pagination';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,83 +21,39 @@ const useStyles = makeStyles(theme => ({
     flexWrap: "wrap"
   },
   container: {
-    margin: "2px"
+    margin: "20px"
   },
   icons: {
     transform: "translateY(-0.1em)"
   }
 }));
 
-const fetchDebitIOUList = async () => {
-  const result = await testAPI.debitIOUList().then(_=>_.json());
-  return result;
-}
-
 export default function DebitIOUList() {
   const [favours, setFavours] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [favoursPerPage, setFavoursPerPage] = useState(5);
   
   useEffect(() => {
     async function fetchDebitIOUList() {
-      const test = await testAPI.debitIOUList();
-      console.log("testData+++++", test);
+      const fetchFavours = await testAPI.debitIOUList();
+      // Return array and set the Favours state
+      setFavours(fetchFavours);
+      setLoading(false);
     }
     
     fetchDebitIOUList();
   }, []);
-  // const [favours, setFavours] = useState([]);
-
-  // useEffect(() => {
-  //   async function loadDebitIOUList() {
-  //   const debitIOUListToShow = await fetchDebitIOUList().then(extractData);
-    
-  //   const componentPromises = debitIOUListToShow.map(
-  //     async data => {
-  //       const List = await importList(data);
-  //       return (
-  //       <React.Fragment key={favour._id}>
-  //       <Card key={favour._id}>
-  //         <CardContent key={favour._id}>
-  //           <div  className="card" key={favour._id}>
-  //             <Avatar key={favour._id}></Avatar>
-  //             <div className="card_description" key={favour._id} >{favour.favourDescription}</div>
-  //             <div className="card_right" key={favour._id} >{favour.favourDateStamp}</div>
-  //             <div className="btn" key={favour._id} >
-  //               <Button key={favour._id}><FontAwesomeIcon key={favour._id} icon={faTrash} /></Button>
-  //             </div>
-  //           </div>
-  //         </CardContent>
-  //       </Card>
-  //   </React.Fragment>);
-    
-  //       })      
-  //   loadDebitIOUList(); 
-  //   };
-  //   fetchDebitIOUList();
-  // }, []);
 
   const classes = useStyles();
   // // const [tag, setTag] = useState(0);
-
-  // let itemsToRender;
-  // if (data) {
-  //   itemsToRender = data.map(favour => {
-  //     <React.Fragment key={favour._id}>
-  //       <Card key={favour._id}>
-  //         <CardContent key={favour._id}>
-  //           <div  className="card" key={favour._id}>
-  //             <Avatar key={favour._id}></Avatar>
-  //             <div className="card_description" key={favour._id} >{favour.favourDescription}</div>
-  //             <div className="card_right" key={favour._id} >{favour.favourDateStamp}</div>
-  //             <div className="btn" key={favour._id} >
-  //               <Button key={favour._id}><FontAwesomeIcon key={favour._id} icon={faTrash} /></Button>
-  //             </div>
-  //           </div>
-  //         </CardContent>
-  //       </Card>
-  //   </React.Fragment>
-  //     })
-  //   };
   
+  //Get current posts
+  const indexOfLastFavour = currentPage * favoursPerPage;
+  const indexOfFirstFavour = indexOfLastFavour - favoursPerPage;
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className={classes.root}>
       <div className="container">
@@ -104,11 +62,33 @@ export default function DebitIOUList() {
           <Paper className={classes.container}>
             <div className="container_right_bottom">
             <IOUListButtonGroup />
-              <div className="cards_container">                
-              {/* {itemsToRender}      */}
-              </div>
-            </div>
-          </Paper>
+              <div className="cards_container">              
+               <React.Fragment>                
+              {favours.allFavours?
+                favours.allFavours.slice(indexOfFirstFavour, indexOfLastFavour).map((data, key) => {
+                  return ( 
+                          <Card className={classes.container} key={key + '-card'}>
+                            <CardContent key={key + '-cardContent'}>
+                              <div className="card" key={key+ '-cardDiv'}>
+                                <Avatar key={key+ '-avatar'}></Avatar>
+                                <div className="card_left" key={key+ '-cardDescription'} >{data.FavourDescription}</div>
+                                <div className="card_right" key={key + '-cardRight'} >
+                                
+                                </div>
+                                <div className="btn" key={key + '-btnDiv'} >
+                                  {data.FavourDateStamp}
+                                  <Button key={key+ '-btn'}><FontAwesomeIcon key={key+ '-icon'} icon={faTrash} /></Button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>                          
+                    )})
+                    : <center><img src={LoadingGif} width="100px" height="100px" alt="Loading..."/></center>}
+              </React.Fragment>                                    
+              </div>              
+              {favours.allFavours? <Pagination favoursPerPage={favoursPerPage} totalFavours={favours.allFavours? favours.allFavours.length : 0} paginate={paginate} /> : ""}           
+            </div>        
+          </Paper>          
         </div>
       </div>
     </div>

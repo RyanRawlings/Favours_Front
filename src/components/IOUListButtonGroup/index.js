@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsUp, faThumbsDown} from '@fortawesome/free-solid-svg-icons';
 
 
 const useStyles = makeStyles(theme => ({
@@ -18,17 +20,25 @@ const useStyles = makeStyles(theme => ({
   listlinks: {  
     textDecoration: "none",
   },
+  filterIcon_debit: {
+    marginLeft: "10%",
+    color: "#32CD32"
+    },
+  filterIcon_credit: {
+    marginLeft: "10%",
+    color: "red"
+    }
+
 }));
 
 export default function IOUListButtonGroup() {
   const classes = useStyles();
-  const [tag, setTag] = useState(0);
   return (
         <div className={classes.listlinks}>
-            <ButtonGroup>
+            <ButtonGroup className={classes.buttons}>
               <Button href={'/all_list'}>All</Button>
-              <Button href={'/all_list/debit_list'}>Debit</Button>
-              <Button href={'/all_list/credit_list'}>Credit</Button>
+              <Button href={'/all_list/debit_list'}>Debit <FontAwesomeIcon className={classes.filterIcon_debit} icon={faThumbsUp} /></Button>
+              <Button href={'/all_list/credit_list'}>Credit <FontAwesomeIcon className={classes.filterIcon_credit} icon={faThumbsDown} /></Button>
             </ButtonGroup>
         </div>
      );
