@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +13,9 @@ import AccountBox from '@material-ui/icons/AccountBox';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import HeroImage from '../../assets/images/uts-hero-image.png';
+import * as APIServices from "../../api/TestAPI";
+import Cookie from 'js-cookie';
+import NavMenu from "../../components/NavMenu/index";
 
 function Copyright() {
   return (
@@ -55,34 +58,67 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    backgroundColor: "#1B9AAA",
+    '&:hover': {
+      backgroundColor: "white",
+      color: "black"
+    }
   },
 }));
 
 export default function Login() {
   const classes = useStyles();
-
+  const storedJwt = localStorage.getItem('token');
+  const [jwt, setJwt] = useState(storedJwt || null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");  
+  
+  const handleSubmit = async function (event) {
+    event.preventDefault();
+    const response = await APIServices.login({email,password});
+    Cookie.set(response);   
+    
+    return ({token: response.token
+            ,user: {
+                    id: response._id,
+                    firstname: response.firstname,
+                    email: response.email
+                   }
+            });    
+  }
   return (
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image}></Grid>
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <AccountBox />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <form className={classes.form} noValidate>
+    <div className={classes.root}>
+      <div className="container">
+        <NavMenu />
+        <div className="container_right">
+          <Paper className={classes.container}>
+            <div className="container_right_bottom">
+            <div className={classes.headingContainer}>
+                 <Grid container component="main" className={classes.root}>
+       <CssBaseline />
+       <Grid item xs={false} sm={4} md={7} className={classes.image}></Grid>
+       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+         <div className={classes.paper}>
+           <Avatar className={classes.avatar}>
+             <AccountBox />
+           </Avatar>
+           <Typography component="h1" variant="h5">
+             Login
+           </Typography>
+           <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
               id="email"
+              type="email"
               label="Email Address"
               name="email"
               autoComplete="email"
+              value={email}
+              onChange={ e => {setEmail(e.target.value);
+              }}
               autoFocus
             />
             <TextField
@@ -94,6 +130,9 @@ export default function Login() {
               label="Password"
               type="password"
               id="password"
+              value={password}
+              onChange={ e => {setPassword(e.target.value);
+              }}
               autoComplete="current-password"
             />
             <FormControlLabel
@@ -134,6 +173,12 @@ export default function Login() {
           </form>
         </div>
       </Grid>
-    </Grid>
+    </Grid>           
+            </div>                 
+            </div>        
+          </Paper>          
+        </div>
+      </div>
+    </div>
   );
 }

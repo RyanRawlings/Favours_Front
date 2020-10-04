@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { useState,Suspense, lazy } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import AllIOUList from "./views/AllIOUList/index";
 import DebitIOUList from "./views/DebitIOUList/index";
@@ -9,6 +9,7 @@ import Leaderboard from "./views/Leaderboard/index";
 import Signup from "./views/Signup/index";
 import Login from "./views/Login/index";
 import Testing from "./components/NavMenu/index";
+import UserContext from "./context/UserContext";
 
 // const PublicRequest = () => import("./App");
 // const NavMenu = () => import("./components/NavMenu/index");
@@ -16,14 +17,15 @@ import Testing from "./components/NavMenu/index";
 // const Profile = () => import("./views/Profile/index");
 
 const Routes = () => {
-
-  // const PrivateRoute = ({}) => (
-
-  // )
+  const [userData, setUserData] = useState({
+    token: undefined,
+    user: undefined
+  });
 
   return (
     // <Suspense fallback={<div>loading</div>}>    
     <BrowserRouter>      
+    <UserContext.Provider value={{userData, setUserData}}>
       <Switch>
         //Unauthenticated Routes
         <Route exact path="/" component={PublicRequest}>
@@ -43,6 +45,7 @@ const Routes = () => {
         //Testing Routes
         <Route path="/testing" component={Testing}></Route>
       </Switch>
+      </UserContext.Provider>
     </BrowserRouter>
     // </Suspense>
   );

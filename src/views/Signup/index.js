@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
+import * as APIServices from '../../api/TestAPI';
+import NavMenu from "../../components/NavMenu/index";
 
 function Copyright() {
   return (
@@ -43,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    backgroundColor: "#1B9AAA",
+    '&:hover': {
+      backgroundColor: "white",
+      color: "black"
+    }
   },
   introtext: {
       marginTop: "3%",
@@ -56,21 +64,42 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup() {
   const classes = useStyles();
+  const [firstname, setFirstName] = useState("");
+  const [middlename, setMiddleName] = useState("");
+  const [lastname, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  const handleSubmit = async function (event) {
+    event.preventDefault();
+    const response = await APIServices.register({firstname,middlename,lastname,email,password});
+    console.log(response);
+    return false;    
+  }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Typography component="h1" variant="h4">
-          Sign up to Favours
-        </Typography>
-        <Typography className={classes.introtext} >
-          Join today, to start creating and sharing IOUs with your friends, teams, and companies
-        </Typography>
-        <form className={classes.form} noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
+<div className={classes.root}>
+      <div className="container">
+        <NavMenu />
+        <div className="container_right">
+          <Paper className={classes.container}>
+            <div className="container_right_bottom">
+            <div className={classes.headingContainer}>            
+            </div>
+              <div className="cards_container"> 
+                   <Container component="main" maxWidth="xs">
+       <CssBaseline />
+       <div className={classes.paper}>
+         <Typography component="h1" variant="h4">
+           Sign up to Favours
+         </Typography>
+         <Typography className={classes.introtext} >
+           Join today, to start creating and sharing IOUs with your friends, teams, and companies
+         </Typography>
+         <form className={classes.form} onSubmit={handleSubmit}>
+           <Grid container spacing={1}>
+             <Grid item xs={12} sm={4}>
+               <TextField
                 autoComplete="fname"
                 name="firstName"
                 variant="outlined"
@@ -79,9 +108,24 @@ export default function Signup() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                onChange={ e => {setFirstName(e.target.value);
+                }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                autoComplete="fname"
+                name="middleName"
+                variant="outlined"
+                fullWidth
+                id="middleName"
+                label="Middle Name"
+                autoFocus
+                onChange={ e => {setMiddleName(e.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
               <TextField
                 variant="outlined"
                 required
@@ -90,6 +134,8 @@ export default function Signup() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                onChange={ e => {setLastName(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -101,6 +147,8 @@ export default function Signup() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={ e => {setEmail(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -113,6 +161,8 @@ export default function Signup() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={ e => {setPassword(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -150,6 +200,12 @@ export default function Signup() {
       <Box mt={5}>
         <Copyright />
       </Box>
-    </Container>
-  );
+    </Container>                           
+            </div> 
+            </div> 
+          </Paper>          
+        </div>
+      </div>
+    </div>)
+  
 }
