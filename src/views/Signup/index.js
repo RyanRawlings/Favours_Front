@@ -9,6 +9,8 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -59,6 +61,10 @@ const useStyles = makeStyles((theme) => ({
   },
   promotioncheckbox: {
       fontSize: "14px",
+  },
+  icon: {
+    margin: "auto",
+    fontSize: "50px",
   }
 }));
 
@@ -93,6 +99,7 @@ export default function Signup() {
          <Typography component="h1" variant="h4">
            Sign up to Favours
          </Typography>
+         <FontAwesomeIcon className={classes.icon} icon={faUsers}/> 
          <Typography className={classes.introtext} >
            Join today, to start creating and sharing IOUs with your friends, teams, and companies
          </Typography>
@@ -114,13 +121,12 @@ export default function Signup() {
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
-                autoComplete="fname"
+                autoComplete="mname"
                 name="middleName"
                 variant="outlined"
                 fullWidth
                 id="middleName"
                 label="Middle Name"
-                autoFocus
                 onChange={ e => {setMiddleName(e.target.value);
                 }}
               />

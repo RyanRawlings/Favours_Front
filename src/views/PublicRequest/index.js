@@ -15,6 +15,7 @@ import LoadingGif from "../../assets/images/loading.gif";
 import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
 import Pagination from '../AllIOUList/Pagination';
 import FavourModal from '../../components/FavourModal/index';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,6 +72,7 @@ export default function PublicRequest() {
 
   const classes = useStyles();
   // // const [tag, setTag] = useState(0);
+  const location = useLocation();
   
   //Get current posts
   const indexOfLastFavour = currentPage * favoursPerPage;
@@ -98,7 +100,7 @@ export default function PublicRequest() {
                               <div className="card" key={key+ '-cardDiv'}>
                                 <div className="card_left" key={key+ '-cardDescription'} >{data.FavourTitle}</div>
                                 <div className="card_right" key={key + '-cardRight'} >
-                                <FavourModal key={key + '-modal'} FavourTitle={data.FavourTitle} Requester={data.FavourRequestingUserId} FavourDescription={data.FavourDescription}  FavourDate={data.FavourDateStamp}/>
+                                <FavourModal key={key + '-modal'} FavourTitle={data.FavourTitle} Requester={data.FavourRequestingUserId} FavourDescription={data.FavourDescription}  FavourDate={data.FavourDateStamp} Location={location}/>
                                 </div>
                               </div>
                             </CardContent>

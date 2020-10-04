@@ -14,6 +14,9 @@ import * as testAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import Pagination from '../AllIOUList/Pagination';
 import FavourModal from '../../components/FavourModal/index';
+import LaunchIcon from '@material-ui/icons/Launch';
+import SearchBar from '../../components/SearchBar/index';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,7 +42,8 @@ const useStyles = makeStyles(theme => ({
     transform: "translateY(-0.1em)"
   },
   btnBox: {
-    marginLeft: "1%"        
+    marginLeft: "1%",    
+    marginTop: "1%",    
   },
   heading: {
     marginLeft: "1%"
@@ -52,14 +56,37 @@ const useStyles = makeStyles(theme => ({
   },
   modal: {
     display: 'inline-block'
+  },
+  createbutton: {
+    display: "inline"
+    },
+  createbutton_styling: {
+      marginTop: "1%",
+      marginLeft: "1%",
+      backgroundColor: "#292F36",      
+      textTransform: "capitalize",
+      verticalAlign: "middle",
+      textAlign: "center",
+      height: "35px",
+      justifyContent: 'center',
+      '&:hover': {
+        color: "black",
+        backgroundColor: "white"      
+      }
+  },
+  searchBar: {
+    display: 'inline-block',
+    marginLeft: "1%",
   }
+  
 }));
 
 export default function AllIOUList() {
   const [favours, setFavours] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [favoursPerPage, setFavoursPerPage] = useState(5);
+  const [favoursPerPage, setFavoursPerPage] = useState(4);
+  const location = useLocation();
   
   useEffect(() => {
     async function fetchAllIOUList() {
@@ -90,7 +117,17 @@ export default function AllIOUList() {
             <div className="container_right_bottom">
             <div className={classes.headingContainer}>
             <h2 className={classes.heading}>Your favours <FontAwesomeIcon icon={faUser}/></h2>                          
-              <div className={classes.btnBox}><IOUListButtonGroup /></div>              
+            <div className={classes.searchBar}><SearchBar /></div>
+            <div className={classes.createbutton}>        
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<LaunchIcon />}
+                className={classes.createbutton_styling}
+                >Create a new favour
+              </Button>
+            </div>
+            <div className={classes.btnBox}><IOUListButtonGroup /></div>            
             </div>
               <div className="cards_container">              
                <React.Fragment>                
@@ -103,7 +140,7 @@ export default function AllIOUList() {
                                 <div className="card_left" key={key+ '-cardDescription'} >{data.FavourDescription}</div>
                                 <div className="btn" key={key + '-btnDiv'} >
                                 <div className={classes.modal}>
-                                  <FavourModal FavourTitle={data.FavourTitle} Requester={data.FavourRequestingUserId} FavourDescription={data.FavourDescription}  FavourDate={data.FavourDateStamp}/>
+                                  <FavourModal FavourTitle={data.FavourTitle} Requester={data.FavourRequestingUserId} FavourDescription={data.FavourDescription}  FavourDate={data.FavourDateStamp} Location={location}/>
                                 </div>
                                 <div className={classes.button}>
                                   <Button key={key+ '-btn'}><FontAwesomeIcon key={key+ '-icon'} className={classes.trashIcon} icon={faTrash} /></Button>

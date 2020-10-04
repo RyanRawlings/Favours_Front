@@ -27,7 +27,7 @@ export default function Leaderboard() {
       <div className="container">
         <NavMenu />
         <div className="container_right">
-          <div className='leaderboard-title'><h2>Leaderboard for Company XYZ</h2></div>
+          <div className='leaderboard-title'><h2>Favours Leaderboard</h2></div>
           <div className='leaderboard-table'>
             <LeaderboardTable />      
           </div>

@@ -12,6 +12,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import LaunchIcon from '@material-ui/icons/Launch';
+import { useLocation } from 'react-router-dom';
+import UploadImage from '../../components/UploadImage/index';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -45,11 +47,14 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "white",
         color: 'black'
     }
+  },
+  imagebox: {
+    marginLeft: "0"
   }
 
 }));
 
-export default function FavourModal({ FavourTitle, Requester, FavourDescription,  FavourDate }) {
+export default function FavourModal({ FavourTitle, Requester, FavourDescription,  FavourDate, Location}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -72,6 +77,7 @@ export default function FavourModal({ FavourTitle, Requester, FavourDescription,
     createData('Date Requested: ', FavourDate),
   ];
   
+  const { pathname } = Location;
 
   return (
     <div>
@@ -115,9 +121,18 @@ export default function FavourModal({ FavourTitle, Requester, FavourDescription,
                     </TableRow>
                 ))}
                 <TableRow key="button-row" className={classes.row}>
-                    <TableCell>Respond to this Request</TableCell>
+                <TableCell>Respond to this 
+                  {pathname === "/all_list"? " Favour" : " Request"}
+                  </TableCell>
                     <TableCell className={classes.tableCellRight}><Button variant="contained" color="primary" component="span" onClick={() => { alert('clicked') }}>Yes</Button></TableCell>
                 </TableRow>
+                {pathname === '/all_list'? 
+                <TableRow key="button-row" className={classes.row}>
+                  <TableCell>Upload an Image</TableCell>
+                  <TableCell className={classes.tableCellRight}><div className={classes.imagebox}><UploadImage /></div></TableCell>
+                </TableRow>
+                : ""
+                }
                 </TableBody>
             </Table>            
             </TableContainer>                        

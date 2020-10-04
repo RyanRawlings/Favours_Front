@@ -16,6 +16,8 @@ import HeroImage from '../../assets/images/uts-hero-image.png';
 import * as APIServices from "../../api/TestAPI";
 import Cookie from 'js-cookie';
 import NavMenu from "../../components/NavMenu/index";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 function Copyright() {
   return (
@@ -64,6 +66,10 @@ const useStyles = makeStyles((theme) => ({
       color: "black"
     }
   },
+  icon: {
+    margin: "auto",
+    fontSize: "50px",
+  }
 }));
 
 export default function Login() {
@@ -99,12 +105,10 @@ export default function Login() {
        <Grid item xs={false} sm={4} md={7} className={classes.image}></Grid>
        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
          <div className={classes.paper}>
-           <Avatar className={classes.avatar}>
-             <AccountBox />
-           </Avatar>
-           <Typography component="h1" variant="h5">
-             Login
+         <Typography component="h1" variant="h5">
+             Log in to Favours
            </Typography>
+         <FontAwesomeIcon className={classes.icon} icon={faUser}/> 
            <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
