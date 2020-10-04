@@ -7,6 +7,7 @@ import {
   BrowserRouter as Router,
   Route
 } from 'react-router-dom';
+import HomePage from './views/Home';
 
 const App = () => {
   
