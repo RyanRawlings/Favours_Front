@@ -33,7 +33,6 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -56,29 +55,38 @@ const useStyles = makeStyles((theme) => ({
   },
   introtext: {
       marginTop: "3%",
-      fontSize: "16px",
+      fontSize: "12px",
       textAlign: "center",
-  },
-  promotioncheckbox: {
-      fontSize: "14px",
   },
   icon: {
     margin: "auto",
     fontSize: "50px",
+    alignContent: "center"
+  },
+  formPaper: {
+    padding: "10% 10% 10%"
+  },
+  promotioncheckbox: {
+    fontSize: "12px"
+  },
+  copyright: {
+    marginTop: "5%"
+  },
+  pageheading: {
+    textAlign: "center"
   }
 }));
 
 export default function Signup() {
   const classes = useStyles();
   const [firstname, setFirstName] = useState("");
-  const [middlename, setMiddleName] = useState("");
   const [lastname, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
   const handleSubmit = async function (event) {
     event.preventDefault();
-    const response = await APIServices.register({firstname,middlename,lastname,email,password});
+    const response = await APIServices.register({firstname,lastname,email,password});
     console.log(response);
     return false;    
   }
@@ -96,16 +104,19 @@ export default function Signup() {
                    <Container component="main" maxWidth="xs">
        <CssBaseline />
        <div className={classes.paper}>
+         <Paper className={classes.formPaper}>
+        <div className={classes.pageheading}>
          <Typography component="h1" variant="h4">
            Sign up to Favours
          </Typography>
          <FontAwesomeIcon className={classes.icon} icon={faUsers}/> 
+         </div>
          <Typography className={classes.introtext} >
            Join today, to start creating and sharing IOUs with your friends, teams, and companies
          </Typography>
          <form className={classes.form} onSubmit={handleSubmit}>
            <Grid container spacing={1}>
-             <Grid item xs={12} sm={4}>
+             <Grid item xs={12} sm={6}>
                <TextField
                 autoComplete="fname"
                 name="firstName"
@@ -119,19 +130,7 @@ export default function Signup() {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                autoComplete="mname"
-                name="middleName"
-                variant="outlined"
-                fullWidth
-                id="middleName"
-                label="Middle Name"
-                onChange={ e => {setMiddleName(e.target.value);
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 variant="outlined"
                 required
@@ -172,9 +171,9 @@ export default function Signup() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControlLabel className={classes.promotioncheckbox}
+              <FormControlLabel
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
+                label={<Typography className={classes.promotioncheckbox} variant="body2" color="textPrimary">I want to receive inspiration, marketing promotions and updates via email.</Typography>}
               />
             </Grid>
           </Grid>
@@ -201,10 +200,13 @@ export default function Signup() {
               </Link>
             </Grid>
         </Grid>
-        </form>
-      </div>
-      <Box mt={5}>
+        </form>    
+        <div className={classes.copyright} >    
         <Copyright />
+        </div>
+        </Paper>
+      </div>
+      <Box mt={5}>       
       </Box>
     </Container>                           
             </div> 

@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function FavourModal({ FavourTitle, Requester, FavourDescription,  FavourDate, Location}) {
+export default function FavourModal({ FavourId, FavourTitle, Requester, FavourDescription,  FavourDate, Location, FavourImageKey}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -115,21 +115,21 @@ export default function FavourModal({ FavourTitle, Requester, FavourDescription,
                 </TableHead>
                 <TableBody>
                 {rows.map((row, index) => (
-                    <TableRow key={row.name + index} className={classes.row}>
-                    <TableCell key={row.name + '-cell-one' + index} align="left">{row.FavourDetails}</TableCell>
-                    <TableCell key={row.name + '-cell-two' + index} className={classes.tableCellRight} align="left">{row.Information}</TableCell>                   
+                    <TableRow key={row.toString() + index} className={classes.row}>
+                    <TableCell key={row[0] + '-cell-one'.concat(index)} align="left">{row.FavourDetails}</TableCell>
+                    <TableCell key={row[0] + '-cell-two'.concat(index)} className={classes.tableCellRight} align="left">{row.Information}</TableCell>                   
                     </TableRow>
                 ))}
                 <TableRow key="button-row" className={classes.row}>
-                <TableCell>Respond to this 
+                <TableCell key={"button-row" + '-cell-one'}>Respond to this 
                   {pathname === "/all_list"? " Favour" : " Request"}
                   </TableCell>
-                    <TableCell className={classes.tableCellRight}><Button variant="contained" color="primary" component="span" onClick={() => { alert('clicked') }}>Yes</Button></TableCell>
+                    <TableCell key={"button-row" + '-cell-two'} className={classes.tableCellRight}><Button variant="contained" color="primary" component="span" onClick={() => { alert('clicked') }}>Yes</Button></TableCell>
                 </TableRow>
                 {pathname === '/all_list'? 
-                <TableRow key="button-row" className={classes.row}>
-                  <TableCell>Upload an Image</TableCell>
-                  <TableCell className={classes.tableCellRight}><div className={classes.imagebox}><UploadImage /></div></TableCell>
+                <TableRow key="image-row" className={classes.row}>
+                  <TableCell key={"image-row" + '-cell-one'}>Upload an Image</TableCell>
+                  <TableCell key={"image-row" + '-cell-two'} className={classes.tableCellRight}><div className={classes.imagebox}><UploadImage FavourId={FavourId} FavourImageKey={FavourImageKey}/></div></TableCell>
                 </TableRow>
                 : ""
                 }

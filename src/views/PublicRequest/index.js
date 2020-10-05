@@ -16,6 +16,7 @@ import PublicRequestIcon from "../../assets/images/public-requests-alternate.png
 import Pagination from '../AllIOUList/Pagination';
 import FavourModal from '../../components/FavourModal/index';
 import { useLocation } from 'react-router-dom';
+import SearchBar from '../../components/SearchBar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: "0%"
   },
   card_container: {
-    margin: "25px",
+    margin: "20px",
     position: "relative",
     top: "0",
     transition: "top ease 0.5s",
@@ -50,6 +51,11 @@ const useStyles = makeStyles(theme => ({
   requestsImage: {
     height: "50px",
      width: "60px",
+  },
+  headingContainer: {
+  },
+  searchBar: {
+    marginLeft: "1%"
   }
 }));
 
@@ -57,7 +63,7 @@ export default function PublicRequest() {
   const [favours, setFavours] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [favoursPerPage, setFavoursPerPage] = useState(5);
+  const [favoursPerPage, setFavoursPerPage] = useState(4);
   
   useEffect(() => {
     async function fetchPublicRequestList() {
@@ -90,6 +96,7 @@ export default function PublicRequest() {
             <div className={classes.headingContainer}>
             <h2 className={classes.heading}>Public Requests <FontAwesomeIcon icon={faUsers}/></h2>
             </div>
+            <div className={classes.searchBar}><SearchBar /></div>
               <div className="cards_container">              
                <React.Fragment>                
               {favours.allFavours?

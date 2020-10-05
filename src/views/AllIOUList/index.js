@@ -127,6 +127,15 @@ export default function AllIOUList() {
                 >Create a new favour
               </Button>
             </div>
+            <div className={classes.createbutton}>        
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<LaunchIcon />}
+                className={classes.createbutton_styling}
+                >Create a new public request
+              </Button>
+            </div>
             <div className={classes.btnBox}><IOUListButtonGroup /></div>            
             </div>
               <div className="cards_container">              
@@ -140,7 +149,7 @@ export default function AllIOUList() {
                                 <div className="card_left" key={key+ '-cardDescription'} >{data.FavourDescription}</div>
                                 <div className="btn" key={key + '-btnDiv'} >
                                 <div className={classes.modal}>
-                                  <FavourModal FavourTitle={data.FavourTitle} Requester={data.FavourRequestingUserId} FavourDescription={data.FavourDescription}  FavourDate={data.FavourDateStamp} Location={location}/>
+                                  <FavourModal FavourId={data._id} FavourTitle={data.FavourTitle} Requester={data.FavourRequestingUserId} FavourDescription={data.FavourDescription} FavourDate={data.FavourDateStamp} Location={location} FavourImageKey={data.FavourImageKey}/>
                                 </div>
                                 <div className={classes.button}>
                                   <Button key={key+ '-btn'}><FontAwesomeIcon key={key+ '-icon'} className={classes.trashIcon} icon={faTrash} /></Button>
