@@ -90,10 +90,10 @@ export default function AllIOUList() {
   
   useEffect(() => {
     async function fetchAllIOUList() {
-      const fetchFavours = await testAPI.debitIOUList();
-      // Return array and set the Favours state
-      setFavours(fetchFavours);
-      setLoading(false);
+        const fetchFavours = await testAPI.debitIOUList();
+        // Return array and set the Favours state
+        setFavours(fetchFavours);
+        setLoading(false);      
     }
     
     fetchAllIOUList();

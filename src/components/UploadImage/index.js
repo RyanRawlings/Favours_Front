@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Avatar from "@material-ui/core/Avatar";
@@ -11,6 +11,8 @@ import * as APIServices from '../../api/TestAPI';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { uploadFile } from "react-s3";
 import S3FileUpload from "react-s3";
+import Alert from '@material-ui/lab/Alert';
+import Buffer from 'buffer';
 
 require('dotenv/config');
 const axios = require("axios");
@@ -23,15 +25,36 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "-60%",
     textTransform: 'capitalize'    
   },
+  text: {
+    zIndex: "2"
+  }
 }));
 
 export default function UploadImage({ FavourId, FavourImageKey }) {
-    const { current } = React.useRef(FavourImageKey);
+    const { current } = useRef(FavourImageKey);
     const classes = useStyles();
-    const uploadedImage = React.useRef(null);
-    const imageUploader = React.useRef(null);
+    const uploadedImage = useRef(null);
+    const imageUploader = useRef(null);  
     const [fileToUpload, setFileToUpload] = useState(null);
-    const location = useLocation();
+    const location = useLocation();    
+    const [imageSource,setImageSource] = useState(null);
+
+    useEffect(() => {
+      async function fetchImageFromS3() {   
+          const fetchImage = await APIServices.getImageFromS3(({ key: current }));
+          console.log(fetchImage.data);
+          // src data for image from s3
+          if (fetchImage.data !== null) {
+            setImageSource(fetchImage.data);
+          }
+          else {
+            console.log('Callback effect...');          
+          }
+      }
+      
+      fetchImageFromS3();
+    }, []);
+
 
     const handleCloudUpload = async e => {
       e.preventDefault();
@@ -41,10 +64,12 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
       console.log(response);
       const { data } = response;         
       // Create separate function to update the key on the Favour in the database
-      if (data.imageUrl) {
-        const response = await APIServices.updateImageKey(({ FavourId: FavourId, FavourImageKey: data.imageUrl}));
+      if (data.key) {
+        const response = await APIServices.updateImageKey(({ FavourId: FavourId, FavourImageKey: data.key}));
         console.log(response);
-      }
+      }      
+      window.location.reload(false);
+      
     }
 
     const handleImageUpload = async e => {
@@ -57,10 +82,15 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
             current.src = e.target.result;
           };
           const blob = reader.readAsDataURL(file);
-          // const response = await APIServices.uploadImage({image: blob});
           setFileToUpload(file);
         }
       };
+
+    const deleteImageFromS3 = async (data) => {
+      const response = await APIServices.deleteImageFromS3(({key: data}));
+      console.log(response);
+      return response;
+    }
 
     return (<div>
         <div
@@ -76,11 +106,12 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
-          ref={imageUploader}
+          ref={imageUploader}      
           style={{
             display: "none"
           }}
         />
+        <div className={classes.text}>{current? "": "Click to browse files"}</div>
         <div                                
           style={{
             height: "100px",
@@ -88,7 +119,7 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
             display: "inline-block"
           }}
           onClick={() => imageUploader.current.click()}
-        >          
+        >      
         <img
             ref={uploadedImage}
             style={{
@@ -97,14 +128,16 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
               position: "absolute"
             }}
           />
-        <img            
-            src={current}
+          {imageSource? 
+          <img
+            src={imageSource}
             style={{
               width: "100px",
               height: "100px",
               position: "absolute"
             }}
-          />
+          /> : ""
+        }          
         </div>
         <div className={classes.button}>
         <Button
