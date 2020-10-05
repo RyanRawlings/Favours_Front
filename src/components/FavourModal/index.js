@@ -14,6 +14,8 @@ import Paper from '@material-ui/core/Paper';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useLocation } from 'react-router-dom';
 import UploadImage from '../../components/UploadImage/index';
+import Link from '@material-ui/core/Link';
+import LoginSignupButtonGroup from '../LoginSignupButtonGroup/index';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   row: {
       width: "400px"
-  },
+  },  
   modalButton: {
     fontFamily: "'Roboto', 'Helvetica', 'Arial'",
     textTransform: "capitalize",
@@ -50,11 +52,24 @@ const useStyles = makeStyles((theme) => ({
   },
   imagebox: {
     marginLeft: "0"
+  },
+  btnGroup: {
+    paddingLeft: "1%",
+    verticalAlign: "middle",
+    width: "30%",
   }
 
 }));
 
-export default function FavourModal({ FavourId, FavourTitle, Requester, FavourDescription,  FavourDate, Location, FavourImageKey}) {
+export default function FavourModal({ 
+  FavourId, 
+  FavourTitle, 
+  Requester, 
+  FavourDescription, 
+  FavourDate, 
+  Location, 
+  FavourImageKey}) {
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -120,19 +135,23 @@ export default function FavourModal({ FavourId, FavourTitle, Requester, FavourDe
                     <TableCell key={row[0] + '-cell-two'.concat(index)} className={classes.tableCellRight} align="left">{row.Information}</TableCell>                   
                     </TableRow>
                 ))}
-                <TableRow key="button-row" className={classes.row}>
-                <TableCell key={"button-row" + '-cell-one'}>Respond to this 
-                  {pathname === "/all_list"? " Favour" : " Request"}
-                  </TableCell>
-                    <TableCell key={"button-row" + '-cell-two'} className={classes.tableCellRight}><Button variant="contained" color="primary" component="span" onClick={() => { alert('clicked') }}>Yes</Button></TableCell>
-                </TableRow>
+                {pathname === "/public_request"?
+                 <TableRow key="button-row" className={classes.row}>               
+                <TableCell key={"button-row" + '-cell-one'}>Respond to this Request
+                </TableCell>                  
+                <TableCell key={"button-row" + '-cell-two'} className={classes.tableCellRight}>
+                  <div className={classes.btnGroup} >
+                    <LoginSignupButtonGroup ButtonPrimaryColor={"#1B9AAA"} ButtonPrimaryFontColor={"white"}/>
+                  </div>
+                </TableCell>                
+                </TableRow> : ""
+                }
                 {pathname === '/all_list'? 
                 <TableRow key="image-row" className={classes.row}>
                   <TableCell key={"image-row" + '-cell-one'}>Upload an Image</TableCell>
                   <TableCell key={"image-row" + '-cell-two'} className={classes.tableCellRight}><div className={classes.imagebox}><UploadImage FavourId={FavourId} FavourImageKey={FavourImageKey}/></div></TableCell>
                 </TableRow>
-                : ""
-                }
+                : ""}
                 </TableBody>
             </Table>            
             </TableContainer>                        

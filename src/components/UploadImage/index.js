@@ -42,7 +42,7 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
     useEffect(() => {
       async function fetchImageFromS3() {   
           const fetchImage = await APIServices.getImageFromS3(({ key: current }));
-          console.log(fetchImage.data);
+          // console.log(fetchImage.data);
           // src data for image from s3
           if (fetchImage.data !== null) {
             setImageSource(fetchImage.data);

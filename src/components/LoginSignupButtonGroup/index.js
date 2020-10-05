@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 
@@ -46,12 +46,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function LoginSignupButtonGroup() {
+export default function LoginSignupButtonGroup({ ButtonPrimaryColor, ButtonPrimaryFontColor }) {
   const classes = useStyles();
+  const [buttonColor] = useState(ButtonPrimaryColor);
+  const [buttonFontColor] = useState(ButtonPrimaryFontColor);
+
   return (
         <div className={classes.btnGroup}>            
-              <Button className={classes.loginbtn} href={'/login'}>Login</Button>
-              <Button className={classes.signupbtn} href={'/signup'}>Sign Up</Button>
+              <Button className={classes.loginbtn} href={'/login'} style={{color: buttonFontColor, backgroundColor: buttonColor}}>Login</Button>
+              <Button className={classes.signupbtn} href={'/signup'} style={{color: buttonFontColor, backgroundColor: buttonColor}}>Sign Up</Button>
         </div>
      );
 }
