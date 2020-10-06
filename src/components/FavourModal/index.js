@@ -25,18 +25,34 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    height: "50%",
+    height: "40%",
     width: "70%"
   },
   table: {
     width: "100%",
-    height: "100%"
+    height: "auto",
+    color: "white"
   },
   tableCell: {
     whiteSpace: 'normal',
     wordBreak: 'break-word',
     width: "80%"
 
+  },
+  headerRow: {
+    width: "400px",
+    backgroundColor: '#1B9AAA',
+    color: "white",
+    '& $headerTableCellLeft': {
+      color: "white"
+    },
+    '& $headerTableCellRight': {
+      whiteSpace: 'normal',
+      wordBreak: 'break-word',
+      width: "80%",
+      color: "white",
+      
+    }
   },
   row: {
       width: "400px"
@@ -57,7 +73,14 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: "1%",
     verticalAlign: "middle",
     width: "30%",
-  }
+  },
+  overrides: {
+    MuiTableCell: {
+     head: {
+      color: 'white'
+     }          
+    }}
+  
 
 }));
 
@@ -123,9 +146,9 @@ export default function FavourModal({
             <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
                 <TableHead>
-                <TableRow className={classes.row}>
-                    <TableCell align="left">Favour Details</TableCell>
-                    <TableCell className={classes.tableCellRight} align="left">Information</TableCell>
+                <TableRow className={classes.headerRow}>
+                    <TableCell variant="head" align="left" className={classes.headerTableCellLeft}><span style={{color: 'white'}}>Favour Details</span></TableCell>
+                    <TableCell variant="head" align="left" className={classes.headerTableCellRight}><span style={{color: 'white'}}>Information</span></TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>

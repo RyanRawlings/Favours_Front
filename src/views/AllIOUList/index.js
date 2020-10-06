@@ -24,6 +24,8 @@ import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
+import RecordPublicRequest from '../../views/RecordPublicRequest/index';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -65,10 +67,12 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block'
   },
   createbutton: {
-    display: "inline"
+    display: "inline-block"
     },
+
   createbutton_styling: {
-      marginTop: "1%",
+      width: "100%",
+      marginTop: "4%",
       marginLeft: "1%",
       backgroundColor: "#292F36",      
       textTransform: "capitalize",
@@ -156,14 +160,16 @@ export default function AllIOUList() {
                 >Create a new favour
               </Button>
             </div>
-            <div className={classes.createbutton}>        
-              <Button
+            <div className={classes.createbutton}>
+              {/* <Button
                 variant="contained"
                 color="primary"
                 startIcon={<LaunchIcon />}
                 className={classes.createbutton_styling}
+                onClick={() => openRequestModal}
                 >Create a new public request
-              </Button>
+              </Button> */}
+              <RecordPublicRequest />
             </div>
             <div className={classes.btnBox}><IOUListButtonGroup /></div>            
             </div>
