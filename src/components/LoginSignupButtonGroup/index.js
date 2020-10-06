@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   },
   btnGroup: {  
     color: "black",
-    width: "100%",
+    width: "110%",
     display: 'inline-block'    
   },
   loginbtn: {  

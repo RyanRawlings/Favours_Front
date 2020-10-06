@@ -22,6 +22,9 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import LocalActivityIcon from "@material-ui/icons/LocalActivity";
 import { useLocation, Link } from 'react-router-dom';
 import LoginSignupButtonGroup from '../LoginSignupButtonGroup/index.js';
+import SettingsIcon from '@material-ui/icons/Settings';
+import GroupDropDown from '../GroupDropDown/index'
+import { NavLink } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -30,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     position: 'relative',
     whiteSpace: 'nowrap'
-
   },
   appBar: {
     backgroundColor: "#1B9AAA",
@@ -50,6 +52,8 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
+    color: "white",
+    marginLeft: "-1.3%"
   },
   hide: {
     display: 'none',
@@ -78,10 +82,12 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
+      width: theme.spacing(7.5),
     },
   },
   toolbar: {
+    marginTop: "4%",
+    marginBottom: "-4%",
     backgroundColor: "#292F36",
     width: "100%",
     alignItems: 'center',
@@ -98,9 +104,36 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1.5),
   },
   icons: {
-    color: "white"
+    color: "white",
+  },
+  selectGroup: {
+    marginLeft: "10%"
+  },
+  topMenuItem: {
+    borderTop: "1px solid white",
+    '&:hover': {
+      backgroundColor: "white",
+      color: "#292F36",
+      '& $icons': {
+        color: "#292F36"
+      }
+    }
+  },
+  menuItem: {
+    '&:hover': {
+      backgroundColor: "white",
+      color: "#292F36",
+      '& $icons': {
+        color: "#292F36"
+      }
+    }
+  },
+  handleDrawerCloseButton: {
+    display: "inline-block"
+  },
+  groupDropDown: {
+    display: "inline-block",
   }
-
 }));
 
 const getTitle = (location) => {
@@ -123,7 +156,9 @@ const getTitle = (location) => {
       case '/login':
           return "Login";
       case '/signup':
-          return "Sign up";                     
+          return "Sign up";
+      case '/settings':
+        return "Personal Settings";
 
   }
 }
@@ -133,6 +168,11 @@ export default function NavMenu() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const location = useLocation();
+
+  const activeStyle = {
+    backgroundColor: "white",
+    color: "#292F36",
+  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -170,7 +210,7 @@ export default function NavMenu() {
             <LoginSignupButtonGroup className={classes.loginsignupbg}/>
           </div>
         </Toolbar>         
-      </AppBar>
+      </AppBar>      
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -183,58 +223,138 @@ export default function NavMenu() {
             [classes.drawerClose]: !open,
           }),
         }}
-      >
+      >        
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
+          <div className={classes.handleDrawerCloseButton}>
+            <IconButton className={classes.menuButton} onClick={handleDrawerClose}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </div>
+          <div className={classes.groupDropDown}>
+          <GroupDropDown />
+          </div>
         </div>
         <Divider />
-        <ListItem button key="Public Request">
-          <Link to={"/public_request"}>
+        {location.pathname==='/public_request'?
+        <ListItem className={classes.topMenuItem} button key="Public Request" style={{color: "#292F36", backgroundColor: "white"}}>
+          <Link to={"/public_request"} >
               <ListItemIcon>
                 <EmojiPeopleIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></EmojiPeopleIcon>                
               </ListItemIcon>
               </Link>
               <ListItemText primary="Public Request" />          
-        </ListItem>        
-        <ListItem button key="IOU List">
+        </ListItem> :
+                <ListItem className={classes.topMenuItem} button key="Public Request">
+                <Link to={"/public_request"} >
+                    <ListItemIcon>
+                      <EmojiPeopleIcon
+                        className={classes.icons}
+                        color="action"
+                      ></EmojiPeopleIcon>                
+                    </ListItemIcon>
+                    </Link>
+                    <ListItemText primary="Public Request" />          
+              </ListItem>}
+        {location.pathname==='/all_list'?
+        <ListItem className={classes.menuItem} button key="IOU List" style={{color: "#292F36", backgroundColor: "white"}}>
             <Link to={"/all_list"}>
               <ListItemIcon>
               <ListAltIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></ListAltIcon>
               </ListItemIcon>
             </Link>
               <ListItemText primary="IOU List" />
-        </ListItem>
-        <ListItem button key="Profile">
+        </ListItem> :
+        <ListItem className={classes.menuItem} button key="IOU List">
+        <Link to={"/all_list"}>
+          <ListItemIcon>
+          <ListAltIcon
+              className={classes.icons}
+              color="action"
+            ></ListAltIcon>
+              </ListItemIcon>
+            </Link>
+              <ListItemText primary="IOU List" />
+        </ListItem>}
+        {location.pathname === '/profile'?
+        <ListItem className={classes.menuItem} button key="Profile" style={{color: "#292F36", backgroundColor: "white"}}>
           <Link to={"/profile"}>          
               <ListItemIcon>
               <AccountBoxIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></AccountBoxIcon>
               </ListItemIcon>
           </Link>
               <ListItemText primary="Profile" />
-        </ListItem>        
-        <ListItem button key="Leaderboard">
+        </ListItem> :        
+                <ListItem className={classes.menuItem} button key="Profile">
+                <Link to={"/profile"}>          
+                    <ListItemIcon>
+                    <AccountBoxIcon
+                        className={classes.icons}
+                        color="action"
+                      ></AccountBoxIcon>
+                    </ListItemIcon>
+                </Link>
+                    <ListItemText primary="Profile" />
+              </ListItem>}
+        {location.pathname==='/leaderboard'?
+        <ListItem className={classes.menuItem} button key="Leaderboard" style={{color: "#292F36", backgroundColor: "white"}}>
           <Link to={"/leaderboard"}>          
               <ListItemIcon>
               <LocalActivityIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></LocalActivityIcon>
               </ListItemIcon>
           </Link>              
               <ListItemText primary="Leaderboard" />
-        </ListItem>
-        {/* </List> */}
+        </ListItem> : 
+                <ListItem className={classes.menuItem} button key="Leaderboard">
+                <Link to={"/leaderboard"}>          
+                    <ListItemIcon>
+                    <LocalActivityIcon
+                        className={classes.icons}
+                        color="action"
+                      ></LocalActivityIcon>
+                    </ListItemIcon>
+                </Link>              
+                    <ListItemText primary="Leaderboard" />
+              </ListItem>}
+        {location.pathname === '/settings'?
+        <ListItem className={classes.menuItem} button key="Settings" style={{color: "#292F36", backgroundColor: "white"}}>
+          <Link to={"/settings"}>          
+              <ListItemIcon>
+              <SettingsIcon
+                  className={classes.icons}
+                  color="action"
+                  style={{color: "#292F36"}}
+                ></SettingsIcon>
+              </ListItemIcon>
+          </Link>              
+              <ListItemText primary="Settings" />
+        </ListItem> :
+                <ListItem className={classes.menuItem} button key="Settings">
+                <Link to={"/settings"}>          
+                    <ListItemIcon>
+                    <SettingsIcon
+                        className={classes.icons}
+                        color="action"
+                      ></SettingsIcon>
+                    </ListItemIcon>
+                </Link>              
+                    <ListItemText primary="Settings" />
+              </ListItem>}
       </Drawer>
     </div>
   );

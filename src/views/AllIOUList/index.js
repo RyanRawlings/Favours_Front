@@ -17,6 +17,7 @@ import FavourModal from '../../components/FavourModal/index';
 import LaunchIcon from '@material-ui/icons/Launch';
 import SearchBar from '../../components/SearchBar/index';
 import { useLocation } from 'react-router-dom';
+import LoadingSkeleton from '../../components/LoadingSkeleton/index'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -159,7 +160,9 @@ export default function AllIOUList() {
                             </CardContent>
                           </Card>                          
                     )})
-                    : <center><img src={LoadingGif} width="100px" height="100px" alt="Loading..."/></center>}
+                    : <center> <LoadingSkeleton/></center>
+                    // <center><img src={LoadingGif} width="100px" height="100px" alt="Loading..."/></center>
+                    }
               </React.Fragment>                                    
               </div>              
               {favours.allFavours? <Pagination favoursPerPage={favoursPerPage} totalFavours={favours.allFavours? favours.allFavours.length : 0} paginate={paginate} /> : ""}           
