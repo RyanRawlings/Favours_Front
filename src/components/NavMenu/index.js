@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
       }
     }
   },
-  menuItem: {
+  menuItem: {    
     '&:hover': {
       backgroundColor: "white",
       color: "#292F36",
@@ -166,13 +166,8 @@ const getTitle = (location) => {
 export default function NavMenu() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const location = useLocation();
-
-  const activeStyle = {
-    backgroundColor: "white",
-    color: "#292F36",
-  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -236,8 +231,8 @@ export default function NavMenu() {
         </div>
         <Divider />
         {location.pathname==='/public_request'?
-        <ListItem className={classes.topMenuItem} button key="Public Request" style={{color: "#292F36", backgroundColor: "white"}}>
-          <Link to={"/public_request"} >
+        <ListItem className={classes.topMenuItem} button key="Public Request" style={{color: "#292F36", backgroundColor: "white", textDecoration: "none"}}>
+          <Link to={"/public_request"}>
               <ListItemIcon>
                 <EmojiPeopleIcon
                   className={classes.icons}
@@ -248,17 +243,18 @@ export default function NavMenu() {
               </Link>
               <ListItemText primary="Public Request" />          
         </ListItem> :
-                <ListItem className={classes.topMenuItem} button key="Public Request">
-                <Link to={"/public_request"} >
+                <Link to={"/public_request"} style={{textDecoration: "none", color: "white"}}>
+                  <ListItem className={classes.topMenuItem} button key="Public Request" >
                     <ListItemIcon>
                       <EmojiPeopleIcon
                         className={classes.icons}
                         color="action"
                       ></EmojiPeopleIcon>                
                     </ListItemIcon>
-                    </Link>
                     <ListItemText primary="Public Request" />          
-              </ListItem>}
+              </ListItem>
+              </Link>
+              }
         {location.pathname==='/all_list'?
         <ListItem className={classes.menuItem} button key="IOU List" style={{color: "#292F36", backgroundColor: "white"}}>
             <Link to={"/all_list"}>
@@ -272,17 +268,18 @@ export default function NavMenu() {
             </Link>
               <ListItemText primary="IOU List" />
         </ListItem> :
-        <ListItem className={classes.menuItem} button key="IOU List">
-        <Link to={"/all_list"}>
+        <Link to={"/all_list"} style={{textDecoration: "none", color: "white"}}>
+        <ListItem className={classes.menuItem} button key="IOU List">        
           <ListItemIcon>
           <ListAltIcon
               className={classes.icons}
               color="action"
             ></ListAltIcon>
-              </ListItemIcon>
-            </Link>
+              </ListItemIcon>            
               <ListItemText primary="IOU List" />
-        </ListItem>}
+        </ListItem>
+        </Link>
+        }
         {location.pathname === '/profile'?
         <ListItem className={classes.menuItem} button key="Profile" style={{color: "#292F36", backgroundColor: "white"}}>
           <Link to={"/profile"}>          
@@ -296,17 +293,17 @@ export default function NavMenu() {
           </Link>
               <ListItemText primary="Profile" />
         </ListItem> :        
-                <ListItem className={classes.menuItem} button key="Profile">
-                <Link to={"/profile"}>          
+        <Link to={"/profile"} style={{textDecoration: "none", color: "white"}}>          
+                <ListItem className={classes.menuItem} button key="Profile">                
                     <ListItemIcon>
                     <AccountBoxIcon
                         className={classes.icons}
                         color="action"
                       ></AccountBoxIcon>
                     </ListItemIcon>
-                </Link>
                     <ListItemText primary="Profile" />
-              </ListItem>}
+              </ListItem>
+              </Link>}
         {location.pathname==='/leaderboard'?
         <ListItem className={classes.menuItem} button key="Leaderboard" style={{color: "#292F36", backgroundColor: "white"}}>
           <Link to={"/leaderboard"}>          
@@ -320,20 +317,21 @@ export default function NavMenu() {
           </Link>              
               <ListItemText primary="Leaderboard" />
         </ListItem> : 
-                <ListItem className={classes.menuItem} button key="Leaderboard">
-                <Link to={"/leaderboard"}>          
+        <Link to={"/leaderboard"} style={{textDecoration: "none", color: "white"}}> 
+                <ListItem className={classes.menuItem} button key="Leaderboard">                
                     <ListItemIcon>
                     <LocalActivityIcon
                         className={classes.icons}
                         color="action"
                       ></LocalActivityIcon>
-                    </ListItemIcon>
-                </Link>              
+                    </ListItemIcon>                              
                     <ListItemText primary="Leaderboard" />
-              </ListItem>}
+              </ListItem>
+              </Link>
+              }
         {location.pathname === '/settings'?
-        <ListItem className={classes.menuItem} button key="Settings" style={{color: "#292F36", backgroundColor: "white"}}>
-          <Link to={"/settings"}>          
+        <Link to={"/settings"} style={{textDecoration: "none", color: "white"}}>
+        <ListItem className={classes.menuItem} button key="Settings" style={{color: "#292F36", backgroundColor: "white"}}>                    
               <ListItemIcon>
               <SettingsIcon
                   className={classes.icons}
@@ -341,20 +339,23 @@ export default function NavMenu() {
                   style={{color: "#292F36"}}
                 ></SettingsIcon>
               </ListItemIcon>
-          </Link>              
-              <ListItemText primary="Settings" />
-        </ListItem> :
+                        
+              <ListItemText primary="Settings" />              
+        </ListItem> 
+        </Link>:
+        <Link to={"/settings"} style={{textDecoration: "none", color: "white"}}>  
                 <ListItem className={classes.menuItem} button key="Settings">
-                <Link to={"/settings"}>          
+                        
                     <ListItemIcon>
                     <SettingsIcon
                         className={classes.icons}
                         color="action"
                       ></SettingsIcon>
                     </ListItemIcon>
-                </Link>              
+                              
                     <ListItemText primary="Settings" />
-              </ListItem>}
+              </ListItem>
+              </Link>}
       </Drawer>
     </div>
   );

@@ -86,6 +86,8 @@ export default function PublicRequest() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // console.log(props.location.state.setOpen);
+
   return (
     <div className={classes.root}>
       <div className="container">

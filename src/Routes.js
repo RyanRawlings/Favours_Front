@@ -30,7 +30,7 @@ const Routes = () => {
       <Switch>
         //Unauthenticated Routes
         <Route exact path="/" component={PublicRequest}>
-          <Redirect to="/public_request"/> 
+          <Redirect to={"/public_request"}/> 
         </Route>        
         <Route path="/signup" component={Signup}></Route>
         <Route path="/login" component={Login}></Route>
