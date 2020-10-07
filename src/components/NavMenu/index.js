@@ -166,7 +166,19 @@ const getTitle = (location) => {
 export default function NavMenu(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(props.props.location.state.setOpen);
+  
+  // Handles first load onto homepage when props aren't set or passed
+  const isDrawerUndefined = () => {
+    try {
+      return props.props.location.state.setOpen;
+    } catch (err) {
+      if (err) {
+        return false;
+      }
+    }
+    
+  }
+  const [open, setOpen] = useState(isDrawerUndefined);
   const location = useLocation();
 
   // console.log(props);
