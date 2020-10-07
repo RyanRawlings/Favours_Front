@@ -19,13 +19,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Leaderboard() {
+export default function Leaderboard(props) {
   const classes = useStyles();
   
   return (
     <div className={classes.root}>
       <div className="container">
-        <NavMenu />
+        <NavMenu props={props}/>
         <div className="container_right">
           <div className='leaderboard-title'><h2>Favours Leaderboard</h2></div>
           <div className='leaderboard-table'>

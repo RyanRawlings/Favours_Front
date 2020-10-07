@@ -69,7 +69,7 @@ formData: {
 export default function TransitionsModal() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [chipData, setChipData] = useState(['Reward Favour']);
+  const [chipData, setChipData] = useState(['ryan.rawlings96@gmail.com: Reward Favour']);
 
   const handleOpen = () => {
     setOpen(true);
@@ -77,7 +77,7 @@ export default function TransitionsModal() {
 
   const handleClose = () => {
     setOpen(false);
-    setChipData(['Reward Favour']);
+    setChipData(['ryan.rawlings96@gmail.com: Reward Favour']);
   };
 
   const handleAddChip = (chip) => {    

@@ -81,7 +81,7 @@ const useStyles = makeStyles(theme => ({
   
 }));
 
-export default function AllIOUList() {
+export default function AllIOUList(props) {
   const [favours, setFavours] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,7 +104,7 @@ export default function AllIOUList() {
   return (
     <div className={classes.root}>
       <div className="container">
-        <NavMenu />
+        <NavMenu props={props}/>
         <div className="container_right">
           <Paper className={classes.container}>
             <div className="container_right_bottom">

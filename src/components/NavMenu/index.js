@@ -26,7 +26,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import GroupDropDown from '../GroupDropDown/index'
 import { NavLink } from 'react-router-dom';
 
-const drawerWidth = 240;
+const drawerWidth = 210;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -163,11 +163,14 @@ const getTitle = (location) => {
   }
 }
 
-export default function NavMenu() {
+export default function NavMenu(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(props.props.location.state.setOpen);
   const location = useLocation();
+
+  // console.log(props);
+  // console.log(props.props.location.state.setOpen);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -232,7 +235,7 @@ export default function NavMenu() {
         <Divider />
         {location.pathname==='/public_request'?
         <ListItem className={classes.topMenuItem} button key="Public Request" style={{color: "#292F36", backgroundColor: "white", textDecoration: "none"}}>
-          <Link to={"/public_request"}>
+          <Link to={{pathname: "/public_request", state: {setOpen: open}}}>
               <ListItemIcon>
                 <EmojiPeopleIcon
                   className={classes.icons}
@@ -243,7 +246,7 @@ export default function NavMenu() {
               </Link>
               <ListItemText primary="Public Request" />          
         </ListItem> :
-                <Link to={"/public_request"} style={{textDecoration: "none", color: "white"}}>
+                <Link to={{pathname: "/public_request", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>
                   <ListItem className={classes.topMenuItem} button key="Public Request" >
                     <ListItemIcon>
                       <EmojiPeopleIcon
@@ -257,7 +260,7 @@ export default function NavMenu() {
               }
         {location.pathname==='/all_list'?
         <ListItem className={classes.menuItem} button key="IOU List" style={{color: "#292F36", backgroundColor: "white"}}>
-            <Link to={"/all_list"}>
+            <Link to={{pathname: "/all_list", state: {setOpen: open}}}>
               <ListItemIcon>
               <ListAltIcon
                   className={classes.icons}
@@ -268,7 +271,7 @@ export default function NavMenu() {
             </Link>
               <ListItemText primary="IOU List" />
         </ListItem> :
-        <Link to={"/all_list"} style={{textDecoration: "none", color: "white"}}>
+        <Link to={{pathname: "/all_list", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>
         <ListItem className={classes.menuItem} button key="IOU List">        
           <ListItemIcon>
           <ListAltIcon
@@ -282,7 +285,7 @@ export default function NavMenu() {
         }
         {location.pathname === '/profile'?
         <ListItem className={classes.menuItem} button key="Profile" style={{color: "#292F36", backgroundColor: "white"}}>
-          <Link to={"/profile"}>          
+          <Link to={{pathname: "/profile", state: {setOpen: open}}}>          
               <ListItemIcon>
               <AccountBoxIcon
                   className={classes.icons}
@@ -293,7 +296,7 @@ export default function NavMenu() {
           </Link>
               <ListItemText primary="Profile" />
         </ListItem> :        
-        <Link to={"/profile"} style={{textDecoration: "none", color: "white"}}>          
+        <Link to={{pathname: "/profile", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>          
                 <ListItem className={classes.menuItem} button key="Profile">                
                     <ListItemIcon>
                     <AccountBoxIcon
@@ -306,7 +309,7 @@ export default function NavMenu() {
               </Link>}
         {location.pathname==='/leaderboard'?
         <ListItem className={classes.menuItem} button key="Leaderboard" style={{color: "#292F36", backgroundColor: "white"}}>
-          <Link to={"/leaderboard"}>          
+          <Link to={{pathname: "/leaderboard", state: {setOpen: open}}}>          
               <ListItemIcon>
               <LocalActivityIcon
                   className={classes.icons}
@@ -317,7 +320,7 @@ export default function NavMenu() {
           </Link>              
               <ListItemText primary="Leaderboard" />
         </ListItem> : 
-        <Link to={"/leaderboard"} style={{textDecoration: "none", color: "white"}}> 
+        <Link to={{pathname: "/leaderboard", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}> 
                 <ListItem className={classes.menuItem} button key="Leaderboard">                
                     <ListItemIcon>
                     <LocalActivityIcon
@@ -330,7 +333,7 @@ export default function NavMenu() {
               </Link>
               }
         {location.pathname === '/settings'?
-        <Link to={"/settings"} style={{textDecoration: "none", color: "white"}}>
+        <Link to={{pathname: "/settings", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>
         <ListItem className={classes.menuItem} button key="Settings" style={{color: "#292F36", backgroundColor: "white"}}>                    
               <ListItemIcon>
               <SettingsIcon
@@ -343,7 +346,7 @@ export default function NavMenu() {
               <ListItemText primary="Settings" />              
         </ListItem> 
         </Link>:
-        <Link to={"/settings"} style={{textDecoration: "none", color: "white"}}>  
+        <Link to={{pathname: "/settings", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>  
                 <ListItem className={classes.menuItem} button key="Settings">
                         
                     <ListItemIcon>

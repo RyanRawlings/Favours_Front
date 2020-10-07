@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Profile() {
+export default function Profile(props) {
   const uploadedImage = React.useRef(null);
   const imageUploader = React.useRef(null);
   const classes = useStyles();
@@ -64,7 +64,7 @@ export default function Profile() {
   return (
     <div className={classes.root}>
       <div className="container">
-        <NavMenu />            
+        <NavMenu props={props}/>            
         <div className="container_right">
           <Paper className={classes.container}>
             <div className="container_right_bottom">
