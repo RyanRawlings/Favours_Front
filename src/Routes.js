@@ -10,6 +10,7 @@ import Signup from "./views/Signup/index";
 import Login from "./views/Login/index";
 import Testing from "./components/NavMenu/index";
 import UserContext from "./context/UserContext";
+import Settings from './views/Settings/index';
 
 // const PublicRequest = () => import("./App");
 // const NavMenu = () => import("./components/NavMenu/index");
@@ -29,7 +30,7 @@ const Routes = () => {
       <Switch>
         //Unauthenticated Routes
         <Route exact path="/" component={PublicRequest}>
-          <Redirect to="/public_request"/> 
+          <Redirect to={"/public_request"}/> 
         </Route>        
         <Route path="/signup" component={Signup}></Route>
         <Route path="/login" component={Login}></Route>
@@ -41,6 +42,7 @@ const Routes = () => {
         <Route exact path="/all_list/debit_list" component={DebitIOUList}></Route>
         <Route exact path="/all_list/credit_list" component={CreditIOUList}></Route>        
         <Route path="/leaderboard" component={Leaderboard}></Route>
+        <Route path="/settings" component={Settings}></Route>
 
         //Testing Routes
         <Route path="/testing" component={Testing}></Route>

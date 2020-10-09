@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -22,15 +22,17 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import LocalActivityIcon from "@material-ui/icons/LocalActivity";
 import { useLocation, Link } from 'react-router-dom';
 import LoginSignupButtonGroup from '../LoginSignupButtonGroup/index.js';
+import SettingsIcon from '@material-ui/icons/Settings';
+import GroupDropDown from '../GroupDropDown/index'
+import { NavLink } from 'react-router-dom';
 
-const drawerWidth = 240;
+const drawerWidth = 210;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     position: 'relative',
     whiteSpace: 'nowrap'
-
   },
   appBar: {
     backgroundColor: "#1B9AAA",
@@ -50,6 +52,8 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
+    color: "white",
+    marginLeft: "-1.3%"
   },
   hide: {
     display: 'none',
@@ -78,10 +82,12 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
+      width: theme.spacing(7.5),
     },
   },
   toolbar: {
+    marginTop: "4%",
+    marginBottom: "-4%",
     backgroundColor: "#292F36",
     width: "100%",
     alignItems: 'center',
@@ -98,9 +104,36 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1.5),
   },
   icons: {
-    color: "white"
+    color: "white",
+  },
+  selectGroup: {
+    marginLeft: "10%"
+  },
+  topMenuItem: {
+    borderTop: "1px solid white",
+    '&:hover': {
+      backgroundColor: "white",
+      color: "#292F36",
+      '& $icons': {
+        color: "#292F36"
+      }
+    }
+  },
+  menuItem: {    
+    '&:hover': {
+      backgroundColor: "white",
+      color: "#292F36",
+      '& $icons': {
+        color: "#292F36"
+      }
+    }
+  },
+  handleDrawerCloseButton: {
+    display: "inline-block"
+  },
+  groupDropDown: {
+    display: "inline-block",
   }
-
 }));
 
 const getTitle = (location) => {
@@ -123,16 +156,33 @@ const getTitle = (location) => {
       case '/login':
           return "Login";
       case '/signup':
-          return "Sign up";                     
+          return "Sign up";
+      case '/settings':
+        return "Personal Settings";
 
   }
 }
 
-export default function NavMenu() {
+export default function NavMenu(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  
+  // Handles first load onto homepage when props aren't set or passed
+  const isDrawerUndefined = () => {
+    try {
+      return props.props.location.state.setOpen;
+    } catch (err) {
+      if (err) {
+        return false;
+      }
+    }
+    
+  }
+  const [open, setOpen] = useState(isDrawerUndefined);
   const location = useLocation();
+
+  // console.log(props);
+  // console.log(props.props.location.state.setOpen);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -170,7 +220,7 @@ export default function NavMenu() {
             <LoginSignupButtonGroup className={classes.loginsignupbg}/>
           </div>
         </Toolbar>         
-      </AppBar>
+      </AppBar>      
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -183,58 +233,144 @@ export default function NavMenu() {
             [classes.drawerClose]: !open,
           }),
         }}
-      >
+      >        
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
+          <div className={classes.handleDrawerCloseButton}>
+            <IconButton className={classes.menuButton} onClick={handleDrawerClose}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </div>
+          <div className={classes.groupDropDown}>
+          <GroupDropDown />
+          </div>
         </div>
         <Divider />
-        <ListItem button key="Public Request">
-          <Link to={"/public_request"}>
+        {location.pathname==='/public_request'?
+        <ListItem className={classes.topMenuItem} button key="Public Request" style={{color: "#292F36", backgroundColor: "white", textDecoration: "none"}}>
+          <Link to={{pathname: "/public_request", state: {setOpen: open}}}>
               <ListItemIcon>
                 <EmojiPeopleIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></EmojiPeopleIcon>                
               </ListItemIcon>
               </Link>
               <ListItemText primary="Public Request" />          
-        </ListItem>        
-        <ListItem button key="IOU List">
-            <Link to={"/all_list"}>
+        </ListItem> :
+                <Link to={{pathname: "/public_request", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>
+                  <ListItem className={classes.topMenuItem} button key="Public Request" >
+                    <ListItemIcon>
+                      <EmojiPeopleIcon
+                        className={classes.icons}
+                        color="action"
+                      ></EmojiPeopleIcon>                
+                    </ListItemIcon>
+                    <ListItemText primary="Public Request" />          
+              </ListItem>
+              </Link>
+              }
+        {location.pathname==='/all_list'?
+        <ListItem className={classes.menuItem} button key="IOU List" style={{color: "#292F36", backgroundColor: "white"}}>
+            <Link to={{pathname: "/all_list", state: {setOpen: open}}}>
               <ListItemIcon>
               <ListAltIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></ListAltIcon>
               </ListItemIcon>
             </Link>
               <ListItemText primary="IOU List" />
+        </ListItem> :
+        <Link to={{pathname: "/all_list", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>
+        <ListItem className={classes.menuItem} button key="IOU List">        
+          <ListItemIcon>
+          <ListAltIcon
+              className={classes.icons}
+              color="action"
+            ></ListAltIcon>
+              </ListItemIcon>            
+              <ListItemText primary="IOU List" />
         </ListItem>
-        <ListItem button key="Profile">
-          <Link to={"/profile"}>          
+        </Link>
+        }
+        {location.pathname === '/profile'?
+        <ListItem className={classes.menuItem} button key="Profile" style={{color: "#292F36", backgroundColor: "white"}}>
+          <Link to={{pathname: "/profile", state: {setOpen: open}}}>          
               <ListItemIcon>
               <AccountBoxIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></AccountBoxIcon>
               </ListItemIcon>
           </Link>
               <ListItemText primary="Profile" />
-        </ListItem>        
-        <ListItem button key="Leaderboard">
-          <Link to={"/leaderboard"}>          
+        </ListItem> :        
+        <Link to={{pathname: "/profile", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>          
+                <ListItem className={classes.menuItem} button key="Profile">                
+                    <ListItemIcon>
+                    <AccountBoxIcon
+                        className={classes.icons}
+                        color="action"
+                      ></AccountBoxIcon>
+                    </ListItemIcon>
+                    <ListItemText primary="Profile" />
+              </ListItem>
+              </Link>}
+        {location.pathname==='/leaderboard'?
+        <ListItem className={classes.menuItem} button key="Leaderboard" style={{color: "#292F36", backgroundColor: "white"}}>
+          <Link to={{pathname: "/leaderboard", state: {setOpen: open}}}>          
               <ListItemIcon>
               <LocalActivityIcon
                   className={classes.icons}
                   color="action"
+                  style={{color: "#292F36"}}
                 ></LocalActivityIcon>
               </ListItemIcon>
           </Link>              
               <ListItemText primary="Leaderboard" />
-        </ListItem>
-        {/* </List> */}
+        </ListItem> : 
+        <Link to={{pathname: "/leaderboard", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}> 
+                <ListItem className={classes.menuItem} button key="Leaderboard">                
+                    <ListItemIcon>
+                    <LocalActivityIcon
+                        className={classes.icons}
+                        color="action"
+                      ></LocalActivityIcon>
+                    </ListItemIcon>                              
+                    <ListItemText primary="Leaderboard" />
+              </ListItem>
+              </Link>
+              }
+        {location.pathname === '/settings'?
+        <Link to={{pathname: "/settings", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>
+        <ListItem className={classes.menuItem} button key="Settings" style={{color: "#292F36", backgroundColor: "white"}}>                    
+              <ListItemIcon>
+              <SettingsIcon
+                  className={classes.icons}
+                  color="action"
+                  style={{color: "#292F36"}}
+                ></SettingsIcon>
+              </ListItemIcon>
+                        
+              <ListItemText primary="Settings" />              
+        </ListItem> 
+        </Link>:
+        <Link to={{pathname: "/settings", state: {setOpen: open}}} style={{textDecoration: "none", color: "white"}}>  
+                <ListItem className={classes.menuItem} button key="Settings">
+                        
+                    <ListItemIcon>
+                    <SettingsIcon
+                        className={classes.icons}
+                        color="action"
+                      ></SettingsIcon>
+                    </ListItemIcon>
+                              
+                    <ListItemText primary="Settings" />
+              </ListItem>
+              </Link>}
       </Drawer>
     </div>
   );

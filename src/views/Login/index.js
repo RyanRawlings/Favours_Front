@@ -16,6 +16,9 @@ import HeroImage from '../../assets/images/uts-hero-image.png';
 import * as APIServices from "../../api/TestAPI";
 import Cookie from 'js-cookie';
 import NavMenu from "../../components/NavMenu/index";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import Container from '@material-ui/core/Container';
 
 function Copyright() {
   return (
@@ -64,6 +67,17 @@ const useStyles = makeStyles((theme) => ({
       color: "black"
     }
   },
+  icon: {
+    margin: "auto",
+    fontSize: "50px",
+  },
+  formPaper: {
+    padding: "10% 10% 10%"
+  },
+  pageheading: {
+    textAlign: "center"
+  }
+
 }));
 
 export default function Login() {
@@ -87,24 +101,25 @@ export default function Login() {
             });    
   }
   return (
-    <div className={classes.root}>
+<div className={classes.root}>
       <div className="container">
         <NavMenu />
         <div className="container_right">
           <Paper className={classes.container}>
             <div className="container_right_bottom">
-            <div className={classes.headingContainer}>
-                 <Grid container component="main" className={classes.root}>
+            <div className={classes.headingContainer}>            
+            </div>
+              <div className="cards_container"> 
+                   <Container component="main" maxWidth="xs">
        <CssBaseline />
-       <Grid item xs={false} sm={4} md={7} className={classes.image}></Grid>
-       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-         <div className={classes.paper}>
-           <Avatar className={classes.avatar}>
-             <AccountBox />
-           </Avatar>
-           <Typography component="h1" variant="h5">
-             Login
+       <div className={classes.paper}>
+       <Paper className={classes.formPaper}>
+      <div className={classes.pageheading}>
+       <Typography component="h1" variant="h5">
+             Log in to Favours
            </Typography>
+         <FontAwesomeIcon className={classes.icon} icon={faUser}/> 
+         </div>
            <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
@@ -171,11 +186,13 @@ export default function Login() {
               <Copyright />
             </Box>
           </form>
-        </div>
-      </Grid>
-    </Grid>           
-            </div>                 
-            </div>        
+          </Paper>
+      </div>
+      <Box mt={5}>
+      </Box>
+    </Container>                           
+            </div> 
+            </div> 
           </Paper>          
         </div>
       </div>

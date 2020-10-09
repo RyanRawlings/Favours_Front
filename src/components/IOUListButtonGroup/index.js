@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
     color: "red"
     },
     button: {
+      textTransform: "capitalize",
       width: "100px",
       backgroundColor: "#1B9AAA",
       color: "white",
@@ -36,9 +37,7 @@ const useStyles = makeStyles(theme => ({
       '&:hover': {
         color: 'black'
       }
-
     }
-
 }));
 
 export default function IOUListButtonGroup() {
