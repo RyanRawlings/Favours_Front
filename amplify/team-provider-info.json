@@ -10,6 +10,11 @@
       "StackName": "amplify-favours-favours-74650",
       "StackId": "arn:aws:cloudformation:us-east-2:733607336789:stack/amplify-favours-favours-74650/92e41c50-0a70-11eb-860f-0249de0bf3ca",
       "AmplifyAppId": "d3mul6adfr7c64"
+    },
+    "categories": {
+      "auth": {
+        "favoursb8b12d2c": {}
+      }
     }
   }
 }
