@@ -74,7 +74,11 @@ const useStyles = makeStyles((theme) => ({
   },
   pageheading: {
     textAlign: "center"
-  }
+  },
+  container: {
+    // backgroundImage: "linear-gradient(#d3ecf3, #123456)"
+    backgroundImage: "linear-gradient(#d3ecf3, #1B9AAA)"    
+  },
 }));
 
 export default function Signup() {
@@ -106,7 +110,7 @@ export default function Signup() {
        <div className={classes.paper}>
          <Paper className={classes.formPaper}>
         <div className={classes.pageheading}>
-         <Typography component="h1" variant="h4">
+         <Typography component="h1" variant="h5">
            Sign up to Favours
          </Typography>
          <FontAwesomeIcon className={classes.icon} icon={faUsers}/> 
@@ -168,12 +172,6 @@ export default function Signup() {
                 autoComplete="current-password"
                 onChange={ e => {setPassword(e.target.value);
                 }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label={<Typography className={classes.promotioncheckbox} variant="body2" color="textPrimary">I want to receive inspiration, marketing promotions and updates via email.</Typography>}
               />
             </Grid>
           </Grid>

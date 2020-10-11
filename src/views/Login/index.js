@@ -72,11 +72,16 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "50px",
   },
   formPaper: {
+    marginTop: '-10%',
     padding: "10% 10% 10%"
   },
   pageheading: {
     textAlign: "center"
-  }
+  },
+  container: {
+    // backgroundImage: "linear-gradient(#d3ecf3, #123456)"
+    backgroundImage: "linear-gradient(#d3ecf3, #1B9AAA)"    
+  },
 
 }));
 
@@ -100,6 +105,7 @@ export default function Login() {
                    }
             });    
   }
+
   return (
 <div className={classes.root}>
       <div className="container">

@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
     height: "40%",
-    width: "70%"
+    width: "80%",
+    outline: 'none'
   },
   table: {
     width: "100%",
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
       width: "400px"
   },  
   modalButton: {
+    width: "110%",
     fontFamily: "'Roboto', 'Helvetica', 'Arial'",
     textTransform: "capitalize",
     backgroundColor: "#1B9AAA",
@@ -80,7 +82,6 @@ const useStyles = makeStyles((theme) => ({
       color: 'white'
      }          
     }}
-  
 
 }));
 
@@ -122,7 +123,6 @@ export default function FavourModal({
         <Button
         variant="contained"
         color="primary"
-        className={classes.button}
         startIcon={<LaunchIcon />}
         onClick={handleOpen}
         className={classes.modalButton}
