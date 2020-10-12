@@ -6,12 +6,11 @@ import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoffee, faTrash } from '@fortawesome/free-solid-svg-icons';
-import NavMenu from "../../components/navMenu/index";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCoffee, faTrash } from "@fortawesome/free-solid-svg-icons";
+import NavMenu from "../../components/NavMenu/index";
 import FavourListButtonGroup from "../../components/favourListButtonGroup/index";
 import * as testAPI from "../../api/TestAPI";
-
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,19 +26,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const fetchDebitIOUList = async () => {
-  const result = await testAPI.debitIOUList().then(_=>_.json());
+  const result = await testAPI.debitIOUList().then(_ => _.json());
   return result;
-}
+};
 
 export default function PartyRecommender() {
   const [favours, setFavours] = useState([]);
-  
+
   useEffect(() => {
     async function fetchDebitIOUList() {
       const test = await testAPI.debitIOUList();
       console.log("testData+++++", test);
     }
-    
+
     fetchDebitIOUList();
   }, []);
   // const [favours, setFavours] = useState([]);
@@ -47,7 +46,7 @@ export default function PartyRecommender() {
   // useEffect(() => {
   //   async function loadDebitIOUList() {
   //   const debitIOUListToShow = await fetchDebitIOUList().then(extractData);
-    
+
   //   const componentPromises = debitIOUListToShow.map(
   //     async data => {
   //       const List = await importList(data);
@@ -66,9 +65,9 @@ export default function PartyRecommender() {
   //         </CardContent>
   //       </Card>
   //   </React.Fragment>);
-    
-  //       })      
-  //   loadDebitIOUList(); 
+
+  //       })
+  //   loadDebitIOUList();
   //   };
   //   fetchDebitIOUList();
   // }, []);
@@ -95,7 +94,7 @@ export default function PartyRecommender() {
   //   </React.Fragment>
   //     })
   //   };
-  
+
   return (
     <div className={classes.root}>
       <div className="container">
@@ -103,9 +102,9 @@ export default function PartyRecommender() {
         <div className="container_right">
           <Paper className={classes.container}>
             <div className="container_right_bottom">
-            <FavourListButtonGroup />
-              <div className="cards_container">                
-              {/* {itemsToRender}      */}
+              <FavourListButtonGroup />
+              <div className="cards_container">
+                {/* {itemsToRender}      */}
               </div>
             </div>
           </Paper>

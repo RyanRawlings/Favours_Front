@@ -7,9 +7,9 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoffee, faTrash } from '@fortawesome/free-solid-svg-icons';
-import NavMenu from "../../components/navMenu/index";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCoffee, faTrash } from "@fortawesome/free-solid-svg-icons";
+import NavMenu from "../../components/NavMenu/index";
 import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 
 const useStyles = makeStyles(theme => ({
@@ -48,7 +48,9 @@ export default function CreditIOUList() {
                       </div>
                       <div className="card_right">03/08/2020</div>
                       <div className="btn">
-                        <Button><FontAwesomeIcon icon={faTrash} /></Button>
+                        <Button>
+                          <FontAwesomeIcon icon={faTrash} />
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
