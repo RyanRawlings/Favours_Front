@@ -87,7 +87,7 @@ const useStyles = makeStyles(theme => ({
 export default function Login() {
   const classes = useStyles();
   const storedJwt = localStorage.getItem("token");
-  const [jwt, setJwt] = useState(storedJwt || null);
+  // const [jwt, setJwt] = useState(storedJwt || null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

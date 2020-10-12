@@ -6,7 +6,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import NavMenu from "../../components/NavMenu/index";
-import UploadImage from "../../components/UploadImage/index";
+import UploadImage from "../../components/uploadImage/index";
 import * as UserAPI from "../../api/UserAPI";
 
 const useStyles = makeStyles(theme => ({

@@ -22,7 +22,7 @@ import PublicRequestIcon from "../../assets/images/public-requests-alternate.png
 import Pagination from "../AllIOUList/Pagination";
 import FavourModal from "../../components/FavourModal/index";
 import { useLocation } from "react-router-dom";
-import SearchBar from "../../components/SearchBar/index";
+import SearchBar from "../../components/searchBar/index";
 
 const useStyles = makeStyles(theme => ({
   root: {

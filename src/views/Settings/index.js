@@ -14,7 +14,7 @@ import LoadingGif from "../../assets/images/loading.gif";
 import Pagination from "../AllIOUList/Pagination";
 import FavourModal from "../../components/FavourModal/index";
 import LaunchIcon from "@material-ui/icons/Launch";
-import SearchBar from "../../components/SearchBar/index";
+import SearchBar from "../../components/searchBar/index";
 import { useLocation } from "react-router-dom";
 import LoadingSkeleton from "../../components/LoadingSkeleton/index";
 
