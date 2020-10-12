@@ -93,7 +93,8 @@ export default function Login() {
 
   const handleSubmit = async function(event) {
     event.preventDefault();
-    const response = await APIServices.login({ email, password });
+    let user = { email: email, password: password };
+    const response = await APIServices.login(user);
     Cookie.set(response);
 
     return {

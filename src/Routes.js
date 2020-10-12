@@ -28,14 +28,14 @@ const Routes = () => {
     <BrowserRouter>
       <UserContext.Provider value={{ userData, setUserData }}>
         <Switch>
-          //Unauthenticated Routes
+          {/* //Unauthenticated Routes */}
           <Route exact path="/" component={PublicRequest}>
             <Redirect to={"/public_request"} />
           </Route>
           <Route path="/signup" component={Signup}></Route>
           <Route path="/login" component={Login}></Route>
           <Route path="/public_request" component={PublicRequest} />
-          //Authenticated Routes
+          {/* //Authenticated Routes */}
           <Route path="/profile" component={Profile}></Route>
           <Route exact path="/all_list" component={AllIOUList}></Route>
           <Route
@@ -50,7 +50,7 @@ const Routes = () => {
           ></Route>
           <Route path="/leaderboard" component={Leaderboard}></Route>
           <Route path="/settings" component={Settings}></Route>
-          //Testing Routes
+          {/* //Testing Routes */}
           <Route path="/testing" component={Testing}></Route>
         </Switch>
       </UserContext.Provider>

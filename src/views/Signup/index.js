@@ -90,12 +90,13 @@ export default function Signup() {
 
   const handleSubmit = async function(event) {
     event.preventDefault();
-    const response = await APIServices.register({
-      firstname,
-      lastname,
-      email,
-      password
-    });
+    let user = {
+      firstname: firstname,
+      lastname: lastname,
+      email: email,
+      password: password
+    };
+    const response = await APIServices.register(user);
     console.log(response);
     return false;
   };

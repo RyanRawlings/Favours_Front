@@ -7,6 +7,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import NavMenu from "../../components/NavMenu/index";
 import UploadImage from "../../components/UploadImage/index";
+import * as UserAPI from "../../api/UserAPI";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,7 +48,18 @@ export default function Profile(props) {
   const uploadedImage = React.useRef(null);
   const imageUploader = React.useRef(null);
   const classes = useStyles();
+  const [personalDetails, setPersonalDetails] = useState({});
 
+  useEffect(() => {
+    async function userDetailData() {
+      const userDetailData = await UserAPI.getUserDetails();
+      console.log("allUserDetailData+++++", userDetailData.result);
+      setPersonalDetails(userDetailData.result[0]);
+    }
+
+    userDetailData();
+  }, []);
+  console.log("personalDetails:", personalDetails);
   const handleImageUpload = e => {
     const [file] = e.target.files;
     if (file) {
@@ -74,12 +86,42 @@ export default function Profile(props) {
                     <UploadImage />
                   </Avatar>
                   Click to upload a Profile Image
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>Hello {personalDetails.firstname}</td>
+                      </tr>
+                      <tr>
+                        <td>Have a nice day at work :)</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Group:
+                          {personalDetails.group
+                            ? personalDetails.group.group_name
+                            : ""}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Department:
+                          {personalDetails.group
+                            ? personalDetails.group.department
+                            : ""}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </CardContent>
               </Card>
+
               <Card className={classes.personalDetailsCard}>
-                <CardContent
-                  className={classes.personalDetailsCardContent}
-                ></CardContent>
+                <CardContent className={classes.personalDetailsCardContent}>
+                  Lastedt activity
+                  <Card>
+                    <CardContent>get dfrom</CardContent>
+                  </Card>
+                </CardContent>
               </Card>
             </div>
           </Paper>
