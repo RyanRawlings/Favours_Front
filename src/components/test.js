@@ -8,8 +8,8 @@ import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee, faTrash } from '@fortawesome/free-solid-svg-icons';
-import NavMenu from "../../components/NavMenu/index";
-import IOUListButtonGroup from "../../components/IOUListButtonGroup/index";
+import NavMenu from "../../components/navMenu/index";
+import FavourListButtonGroup from "../../components/favourListButtonGroup/index";
 import * as testAPI from "../../api/TestAPI";
 
 
@@ -103,7 +103,7 @@ export default function PartyRecommender() {
         <div className="container_right">
           <Paper className={classes.container}>
             <div className="container_right_bottom">
-            <IOUListButtonGroup />
+            <FavourListButtonGroup />
               <div className="cards_container">                
               {/* {itemsToRender}      */}
               </div>

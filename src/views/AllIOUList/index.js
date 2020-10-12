@@ -8,23 +8,23 @@ import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee, faTrash, faUser} from '@fortawesome/free-solid-svg-icons';
-import NavMenu from "../../components/NavMenu/index";
-import IOUListButtonGroup from "../../components/IOUListButtonGroup/index";
+import NavMenu from "../../components/navMenu/index";
+import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as APIServices from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import Pagination from '../AllIOUList/Pagination';
-import FavourModal from '../../components/FavourModal/index';
+import FavourModal from '../../components/favourModal/index';
 import LaunchIcon from '@material-ui/icons/Launch';
-import SearchBar from '../../components/SearchBar/index';
+import SearchBar from '../../components/searchBar/index';
 import { useLocation } from 'react-router-dom';
-import LoadingSkeleton from '../../components/LoadingSkeleton/index';
-import DeleteFavour from '../../components/DeleteFavour/index';
-// import Toast from '../../components/Toast';
+import LoadingSkeleton from '../../components/loadingSkeleton/index';
+import DeleteFavour from '../../components/deleteFavour/index';
+// import Toast from '../../components/toast/index';
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
-import RecordPublicRequest from '../../views/RecordPublicRequest/index';
+import RecordPublicRequest from '../../components/publicRequests/newPublicRequestForm';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -171,7 +171,7 @@ export default function AllIOUList(props) {
               </Button> */}
               <RecordPublicRequest />
             </div>
-            <div className={classes.btnBox}><IOUListButtonGroup /></div>            
+            <div className={classes.btnBox}><FavoursListButtonGroup /></div>            
             </div>
               <div className="cards_container">              
               <Collapse in={open}>

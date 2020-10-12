@@ -13,9 +13,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useLocation } from 'react-router-dom';
-import UploadImage from '../../components/UploadImage/index';
+import UploadImage from '../uploadImage/index';
 import Link from '@material-ui/core/Link';
-import LoginSignupButtonGroup from '../LoginSignupButtonGroup/index';
+import LoginSignupButtonGroup from '../loginSignupButtonGroup/index';
 
 const useStyles = makeStyles((theme) => ({
   modal: {

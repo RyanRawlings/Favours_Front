@@ -4,7 +4,7 @@ import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash} from '@fortawesome/free-solid-svg-icons';
 import * as APIServices from '../../api/TestAPI';
-import Toast from '../../components/Toast';
+import Toast from '../toast/index'
 
 
 const useStyles = makeStyles(theme => ({

@@ -21,9 +21,9 @@ import ListAltIcon from "@material-ui/icons/ListAlt";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import LocalActivityIcon from "@material-ui/icons/LocalActivity";
 import { useLocation, Link } from 'react-router-dom';
-import LoginSignupButtonGroup from '../LoginSignupButtonGroup/index.js';
+import LoginSignupButtonGroup from '../loginSignupButtonGroup/index.js';
 import SettingsIcon from '@material-ui/icons/Settings';
-import GroupDropDown from '../GroupDropDown/index'
+import GroupDropDown from '../userGroupDropDown/index'
 import { NavLink } from 'react-router-dom';
 
 const drawerWidth = 210;

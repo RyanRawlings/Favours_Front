@@ -8,7 +8,7 @@ import PublicRequest from "./views/PublicRequest/index";
 import Leaderboard from "./views/Leaderboard/index";
 import Signup from "./views/Signup/index";
 import Login from "./views/Login/index";
-import Testing from "./components/NavMenu/index";
+import Testing from "./components/navMenu/index";
 import UserContext from "./context/UserContext";
 import Settings from './views/Settings/index';
 

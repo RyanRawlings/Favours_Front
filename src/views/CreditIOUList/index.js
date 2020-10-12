@@ -9,8 +9,8 @@ import { Button } from "@material-ui/core";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee, faTrash } from '@fortawesome/free-solid-svg-icons';
-import NavMenu from "../../components/NavMenu/index";
-import IOUListButtonGroup from "../../components/IOUListButtonGroup/index";
+import NavMenu from "../../components/navMenu/index";
+import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,7 +35,7 @@ export default function CreditIOUList() {
         <div className="container_right">
           <Paper className={classes.container}>
             <div className="container_right_bottom">
-              <IOUListButtonGroup />
+              <FavoursListButtonGroup />
               <div className="cards_container">
                 <Card>
                   <CardContent>

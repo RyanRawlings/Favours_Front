@@ -8,15 +8,15 @@ import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee, faTrash, faThumbsUp, faThumbsDown, faUsers} from '@fortawesome/free-solid-svg-icons';
-import NavMenu from "../../components/NavMenu/index";
-import IOUListButtonGroup from "../../components/IOUListButtonGroup/index";
+import NavMenu from "../../components/navMenu/index";
+import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as testAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
 import Pagination from '../AllIOUList/Pagination';
-import FavourModal from '../../components/FavourModal/index';
+import FavourModal from '../../components/favourModal/index';
 import { useLocation } from 'react-router-dom';
-import SearchBar from '../../components/SearchBar';
+import SearchBar from '../../components/searchBar/index';
 
 const useStyles = makeStyles(theme => ({
   root: {

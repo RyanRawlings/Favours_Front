@@ -5,8 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import NavMenu from '../../components/NavMenu/index';
-import UploadImage from '../../components/UploadImage/index'
+import NavMenu from '../../components/navMenu/index';
+import UploadImage from '../../components/uploadImage/index'
 
 const useStyles = makeStyles(theme => ({
   root: {

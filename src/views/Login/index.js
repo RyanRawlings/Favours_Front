@@ -15,7 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import HeroImage from '../../assets/images/uts-hero-image.png';
 import * as APIServices from "../../api/TestAPI";
 import Cookie from 'js-cookie';
-import NavMenu from "../../components/NavMenu/index";
+import NavMenu from "../../components/navMenu/index";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Container from '@material-ui/core/Container';

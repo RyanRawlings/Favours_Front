@@ -8,8 +8,8 @@ import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee, faTrash } from '@fortawesome/free-solid-svg-icons';
-import NavMenu from "../../components/NavMenu/index";
-import IOUListButtonGroup from "../../components/IOUListButtonGroup/index";
+import NavMenu from "../../components/navMenu/index";
+import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as testAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import styles from '../../index.css';
@@ -61,7 +61,7 @@ export default function DebitIOUList() {
         <div className="container_right">
           <Paper className={classes.container}>
             <div className="container_right_bottom">
-            <IOUListButtonGroup />
+            <FavoursListButtonGroup />
               <div className="cards_container">              
                <React.Fragment>                
               {favours.allFavours?
