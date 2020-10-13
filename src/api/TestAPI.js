@@ -11,7 +11,7 @@ export function login(data) {
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
-          window.location.href = "/";
+          window.location.href = "/public_request";
         } else {
           reject(response.response);
         }
@@ -28,7 +28,7 @@ export function register(data) {
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
-          window.location.href = "/";
+          window.location.href = "/login";
         } else {
           reject(response.response);
         }
@@ -56,3 +56,9 @@ export const deleteImageFromS3 = data =>
   callAPI("get", "http://localhost:4000/api/file/delete-s3-image", data);
 export const getUserDetails = () =>
   callAPI("get", "http://localhost:4000/api/profile");
+
+export const getFavourTypes = () => 
+  callAPI("get", "http://localhost:4000/api/get/get-favourType");
+
+  export const createPublicRequest = (data) => 
+  callAPI("post", "http://localhost:4000/api/favour/create-publicRequest", data);

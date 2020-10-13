@@ -24,6 +24,7 @@ import FavourModal from "../../components/FavourModal/index";
 import { useLocation } from "react-router-dom";
 import SearchBar from "../../components/searchBar/index";
 
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",

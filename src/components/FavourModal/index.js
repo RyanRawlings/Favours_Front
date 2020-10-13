@@ -181,31 +181,10 @@ export default function FavourModal({
                         {row.Information}
                       </TableCell>
                     </TableRow>
-                  ))}
-                  {pathname === "/public_request" ? (
-                    <TableRow key="button-row" className={classes.row}>
-                      <TableCell key={"button-row" + "-cell-one"}>
-                        Respond to this Request
-                      </TableCell>
-                      <TableCell
-                        key={"button-row" + "-cell-two"}
-                        className={classes.tableCellRight}
-                      >
-                        <div className={classes.btnGroup}>
-                          <LoginSignupButtonGroup
-                            ButtonPrimaryColor={"#1B9AAA"}
-                            ButtonPrimaryFontColor={"white"}
-                          />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    ""
-                  )}
-                  {pathname === "/all_list" ? (
+                  ))}                           
                     <TableRow key="image-row" className={classes.row}>
                       <TableCell key={"image-row" + "-cell-one"}>
-                        Upload an Image
+                        Upload proof image
                       </TableCell>
                       <TableCell
                         key={"image-row" + "-cell-two"}
@@ -219,9 +198,7 @@ export default function FavourModal({
                         </div>
                       </TableCell>
                     </TableRow>
-                  ) : (
-                    ""
-                  )}
+                  )
                 </TableBody>
               </Table>
             </TableContainer>

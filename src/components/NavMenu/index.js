@@ -226,7 +226,7 @@ export default function NavMenu(props) {
     })
 
     Cookies.set('auth-token', "");
-    window.location.reload();
+    window.location.href = "/home";
   }
 
   return (

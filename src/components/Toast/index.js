@@ -22,7 +22,7 @@ export default function Toast({ IsSuccessful, Message }) {
   const [success] = useState(IsSuccessful);
   let message = Message;
 
-  let severity = success === true && success !== null? true: false;
+  let severity = success === true && success !== null? "success" : "error";
 
   return (
     <div className={classes.root}>

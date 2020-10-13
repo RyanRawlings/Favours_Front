@@ -24,7 +24,7 @@ import Alert from "@material-ui/lab/Alert";
 import IconButton from "@material-ui/core/IconButton";
 import Collapse from "@material-ui/core/Collapse";
 import CloseIcon from "@material-ui/icons/Close";
-import RecordPublicRequest from "../../components/publicRequests/newPublicRequestForm";
+import NewPublicRequest from "../../components/publicRequests/newPublicRequestForm";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
@@ -173,7 +173,7 @@ export default function AllIOUList(props) {
                 onClick={() => openRequestModal}
                 >Create a new public request
               </Button> */}
-                  <RecordPublicRequest />
+                  <NewPublicRequest />
                 </div>
                 <div className={classes.btnBox}>
                   <FavoursListButtonGroup />
