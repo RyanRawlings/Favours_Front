@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -25,6 +25,8 @@ import LoginSignupButtonGroup from "../LoginSignupButtonGroup/index.js";
 import SettingsIcon from "@material-ui/icons/Settings";
 import GroupDropDown from "../userGroupDropDown/index";
 import { NavLink } from "react-router-dom";
+import UserContext from "../../context/UserContext";
+import Cookies from 'js-cookie';
 
 const drawerWidth = 210;
 
@@ -133,6 +135,27 @@ const useStyles = makeStyles(theme => ({
   },
   groupDropDown: {
     display: "inline-block"
+  },
+  logoutBtn: {  
+    width: "80px",
+    color: "black",
+    textAlign: "center",
+    backgroundColor: "white",
+    marginRight: "3%",
+    borderColor: "white",
+    display: "inline-block",
+    textTransform: "capitalize",
+    '&:hover': {
+      color: '#FFF',      
+      border: "1px solid white",
+      backgroundColor: "#1B9AAA"
+  }},
+  userName: {
+    display: "inline-block",
+    marginLeft: "-10%"
+  },
+  topRightNavbar: {
+    display: "flex"
   }
 }));
 
@@ -164,6 +187,7 @@ const getTitle = location => {
 export default function NavMenu(props) {
   const classes = useStyles();
   const theme = useTheme();
+  const { userData, setUserData } = useContext(UserContext);
 
   // Handles first load onto homepage when props aren't set or passed
   const isDrawerUndefined = () => {
@@ -189,6 +213,16 @@ export default function NavMenu(props) {
     setOpen(false);
   };
 
+  const handleLogout = async function() {
+    setUserData({
+      token: null,
+      user: null
+    })
+
+    Cookies.set('auth-token', "");
+    window.location.reload();
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -212,9 +246,18 @@ export default function NavMenu(props) {
           </IconButton>
           <Typography variant="h6" noWrap style={{ flex: 1 }}>
             Favours {" > " + getTitle(location.pathname)}
-          </Typography>
+          </Typography>          
           <div>
-            <LoginSignupButtonGroup className={classes.loginsignupbg} />
+            {
+              userData.user?              
+              <div className={classes.userName}>Logged in as {userData.user.firstname + " (" + userData.user.email + ")"}</div>: ""
+            }            
+          </div>
+          <div>
+            {
+              userData.user?              
+              <Button className={classes.logoutBtn} onClick={handleLogout} variant="contained" color="primary">Logout</Button> : <LoginSignupButtonGroup />
+            }            
           </div>
         </Toolbar>
       </AppBar>
@@ -293,7 +336,8 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {location.pathname === "/all_list" ? (
+        {userData.user === undefined? "" : 
+        location.pathname === "/all_list"? (
           <ListItem
             className={classes.menuItem}
             button
@@ -327,7 +371,8 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {location.pathname === "/profile" ? (
+        {userData.user === undefined? "" : 
+        location.pathname === "/profile"? (
           <ListItem
             className={classes.menuItem}
             button
@@ -361,7 +406,7 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {location.pathname === "/leaderboard" ? (
+        {location.pathname === "/leaderboard"? (
           <ListItem
             className={classes.menuItem}
             button
@@ -395,7 +440,8 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {location.pathname === "/settings" ? (
+        {userData.user === undefined? "" : 
+        location.pathname === "/settings"? (
           <Link
             to={{ pathname: "/settings", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}
@@ -433,7 +479,7 @@ export default function NavMenu(props) {
               <ListItemText primary="Settings" />
             </ListItem>
           </Link>
-        )}
+        )}        
       </Drawer>
     </div>
   );

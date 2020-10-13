@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -19,6 +19,7 @@ import NavMenu from "../../components/NavMenu/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
+import UserContext from "../../context/UserContext";
 
 function Copyright() {
   return (
@@ -86,25 +87,20 @@ const useStyles = makeStyles(theme => ({
 
 export default function Login() {
   const classes = useStyles();
-  const storedJwt = localStorage.getItem("token");
-  // const [jwt, setJwt] = useState(storedJwt || null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async function(event) {
     event.preventDefault();
     let user = { email: email, password: password };
-    const response = await APIServices.login(user);
-    Cookie.set(response);
-
-    return {
-      token: response.token,
-      user: {
-        id: response._id,
-        firstname: response.firstname,
-        email: response.email
+    try {
+      const response = await APIServices.login(user);
+      if (response) {
+        Cookie.set('auth-token', response.token);
       }
-    };
+    } catch (error) {
+      console.log('Error setting cookie');
+    }
   };
 
   return (
