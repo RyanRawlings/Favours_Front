@@ -206,7 +206,7 @@ export default function Signup() {
                         </Grid>
                         <Grid container justify="flex-end">
                           <Grid item>
-                            <Link href={"/public_request"} variant="body2">
+                            <Link href={"/home"} variant="body2">
                               Back to Home Screen
                             </Link>
                           </Grid>

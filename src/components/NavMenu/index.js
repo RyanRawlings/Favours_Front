@@ -156,6 +156,10 @@ const useStyles = makeStyles(theme => ({
   },
   topRightNavbar: {
     display: "flex"
+  },
+  homeText: {
+    textDecoration: "none", 
+    color: "white"
   }
 }));
 
@@ -164,23 +168,25 @@ const getTitle = location => {
     case "/":
       return "Public Requests";
     case "/public_request":
-      return "Public Requests";
+      return "> Public Requests";
     case "/all_list":
-      return "IOU List";
+      return "> IOU List";
     case "/all_list/debit_list":
-      return "IOU List > Debit List";
+      return "> IOU List > Debit List";
     case "/all_list/credit_list":
       return "IOU List > Credit List";
     case "/profile":
-      return "My Profile";
+      return "> My Profile";
     case "/leaderboard":
-      return "Leaderboard";
+      return "> Leaderboard";
     case "/login":
       return "Login";
     case "/signup":
-      return "Sign up";
+      return "> Sign up";
     case "/settings":
-      return "Personal Settings";
+      return "> Personal Settings";
+    case "/home":
+      return ""
   }
 };
 
@@ -245,7 +251,7 @@ export default function NavMenu(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap style={{ flex: 1 }}>
-            Favours {" > " + getTitle(location.pathname)}
+            <Link className={classes.homeText} to={"/home"}>Favours</Link> {getTitle(location.pathname)}
           </Typography>          
           <div>
             {
