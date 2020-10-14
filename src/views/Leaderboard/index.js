@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import "./style.scss";
 import LeaderboardTable from "./LeaderboardTable";
-import NavMenu from "../../components/NavMenu/index";
+import NavMenu from "../../components/navMenu/index";
 
 const useStyles = makeStyles(theme => ({
   root: {

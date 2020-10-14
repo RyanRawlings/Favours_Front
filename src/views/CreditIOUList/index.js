@@ -9,7 +9,7 @@ import { Button } from "@material-ui/core";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoffee, faTrash } from "@fortawesome/free-solid-svg-icons";
-import NavMenu from "../../components/NavMenu/index";
+import NavMenu from "../../components/navMenu/index";
 import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 
 const useStyles = makeStyles(theme => ({

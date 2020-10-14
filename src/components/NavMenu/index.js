@@ -21,12 +21,12 @@ import ListAltIcon from "@material-ui/icons/ListAlt";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import LocalActivityIcon from "@material-ui/icons/LocalActivity";
 import { useLocation, Link } from "react-router-dom";
-import LoginSignupButtonGroup from "../LoginSignupButtonGroup/index.js";
+import LoginSignupButtonGroup from "../loginSignupButtonGroup/index";
 import SettingsIcon from "@material-ui/icons/Settings";
 import GroupDropDown from "../userGroupDropDown/index";
 import { NavLink } from "react-router-dom";
 import UserContext from "../../context/UserContext";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const drawerWidth = 210;
 
@@ -136,7 +136,7 @@ const useStyles = makeStyles(theme => ({
   groupDropDown: {
     display: "inline-block"
   },
-  logoutBtn: {  
+  logoutBtn: {
     width: "80px",
     color: "black",
     textAlign: "center",
@@ -145,11 +145,12 @@ const useStyles = makeStyles(theme => ({
     borderColor: "white",
     display: "inline-block",
     textTransform: "capitalize",
-    '&:hover': {
-      color: '#FFF',      
+    "&:hover": {
+      color: "#FFF",
       border: "1px solid white",
       backgroundColor: "#1B9AAA"
-  }},
+    }
+  },
   userName: {
     display: "inline-block",
     marginLeft: "-10%"
@@ -158,7 +159,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex"
   },
   homeText: {
-    textDecoration: "none", 
+    textDecoration: "none",
     color: "white"
   }
 }));
@@ -186,7 +187,7 @@ const getTitle = location => {
     case "/settings":
       return "> Personal Settings";
     case "/home":
-      return ""
+      return "";
   }
 };
 
@@ -223,11 +224,11 @@ export default function NavMenu(props) {
     setUserData({
       token: null,
       user: null
-    })
+    });
 
-    Cookies.set('auth-token', "");
+    Cookies.set("auth-token", "");
     window.location.href = "/home";
-  }
+  };
 
   return (
     <div className={classes.root}>
@@ -251,19 +252,34 @@ export default function NavMenu(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap style={{ flex: 1 }}>
-            <Link className={classes.homeText} to={"/home"}>Favours</Link> {getTitle(location.pathname)}
-          </Typography>          
+            <Link className={classes.homeText} to={"/home"}>
+              Favours
+            </Link>{" "}
+            {getTitle(location.pathname)}
+          </Typography>
           <div>
-            {
-              userData.user?              
-              <div className={classes.userName}>Logged in as {userData.user.firstname + " (" + userData.user.email + ")"}</div>: ""
-            }            
+            {userData.user ? (
+              <div className={classes.userName}>
+                Logged in as{" "}
+                {userData.user.firstname + " (" + userData.user.email + ")"}
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           <div>
-            {
-              userData.user?              
-              <Button className={classes.logoutBtn} onClick={handleLogout} variant="contained" color="primary">Logout</Button> : <LoginSignupButtonGroup />
-            }            
+            {userData.user ? (
+              <Button
+                className={classes.logoutBtn}
+                onClick={handleLogout}
+                variant="contained"
+                color="primary"
+              >
+                Logout
+              </Button>
+            ) : (
+              <LoginSignupButtonGroup />
+            )}
           </div>
         </Toolbar>
       </AppBar>
@@ -342,8 +358,9 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {userData.user === undefined? "" : 
-        location.pathname === "/all_list"? (
+        {userData.user === undefined ? (
+          ""
+        ) : location.pathname === "/all_list" ? (
           <ListItem
             className={classes.menuItem}
             button
@@ -377,8 +394,9 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {userData.user === undefined? "" : 
-        location.pathname === "/profile"? (
+        {userData.user === undefined ? (
+          ""
+        ) : location.pathname === "/profile" ? (
           <ListItem
             className={classes.menuItem}
             button
@@ -412,7 +430,7 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {location.pathname === "/leaderboard"? (
+        {location.pathname === "/leaderboard" ? (
           <ListItem
             className={classes.menuItem}
             button
@@ -446,8 +464,9 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-        {userData.user === undefined? "" : 
-        location.pathname === "/settings"? (
+        {userData.user === undefined ? (
+          ""
+        ) : location.pathname === "/settings" ? (
           <Link
             to={{ pathname: "/settings", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}
@@ -485,7 +504,7 @@ export default function NavMenu(props) {
               <ListItemText primary="Settings" />
             </ListItem>
           </Link>
-        )}        
+        )}
       </Drawer>
     </div>
   );

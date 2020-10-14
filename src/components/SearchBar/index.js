@@ -1,18 +1,18 @@
-import React from 'react';
-import Chip from '@material-ui/core/Chip';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import React from "react";
+import Chip from "@material-ui/core/Chip";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    width: 500,    
-    '& > * + *': {
-      marginTop: theme.spacing(3),
-    },
+    width: 500,
+    "& > * + *": {
+      marginTop: theme.spacing(3)
+    }
   },
   searchBar: {
-    minHeight: "0.5em !important",
+    minHeight: "0.5em !important"
   }
 }));
 
@@ -26,10 +26,10 @@ export default function Tags() {
         multiple
         id="tags-outlined"
         options={[]}
-        getOptionLabel={(option) => option.title}
+        getOptionLabel={option => option.title}
         defaultValue={[]}
         filterSelectedOptions
-        renderInput={(params) => (
+        renderInput={params => (
           <TextField
             {...params}
             variant="outlined"
@@ -38,6 +38,6 @@ export default function Tags() {
           />
         )}
       />
-      </div>
+    </div>
   );
 }

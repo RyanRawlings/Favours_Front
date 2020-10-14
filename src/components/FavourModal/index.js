@@ -15,7 +15,7 @@ import LaunchIcon from "@material-ui/icons/Launch";
 import { useLocation } from "react-router-dom";
 import UploadImage from "../uploadImage/index";
 import Link from "@material-ui/core/Link";
-import LoginSignupButtonGroup from "../LoginSignupButtonGroup/index";
+import LoginSignupButtonGroup from "../loginSignupButtonGroup/index";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -181,23 +181,23 @@ export default function FavourModal({
                         {row.Information}
                       </TableCell>
                     </TableRow>
-                  ))}                           
-                    <TableRow key="image-row" className={classes.row}>
-                      <TableCell key={"image-row" + "-cell-one"}>
-                        Upload proof image
-                      </TableCell>
-                      <TableCell
-                        key={"image-row" + "-cell-two"}
-                        className={classes.tableCellRight}
-                      >
-                        <div className={classes.imagebox}>
-                          <UploadImage
-                            FavourId={FavourId}
-                            FavourImageKey={FavourImageKey}
-                          />
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                  ))}
+                  <TableRow key="image-row" className={classes.row}>
+                    <TableCell key={"image-row" + "-cell-one"}>
+                      Upload proof image
+                    </TableCell>
+                    <TableCell
+                      key={"image-row" + "-cell-two"}
+                      className={classes.tableCellRight}
+                    >
+                      <div className={classes.imagebox}>
+                        <UploadImage
+                          FavourId={FavourId}
+                          FavourImageKey={FavourImageKey}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
                   )
                 </TableBody>
               </Table>

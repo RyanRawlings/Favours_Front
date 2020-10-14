@@ -14,16 +14,15 @@ import {
   faThumbsDown,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import NavMenu from "../../components/NavMenu/index";
+import NavMenu from "../../components/navMenu/index";
 import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as testAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
 import Pagination from "../AllIOUList/Pagination";
-import FavourModal from "../../components/FavourModal/index";
+import FavourModal from "../../components/favourModal/index";
 import { useLocation } from "react-router-dom";
 import SearchBar from "../../components/searchBar/index";
-
 
 const useStyles = makeStyles(theme => ({
   root: {

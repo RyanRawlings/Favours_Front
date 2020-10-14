@@ -9,12 +9,12 @@ import Leaderboard from "./views/Leaderboard/index";
 import Signup from "./views/Signup/index";
 import Login from "./views/Login/index";
 import HomePage from "./views/Home/homePage";
-import Testing from "./components/NavMenu/index";
+import Testing from "./components/navMenu/index";
 import UserContext from "./context/UserContext";
 import Settings from "./views/Settings/index";
 import Cookies from "js-cookie";
 import JWTDecode from "jwt-decode";
-import ProtectedRoute from "./components/protectedRoute/index"
+import ProtectedRoute from "./components/protectedRoute/index";
 
 // const PublicRequest = () => import("./App");
 // const NavMenu = () => import("./components/NavMenu/index");
@@ -44,10 +44,10 @@ const Routes = () => {
             _id: userAttributes._id,
             firstname: userAttributes.firstname,
             lastname: userAttributes.lastname,
-            email: userAttributes.email,
-          },
+            email: userAttributes.email
+          }
         });
-      }          
+      }
     };
     checkLoggedIn();
   }, []);
@@ -66,8 +66,17 @@ const Routes = () => {
           <Route path="/login" component={Login}></Route>
           <Route path="/public_request" component={PublicRequest} />
           {/* //Authenticated Routes */}
-          <ProtectedRoute path="/profile" user={userData.user} component={Profile}></ProtectedRoute>
-          <ProtectedRoute exact path="/all_list" user={userData.user} component={AllIOUList}></ProtectedRoute>
+          <ProtectedRoute
+            path="/profile"
+            user={userData.user}
+            component={Profile}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path="/all_list"
+            user={userData.user}
+            component={AllIOUList}
+          ></ProtectedRoute>
           <Route
             exact
             path="/all_list/debit_list"
@@ -81,9 +90,17 @@ const Routes = () => {
             component={CreditIOUList}
           ></Route>
           <Route path="/leaderboard" component={Leaderboard}></Route>
-          <ProtectedRoute path="/settings" user={userData.user} component={Settings}></ProtectedRoute>
+          <ProtectedRoute
+            path="/settings"
+            user={userData.user}
+            component={Settings}
+          ></ProtectedRoute>
           {/* //Testing Routes */}
-          <ProtectedRoute path="/testing" user={userData.user} component={Testing}></ProtectedRoute>
+          <ProtectedRoute
+            path="/testing"
+            user={userData.user}
+            component={Testing}
+          ></ProtectedRoute>
         </Switch>
       </UserContext.Provider>
     </BrowserRouter>

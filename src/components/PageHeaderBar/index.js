@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Avatar from "@material-ui/core/Avatar";
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,26 +17,25 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const getTitle = (location) => {
-    switch(location)
-    {
-        case '/':
-            return "Public Requests";
-        case '/public_request':
-            return "Public Requests";            
-        case '/credit_list':
-            return "IOU List";            
-        case '/profile':
-            return "My Profile";            
-        case '/leaderboard':
-            return "Leaderboard";                        
-    }
-}
+const getTitle = location => {
+  switch (location) {
+    case "/":
+      return "Public Requests";
+    case "/public_request":
+      return "Public Requests";
+    case "/credit_list":
+      return "IOU List";
+    case "/profile":
+      return "My Profile";
+    case "/leaderboard":
+      return "Leaderboard";
+  }
+};
 
 export default function PageHeaderBar() {
   const classes = useStyles();
   const location = useLocation();
-    
+
   return (
     <div className={classes.root}>
       <div className="container">
@@ -45,15 +44,14 @@ export default function PageHeaderBar() {
             <div className="container_right_top">
               <div>{getTitle(location.pathname)}</div>
               <Link to={"/profile"}>
-              <div>
-                <Avatar></Avatar>
-              </div>
+                <div>
+                  <Avatar></Avatar>
+                </div>
               </Link>
-            </div>          
+            </div>
           </Paper>
-         </div>
+        </div>
       </div>
     </div>
   );
 }
-
