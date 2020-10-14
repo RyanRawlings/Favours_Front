@@ -180,7 +180,7 @@ const getTitle = location => {
     case "/leaderboard":
       return "> Leaderboard";
     case "/login":
-      return "Login";
+      return "> Login";
     case "/signup":
       return "> Sign up";
     case "/settings":
