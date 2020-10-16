@@ -8,10 +8,10 @@ import {
   Route
 } from 'react-router-dom';
 import HomePage from './views/Home/homePage';
-import Auth from 'aws-amplify';
-import awsconfig from './aws-exports';
-import { withAuthenticator} from 'aws-amplify-react';
-Auth.configure(awsconfig);
+//import Auth from 'aws-amplify';
+//import awsconfig from './aws-exports';
+//import { withAuthenticator} from 'aws-amplify-react';
+//Auth.configure(awsconfig);
 
 const App = () => {
   
