@@ -16,7 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
 import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
-import * as testAPI from "../../api/TestAPI";
+import * as APIServices from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
 import Pagination from "../AllIOUList/Pagination";
@@ -65,20 +65,21 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function PublicRequest(props) {
-  const [favours, setFavours] = useState([]);
+  const [publicRequests, setPublicRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [favoursPerPage, setFavoursPerPage] = useState(4);
+  const [requestsPerPage, setRequestsPerPage] = useState(4);
 
   useEffect(() => {
-    async function fetchPublicRequestList() {
-      const fetchFavours = await testAPI.debitIOUList();
+    async function getPublicRequestList() {
+      const getPublicRequests = await APIServices.getPublicRequests();
       // Return array and set the Favours state
-      setFavours(fetchFavours);
+      console.log(getPublicRequests);
+      setPublicRequests(getPublicRequests);
       setLoading(false);
     }
 
-    fetchPublicRequestList();
+    getPublicRequestList();
   }, []);
 
   const classes = useStyles();
@@ -86,8 +87,8 @@ export default function PublicRequest(props) {
   const location = useLocation();
 
   //Get current posts
-  const indexOfLastFavour = currentPage * favoursPerPage;
-  const indexOfFirstFavour = indexOfLastFavour - favoursPerPage;
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
@@ -110,9 +111,9 @@ export default function PublicRequest(props) {
               </div>
               <div className="cards_container">
                 <React.Fragment>
-                  {favours.allFavours ? (
-                    favours.allFavours
-                      .slice(indexOfFirstFavour, indexOfLastFavour)
+                  {publicRequests.allPublicRequests ? (
+                    publicRequests.allPublicRequests
+                      .slice(indexOfFirstRequest, indexOfLastRequest)
                       .map((data, key) => {
                         return (
                           <Card
@@ -125,7 +126,7 @@ export default function PublicRequest(props) {
                                   className="card_left"
                                   key={key + "-cardDescription"}
                                 >
-                                  {data.FavourTitle}
+                                  {data.title}
                                 </div>
                                 <div
                                   className="card_right"
@@ -133,11 +134,10 @@ export default function PublicRequest(props) {
                                 >
                                   <FavourModal
                                     key={key + "-modal"}
-                                    FavourTitle={data.FavourTitle}
-                                    Requester={data.FavourRequestingUserId}
-                                    FavourDescription={data.FavourDescription}
-                                    FavourDate={data.FavourDateStamp}
-                                    Location={location}
+                                    FavourTitle={data.title}
+                                    Requester={data.requestUser}
+                                    FavourDescription={data.description}
+                                    Rewards={data.rewards}
                                   />
                                 </div>
                               </div>
@@ -157,11 +157,11 @@ export default function PublicRequest(props) {
                   )}
                 </React.Fragment>
               </div>
-              {favours.allFavours ? (
+              {publicRequests.allPublicRequests ? (
                 <Pagination
-                  favoursPerPage={favoursPerPage}
+                  favoursPerPage={requestsPerPage}
                   totalFavours={
-                    favours.allFavours ? favours.allFavours.length : 0
+                    publicRequests.allPublicRequests ? publicRequests.allPublicRequests.length : 0
                   }
                   paginate={paginate}
                 />

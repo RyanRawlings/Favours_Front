@@ -44,7 +44,8 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
       const fetchImage = await APIServices.getImageFromS3({ key: current });
       // console.log(fetchImage.data);
       // src data for image from s3
-      if (fetchImage.data !== null) {
+      if (fetchImage.data) {
+        console.log(fetchImage.data)
         setImageSource(fetchImage.data);
       } else {
         console.log("Callback effect...");
@@ -59,7 +60,7 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
     let form = new FormData();
     form.append("image", fileToUpload);
     const response = await axios.post("/api/file/image-upload", form);
-    console.log(response);
+    // console.log(response);
     const { data } = response;
     // Create separate function to update the key on the Favour in the database
     if (data.key) {
@@ -69,7 +70,7 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
       });
       console.log(response);
     }
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
   const handleImageUpload = async e => {
@@ -81,14 +82,14 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
       reader.onload = e => {
         current.src = e.target.result;
       };
-      const blob = reader.readAsDataURL(file);
+      // const blob = reader.readAsDataURL(file);
       setFileToUpload(file);
     }
   };
 
   const deleteImageFromS3 = async data => {
     const response = await APIServices.deleteImageFromS3({ key: data });
-    console.log(response);
+    // console.log(response);
     return response;
   };
 
@@ -113,7 +114,7 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
             }}
           />
           <div className={classes.text}>
-            {current ? "" : "Click to browse files"}
+            {current? "" : "Upload proof image"}
           </div>
           <div
             style={{

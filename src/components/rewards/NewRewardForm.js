@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import UserContext from "../../context/UserContext";
 import * as APIServices from "../../api/TestAPI";
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import CounterButtonGroup from "../counterButtonGroup/index";
 
 const useStyles = makeStyles((theme) => ({
 //   rewardQuantity: {
@@ -29,6 +30,7 @@ export default function RewardForm({ addReward }) {
     const { userData, setUserData } = useContext(UserContext);
 
     const [favourRewards, setFavourRewards] = useState([]);
+    const [clearOptionText, setClearOptionText] = useState(false);
 
     useEffect(() => {
       async function getFavourType() {
@@ -43,19 +45,20 @@ export default function RewardForm({ addReward }) {
     }, []);
 
     // console.log(favourRewards);    
-    const [rewardName, setRewardName] = useState("");
+    const [rewardName, setRewardName] = useState(null);
     const [rewardQuantity, setRewardQuantity] = useState(1);
     // Show the user email on screen
     const [offeredBy, setOfferedBy] = useState(userData.user.email);
     const [rewardId, setRewardId] = useState(null);
 
     const handleSubmit = e => {
+      console.log("Add reward called...");
       e.preventDefault();
       
       // Pass the user id instead
       addReward({rewardId: rewardId, rewardName: rewardName, rewardQuantity: rewardQuantity, offeredBy: offeredBy});
-      setRewardName(null);
       setValue("");
+      setRewardName(null);
     };
 
     const enableAddButton = () => {
@@ -78,6 +81,28 @@ export default function RewardForm({ addReward }) {
       // console.log(rewardId);
     }
 
+    const handleRewardIncrement = () => {
+      setRewardQuantity( rewardQuantity + 1 );      
+      // counter += 1;
+      console.log(rewardQuantity)
+      return returnRewardQuantity();
+    };
+
+    const returnRewardQuantity = () => {
+      return rewardQuantity;
+    }
+
+    const handleRewardDecrement = () => {
+      if (rewardQuantity === 1) {
+          
+      } else {
+          // counter -= 1;
+          // setCounter( counter - 1 );
+          setRewardQuantity( rewardQuantity - 1 );
+          return returnRewardQuantity();
+      }
+    }
+
     return (
       <form onSubmit={handleSubmit}>
          <Grid className={classes.listHeading} container spacing={1}>
@@ -96,16 +121,19 @@ export default function RewardForm({ addReward }) {
                 options={favourRewards}
                 getOptionLabel={(option) => option.Name}
                 style={{ width: "auto" }}
+                clearOnEscape={rewardName? false: true}
                 onInputChange={(event, newInputValue) => {
                   setRewardName(newInputValue);
-                  setRewardIdHelper(favourRewards,newInputValue);
+                  setRewardIdHelper(favourRewards,newInputValue);                  
                 }}
                 renderInput={(params) => <TextField {...params} label="Reward Name" variant="outlined" />
+                
               }
               />
             </Grid>
             <Grid item xs={'auto'} xl={'auto'} sm={2}>
-              <TextField className={classes.rewardQuantity}
+              <CounterButtonGroup handleRewardIncrement={handleRewardIncrement} handleRewardDecrement={handleRewardDecrement}/>
+              {/* <TextField className={classes.rewardQuantity}
                 id="outlined-rewardQuantity"
                 label="Reward Quantity"
                 variant="outlined"
@@ -114,7 +142,7 @@ export default function RewardForm({ addReward }) {
                   shrink: true,
                 }}
                 onChange={e => {setRewardQuantity(e.target.value)}}
-              />
+              /> */}
             </Grid>
             <Grid item xs={'auto'} xl={'auto'} sm={4}>
               <TextField className={classes.offeredBy}
@@ -133,7 +161,7 @@ export default function RewardForm({ addReward }) {
               <Button
                 variant="contained"
                 type="submit"
-                disabled={false}
+                disabled={rewardName? false: true}
                 >Add
               </Button>
             </Grid>

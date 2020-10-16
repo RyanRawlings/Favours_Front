@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -192,6 +193,7 @@ const getTitle = location => {
 };
 
 export default function NavMenu(props) {
+  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const { userData, setUserData } = useContext(UserContext);
@@ -319,6 +321,7 @@ export default function NavMenu(props) {
             className={classes.topMenuItem}
             button
             key="Public Request"
+            onClick={() => history.push("/public_request")}
             style={{
               color: "#292F36",
               backgroundColor: "white",
@@ -347,6 +350,7 @@ export default function NavMenu(props) {
               className={classes.topMenuItem}
               button
               key="Public Request"
+              onClick={() => history.push("/public_request")}
             >
               <ListItemIcon>
                 <EmojiPeopleIcon
@@ -366,6 +370,7 @@ export default function NavMenu(props) {
             button
             key="IOU List"
             style={{ color: "#292F36", backgroundColor: "white" }}
+            onClick={() => history.push("/all_list")}
           >
             <Link to={{ pathname: "/all_list", state: { setOpen: open } }}>
               <ListItemIcon>
@@ -381,9 +386,13 @@ export default function NavMenu(props) {
         ) : (
           <Link
             to={{ pathname: "/all_list", state: { setOpen: open } }}
-            style={{ textDecoration: "none", color: "white" }}
+            style={{ textDecoration: "none", color: "white" }}            
           >
-            <ListItem className={classes.menuItem} button key="IOU List">
+            <ListItem className={classes.menuItem}
+                      button 
+                      key="IOU List"
+                      onClick={() => history.push("/all_list")}
+             >
               <ListItemIcon>
                 <ListAltIcon
                   className={classes.icons}
@@ -402,6 +411,7 @@ export default function NavMenu(props) {
             button
             key="Profile"
             style={{ color: "#292F36", backgroundColor: "white" }}
+            onClick={() => history.push("/profile")}
           >
             <Link to={{ pathname: "/profile", state: { setOpen: open } }}>
               <ListItemIcon>
@@ -419,7 +429,12 @@ export default function NavMenu(props) {
             to={{ pathname: "/profile", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            <ListItem className={classes.menuItem} button key="Profile">
+            <ListItem 
+                    className={classes.menuItem}
+                    button 
+                    key="Profile"
+                    onClick={() => history.push("/profile")}
+            >
               <ListItemIcon>
                 <AccountBoxIcon
                   className={classes.icons}
@@ -436,6 +451,7 @@ export default function NavMenu(props) {
             button
             key="Leaderboard"
             style={{ color: "#292F36", backgroundColor: "white" }}
+            onClick={() => history.push("/leaderboard")}
           >
             <Link to={{ pathname: "/leaderboard", state: { setOpen: open } }}>
               <ListItemIcon>
@@ -453,7 +469,12 @@ export default function NavMenu(props) {
             to={{ pathname: "/leaderboard", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            <ListItem className={classes.menuItem} button key="Leaderboard">
+            <ListItem 
+                  className={classes.menuItem}
+                  button
+                  key="Leaderboard"
+                  onClick={() => history.push("/leaderboard")}
+            >
               <ListItemIcon>
                 <LocalActivityIcon
                   className={classes.icons}

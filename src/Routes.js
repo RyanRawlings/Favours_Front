@@ -22,6 +22,7 @@ import ProtectedRoute from "./components/protectedRoute/index";
 // const Profile = () => import("./views/Profile/index");
 
 const Routes = () => {
+  
   const [userData, setUserData] = useState({
     token: undefined,
     user: undefined
@@ -66,41 +67,24 @@ const Routes = () => {
           <Route path="/login" component={Login}></Route>
           <Route path="/public_request" component={PublicRequest} />
           {/* //Authenticated Routes */}
-          <ProtectedRoute
-            path="/profile"
-            user={userData.user}
-            component={Profile}
-          ></ProtectedRoute>
-          <ProtectedRoute
-            exact
-            path="/all_list"
-            user={userData.user}
-            component={AllIOUList}
-          ></ProtectedRoute>
+          <ProtectedRoute exact path="/profile" user={userData} component={Profile}></ProtectedRoute>
+          <ProtectedRoute exact path="/all_list" user={userData} component={AllIOUList}></ProtectedRoute>
           <Route
             exact
             path="/all_list/debit_list"
-            user={userData.user}
+            user={userData}
             component={DebitIOUList}
           ></Route>
           <Route
             exact
             path="/all_list/credit_list"
-            user={userData.user}
+            user={userData}
             component={CreditIOUList}
           ></Route>
           <Route path="/leaderboard" component={Leaderboard}></Route>
-          <ProtectedRoute
-            path="/settings"
-            user={userData.user}
-            component={Settings}
-          ></ProtectedRoute>
+          <ProtectedRoute path="/settings" user={userData} component={Settings}></ProtectedRoute>
           {/* //Testing Routes */}
-          <ProtectedRoute
-            path="/testing"
-            user={userData.user}
-            component={Testing}
-          ></ProtectedRoute>
+          <ProtectedRoute path="/testing" user={userData} component={Testing}></ProtectedRoute>
         </Switch>
       </UserContext.Provider>
     </BrowserRouter>

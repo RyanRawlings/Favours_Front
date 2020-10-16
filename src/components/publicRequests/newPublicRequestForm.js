@@ -18,7 +18,7 @@ import AppBar from "@material-ui/core/AppBar";
 import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
-import Toast from "../toast";
+import Toast from "../toast/index";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -94,12 +94,16 @@ const useStyles = makeStyles(theme => ({
   margin: {
     marginTop: "0%"
   },
-  extendedIcon: {
-    marginRight: theme.spacing(1)
-  }
+extendedIcon: {
+    marginRight: theme.spacing(1),
+},
+newRewardFormDiv: {
+  marginLeft: "auto",
+  marginRight: "auto"
+}
 }));
 
-export default function FavourModal() {
+export default function NewPublicRequestForm() {
   const classes = useStyles();
 
   // User information from JWT
@@ -128,7 +132,7 @@ export default function FavourModal() {
     setOpen(false);
   };
 
-  const addReward = reward => {
+  const addReward = (reward) => {
     // const newRewardItem = reward.reward;
     const newReward = [...rewards, reward];
     // console.log(newReward);
@@ -163,17 +167,22 @@ export default function FavourModal() {
   const createPublicRequest = async data => {
     const response = await APIServices.createPublicRequest(data);
     if (response) {
+      // Set toast details
       setIsSuccessful(true);
-      setToastMessage(
-        "Successfully created the Public Request! the window will close automatically"
-      );
+      setToastMessage('Successfully created the Public Request! the window will close automatically');
+      
+      // Reset the rewards state variable
       setRewards([]);
+
+      // Hold execution for 3s then close the modal
       await delay(3000);
-      handleClose();
+      handleClose();      
+      
     } else {
+      // Set toast details
       setIsSuccessful(false);
-      setToastMessage("There was an issue creating the Public Request!");
-      handleClose();
+      setToastMessage('There was an issue creating the Public Request!');
+      // handleClose();
     }
   };
 
@@ -282,11 +291,11 @@ export default function FavourModal() {
                 onChange={e => setRequestBeforeDate(e.target.value)}           
             />
             </Grid> */}
-            <Fragment>
-              <div className={classes.rewardContent}>
-                <List className="reward-list">
-                  <RewardForm addReward={addReward} />
-                  {rewards.map((reward, index) => (
+        <div className={classes.newRewardFormDiv}><RewardForm addReward={addReward} /></div>
+        <Fragment>
+            <div className={classes.rewardContent}>
+            <List className="reward-list">                
+                {rewards.map((reward, index) => (
                     <Reward
                       key={index}
                       index={index}
