@@ -68,7 +68,7 @@ export const createPublicRequest = data =>
   );
 
 export const getPublicRequests = () =>
-  callAPI("get", "http://localhost:4000/api/publicRequest/get-publicRequest");
+  callAPI("get", "http://localhost:4000/api/publicRequest");
 
 export const getPublicRequestUserDetails = data =>
   callAPI(

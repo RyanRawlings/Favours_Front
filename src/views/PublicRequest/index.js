@@ -75,7 +75,7 @@ export default function PublicRequest(props) {
     async function getPublicRequestList() {
       const getPublicRequests = await APIServices.getPublicRequests();
       // Return array and set the Favours state
-      console.log("getPublicRequests:", getPublicRequests.allPublicRequests);
+      console.log("getPublicRequests:", getPublicRequests);
       setPublicRequests(getPublicRequests);
       setSearchResult(getPublicRequests);
       setLoading(false);
@@ -101,22 +101,31 @@ export default function PublicRequest(props) {
     console.log("input:", input);
     console.log(publicRequests);
     setSearchBarPlaceHolder(input);
-    let newData = { allFavours: [] };
-    publicRequests.allPublicRequests.map(item => {
+    let newData = [];
+    publicRequests.map(item => {
+      console.log("item:", item);
+
+      //check reward array
+      let checkReward;
+      item.rewards.map(i => {
+        if (i.item.toLowerCase().match(input.toLowerCase())) {
+          checkReward = true;
+        }
+      });
       if (
-        //todo
-        item.FavourRequestingUserId.toLowerCase().match(input.toLowerCase()) ||
-        item.FavourCategory.toLowerCase().match(input.toLowerCase()) ||
-        item.FavourDescription.toLowerCase().match(input.toLowerCase()) ||
-        item.FavourReward.toLowerCase().match(input.toLowerCase()) ||
-        item.FavourTitle.toLowerCase().match(input.toLowerCase())
+        item.requestUser.firstname.toLowerCase().match(input.toLowerCase()) ||
+        item.requestUser.lastname.toLowerCase().match(input.toLowerCase()) ||
+        item.description.toLowerCase().match(input.toLowerCase()) ||
+        item.title.toLowerCase().match(input.toLowerCase()) ||
+        checkReward
       ) {
-        newData.allFavours.push(item);
+        newData.push(item);
       }
       return 0;
     });
-    setSearchResult(newData);
     setLoading(false);
+    setSearchResult(newData);
+    console.log("searchResult", searchResult);
   };
 
   return (
@@ -139,8 +148,8 @@ export default function PublicRequest(props) {
               </div>
               <div className="cards_container">
                 <React.Fragment>
-                  {searchResult.allPublicRequests ? (
-                    searchResult.allPublicRequests
+                  {searchResult ? (
+                    searchResult
                       .slice(indexOfFirstRequest, indexOfLastRequest)
                       .map((data, key) => {
                         return (
@@ -185,14 +194,10 @@ export default function PublicRequest(props) {
                   )}
                 </React.Fragment>
               </div>
-              {searchResult.allPublicRequests ? (
+              {searchResult ? (
                 <Pagination
                   favoursPerPage={requestsPerPage}
-                  totalFavours={
-                    searchResult.allPublicRequests
-                      ? searchResult.allPublicRequests.length
-                      : 0
-                  }
+                  totalFavours={searchResult ? searchResult.length : 0}
                   paginate={paginate}
                 />
               ) : (
