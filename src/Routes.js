@@ -15,6 +15,7 @@ import Settings from "./views/Settings/index";
 import Cookies from "js-cookie";
 import JWTDecode from "jwt-decode";
 import ProtectedRoute from "./components/protectedRoute/index";
+import RecordFavour from "./views/RecordFavour/RecordFavour";
 
 // const PublicRequest = () => import("./App");
 // const NavMenu = () => import("./components/NavMenu/index");
@@ -69,6 +70,7 @@ const Routes = () => {
           {/* //Authenticated Routes */}
           <ProtectedRoute exact path="/profile" user={userData} component={Profile}></ProtectedRoute>
           <ProtectedRoute exact path="/all_list" user={userData} component={AllIOUList}></ProtectedRoute>
+          <ProtectedRoute exact path="/recordfavour" user={userData} component={RecordFavour}></ProtectedRoute>
           <Route
             exact
             path="/all_list/debit_list"
