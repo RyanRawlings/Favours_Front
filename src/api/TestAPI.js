@@ -46,25 +46,33 @@ export const deleteOneFavour = data =>
 // };
 // export const register = data =>
 //   callAPI("post", "http://localhost:4000/api/user/register", data);
-export const uploadImage = (data) =>
+export const uploadImage = data =>
   callAPI("post", "http://localhost:4000/api/file/image-upload", data);
-export const updateImageKey = (data) =>
+export const updateImageKey = data =>
   callAPI("post", "http://localhost:4000/api/file/image-update-key", data);
-export const getImageFromS3 = (data) =>
+export const getImageFromS3 = data =>
   callAPI("post", "http://localhost:4000/api/get/get-s3-image", data);
 export const deleteImageFromS3 = data =>
   callAPI("get", "http://localhost:4000/api/file/delete-s3-image", data);
 export const getUserDetails = () =>
   callAPI("get", "http://localhost:4000/api/profile");
 
-export const getFavourTypes = () => 
+export const getFavourTypes = () =>
   callAPI("get", "http://localhost:4000/api/get/get-favourType");
 
-export const createPublicRequest = (data) => 
-callAPI("post", "http://localhost:4000/api/publicRequest/create-publicRequest", data);
+export const createPublicRequest = data =>
+  callAPI(
+    "post",
+    "http://localhost:4000/api/publicRequest/create-publicRequest",
+    data
+  );
 
-export const getPublicRequests = () => 
-callAPI("get", "http://localhost:4000/api/publicRequest/get-publicRequest");  
+export const getPublicRequests = () =>
+  callAPI("get", "http://localhost:4000/api/publicRequest/get-publicRequest");
 
-export const getPublicRequestUserDetails = (data) => 
-callAPI("post", "http://localhost:4000/api/publicRequest/get-user-emails", data);  
+export const getPublicRequestUserDetails = data =>
+  callAPI(
+    "post",
+    "http://localhost:4000/api/publicRequest/get-user-emails",
+    data
+  );
