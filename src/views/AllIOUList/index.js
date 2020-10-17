@@ -67,7 +67,10 @@ const useStyles = makeStyles(theme => ({
     display: "inline-block"
   },
   createbutton: {
-    display: "inline-block"
+    display: "inline-block",
+    marginTop: "-0.3%",
+    marginLeft: "1%",
+    fontSize: "1e"
   },
 
   createbutton_styling: {
@@ -88,6 +91,9 @@ const useStyles = makeStyles(theme => ({
   searchBar: {
     display: "inline-block",
     marginLeft: "1%"
+  },
+  headingButtonsContainer: {
+    display: "flex"
   }
 }));
 
@@ -105,8 +111,10 @@ export default function AllIOUList(props) {
 
   useEffect(() => {
     async function fetchAllIOUList() {
+      // const fetchFavours = await APIServices.allIOUList();
       const fetchFavours = await APIServices.debitIOUList();
       // Return array and set the Favours state
+
       setFavours(fetchFavours);
       setLoading(false);
     }
@@ -151,6 +159,7 @@ export default function AllIOUList(props) {
                 <h2 className={classes.heading}>
                   Your favours <FontAwesomeIcon icon={faUser} />
                 </h2>
+                <div className={classes.headingButtonsContainer}>
                 <div className={classes.searchBar}>
                   <SearchBar />
                 </div>
@@ -165,15 +174,8 @@ export default function AllIOUList(props) {
                   </Button>
                 </div>
                 <div className={classes.createbutton}>
-                  {/* <Button
-                variant="contained"
-                color="primary"
-                startIcon={<LaunchIcon />}
-                className={classes.createbutton_styling}
-                onClick={() => openRequestModal}
-                >Create a new public request
-              </Button> */}
                   <NewPublicRequest />
+                </div>
                 </div>
                 <div className={classes.btnBox}>
                   <FavoursListButtonGroup />
