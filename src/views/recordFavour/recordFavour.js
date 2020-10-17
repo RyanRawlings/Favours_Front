@@ -20,15 +20,49 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
 import UserContext from "../../context/UserContext";
+import './RecordFavour.css';
 
 
-const recordFavour = () => (
-    <>
-        <h1> Record Favour Page</h1>
-    </>
-);
+const RecordFavourForm = () => {
+    const [favourtype, setFavourType] = useState('');
+    const [debtor, setDebtor] = useState('');
+    const [creditor, setCreditor] = useState('');
+    const [favourstatus, setFavourStatus] = useState('');
 
-export default recordFavour;
+    return (
+        <form>
+        <div className="record-favour-form">
+            <input className="record-favour-type" 
+                type = "text" 
+                placeholder="Select your favour type here" 
+                value = {favourtype}
+                onChange={e => setFavourType(e.target.value)} 
+            />
+            <input className="record-debtor-firstname" 
+                type = "text" 
+                placeholder="Type in your debtor name here" 
+                value = {debtor}
+                onChange={e => setDebtor(e.target.value)} 
+            />
+            <input className="record-creditor-name" 
+                type = "text" 
+                placeholder="Type in your creditor name here" 
+                value = {creditor}
+                onChange={e => setCreditor(e.target.value)} 
+            />
+            <input className="record-favour-status" 
+                type = "text" 
+                placeholder="Select your record status" 
+                value = {favourstatus}
+                onChange={e => setFavourStatus(e.target.value)} 
+            />
+            <button className="new-favour-button">Record New Favour</button>
+        </div>
+        </form>
+    );
+};
+
+export default RecordFavourForm;
 
 
 

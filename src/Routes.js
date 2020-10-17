@@ -67,6 +67,7 @@ const Routes = () => {
           <Route path="/signup" component={Signup}></Route>
           <Route path="/login" component={Login}></Route>
           <Route path="/public_request" component={PublicRequest} />
+          <Route path="/record_favour" component={RecordFavour} />
           {/* //Authenticated Routes */}
           <ProtectedRoute exact path="/profile" user={userData} component={Profile}></ProtectedRoute>
           <ProtectedRoute exact path="/all_list" user={userData} component={AllIOUList}></ProtectedRoute>
