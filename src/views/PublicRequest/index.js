@@ -66,16 +66,18 @@ const useStyles = makeStyles(theme => ({
 
 export default function PublicRequest(props) {
   const [publicRequests, setPublicRequests] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage, setRequestsPerPage] = useState(4);
-
+  const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
   useEffect(() => {
     async function getPublicRequestList() {
       const getPublicRequests = await APIServices.getPublicRequests();
       // Return array and set the Favours state
-      console.log(getPublicRequests);
+      console.log("getPublicRequests:", getPublicRequests.allPublicRequests);
       setPublicRequests(getPublicRequests);
+      setSearchResult(getPublicRequests);
       setLoading(false);
     }
 
@@ -94,6 +96,29 @@ export default function PublicRequest(props) {
 
   // console.log(props.location.state.setOpen);
 
+  //search keywords or reward item
+  const handleSearch = input => {
+    console.log("input:", input);
+    console.log(publicRequests);
+    setSearchBarPlaceHolder(input);
+    let newData = { allFavours: [] };
+    publicRequests.allPublicRequests.map(item => {
+      if (
+        //todo
+        item.FavourRequestingUserId.toLowerCase().match(input.toLowerCase()) ||
+        item.FavourCategory.toLowerCase().match(input.toLowerCase()) ||
+        item.FavourDescription.toLowerCase().match(input.toLowerCase()) ||
+        item.FavourReward.toLowerCase().match(input.toLowerCase()) ||
+        item.FavourTitle.toLowerCase().match(input.toLowerCase())
+      ) {
+        newData.allFavours.push(item);
+      }
+      return 0;
+    });
+    setSearchResult(newData);
+    setLoading(false);
+  };
+
   return (
     <div className={classes.root}>
       <div className="container">
@@ -107,12 +132,15 @@ export default function PublicRequest(props) {
                 </h2>
               </div>
               <div className={classes.searchBar}>
-                <SearchBar />
+                <SearchBar
+                  onSearch={handleSearch}
+                  placeHolder={searchBarPlaceHolder}
+                />
               </div>
               <div className="cards_container">
                 <React.Fragment>
-                  {publicRequests.allPublicRequests ? (
-                    publicRequests.allPublicRequests
+                  {searchResult.allPublicRequests ? (
+                    searchResult.allPublicRequests
                       .slice(indexOfFirstRequest, indexOfLastRequest)
                       .map((data, key) => {
                         return (
@@ -157,11 +185,13 @@ export default function PublicRequest(props) {
                   )}
                 </React.Fragment>
               </div>
-              {publicRequests.allPublicRequests ? (
+              {searchResult.allPublicRequests ? (
                 <Pagination
                   favoursPerPage={requestsPerPage}
                   totalFavours={
-                    publicRequests.allPublicRequests ? publicRequests.allPublicRequests.length : 0
+                    searchResult.allPublicRequests
+                      ? searchResult.allPublicRequests.length
+                      : 0
                   }
                   paginate={paginate}
                 />
