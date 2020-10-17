@@ -71,6 +71,11 @@ export default function PublicRequest(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage, setRequestsPerPage] = useState(4);
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
+
+  const classes = useStyles();
+  // // const [tag, setTag] = useState(0);
+  const location = useLocation();
+  
   useEffect(() => {
     async function getPublicRequestList() {
       const getPublicRequests = await APIServices.getPublicRequests();
@@ -84,17 +89,15 @@ export default function PublicRequest(props) {
     getPublicRequestList();
   }, []);
 
-  const classes = useStyles();
-  // // const [tag, setTag] = useState(0);
-  const location = useLocation();
-
   //Get current posts
   const indexOfLastRequest = currentPage * requestsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  // console.log(props.location.state.setOpen);
+  const getLocation = () => {
+    return location.pathname;
+  }
 
   //search keywords or reward item
   const handleSearch = input => {
@@ -175,6 +178,7 @@ export default function PublicRequest(props) {
                                     Requester={data.requestUser}
                                     FavourDescription={data.description}
                                     Rewards={data.rewards}
+                                    Location={getLocation()}
                                   />
                                 </div>
                               </div>

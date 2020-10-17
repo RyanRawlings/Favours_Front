@@ -142,12 +142,14 @@ export default function FavourModal({
   const [requester, setRequester] = useState(Requester);
   const [favourDescription, setFavourDescription] = useState(FavourDescription);
   // const [favourDate ,setFavourDate] = useState(FavourDate);
-  const [location, setLocation] = useState(Location);
+  // const [location, setLocation] = useState(Location);
   // const [favourImageKey ,setFavourImageKey] = useState(FavourImageKey);
 
   const [publicRequestUserDetails, setPublicRequestUserDetails] = useState([]);
 
   const handleOpen = () => {
+
+    console.log(Location);
     // Open modal on click
     setOpen(true);
 
@@ -276,9 +278,8 @@ export default function FavourModal({
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                {Location === "public_request" ? (
-                  getUserEmail(requester, "requestedBy", "Requested by", true)
-                ) : (
+                {Location === "/public_request"?
+                  getUserEmail(requester, "requestedBy", "Requested by", true) : (
                   <TextField
                     id="requestedBy"
                     name="requestedBy"
