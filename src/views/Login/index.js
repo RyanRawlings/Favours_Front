@@ -107,9 +107,9 @@ export default function Login() {
     <div className={classes.root}>
       <div className="container">
         <NavMenu />
-        <div className="container_right">
-          <Paper className={classes.container}>
-            <div className="container_right_bottom">
+          <div className="container_right">
+            <Paper className={classes.container}>
+              <div className="container_right_bottom">
               <div className={classes.headingContainer}></div>
               <div className="cards_container">
                 <Container component="main" maxWidth="xs">
