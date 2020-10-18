@@ -96,6 +96,7 @@ const RecordFavourForm = () => {
                             <TextField id='favour-description'  
                                         label="Description" 
                                         name="FavourDescription" 
+                                        placeholder = "Add description of this favour"
                                         multiline
                                         rowsMax={2}
                                         value={favourDescription}
