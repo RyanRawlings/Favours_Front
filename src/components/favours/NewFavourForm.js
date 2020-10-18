@@ -19,7 +19,7 @@ import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
 import Toast from "../toast/index";
-import RecordFavour from "../../views/RecordFavour/RecordFavour";
+import RecordFavour from "../../views/recordFavour/recordFavour";
 
 const useStyles = makeStyles(theme => ({
   modal: {

@@ -15,7 +15,7 @@ import Settings from "./views/Settings/index";
 import Cookies from "js-cookie";
 import JWTDecode from "jwt-decode";
 import ProtectedRoute from "./components/protectedRoute/index";
-import RecordFavour from "./views/RecordFavour/RecordFavour";
+import RecordFavour from "./views/recordFavour/recordFavour";
 import RepayFavour from "./views/RepayFavour/RepayFavour";
 
 // const PublicRequest = () => import("./App");

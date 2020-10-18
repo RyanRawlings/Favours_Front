@@ -1,6 +1,7 @@
 import callAPI from "./utils/callAPI";
 import axios from "axios";
 import UserContext from "../context/UserContext";
+import {toast} from "react-toastify";
 
 export function login(data) {
   console.log("logindata:", data);
@@ -13,10 +14,12 @@ export function login(data) {
           resolve(response.data);
           window.location.href = "/public_request";
         } else {
-          reject(response.response);
+          reject(response.data);
         }
       })
-      .catch(reject);
+      .catch(reject => {
+        toast.error(reject.response.data);
+      });
   });
 }
 export function register(data) {
@@ -29,11 +32,15 @@ export function register(data) {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
           window.location.href = "/login";
-        } else {
-          reject(response.response);
+        } 
+        else {
+          reject(response.data);
         }
       })
-      .catch(reject);
+      .catch(reject => {
+        //console.log(reject.response);
+        toast.error(reject.response.data);
+      });
   });
 }
 export const test = () => callAPI("get", "http://localhost:4000/api/get/count");

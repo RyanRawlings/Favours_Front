@@ -20,6 +20,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
 import UserContext from "../../context/UserContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function Copyright() {
   return (
@@ -125,6 +128,7 @@ export default function Login() {
                           icon={faUser}
                         />
                       </div>
+                      <ToastContainer />
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <TextField
                           variant="outlined"

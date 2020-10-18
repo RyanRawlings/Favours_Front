@@ -17,6 +17,8 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import * as APIServices from "../../api/TestAPI";
 import NavMenu from "../../components/navMenu/index";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Copyright() {
   return (
@@ -127,6 +129,7 @@ export default function Signup() {
                         Join today, to start creating and sharing IOUs with your
                         friends, teams, and companies
                       </Typography>
+                      <ToastContainer />
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <Grid container spacing={1}>
                           <Grid item xs={12} sm={6}>
