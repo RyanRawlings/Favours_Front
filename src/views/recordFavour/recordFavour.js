@@ -60,6 +60,7 @@ const RecordFavourForm = () => {
     const [creditor, setCreditor] = useState('');
     const [favourstatus, setFavourStatus] = useState('');
     const [favourDescription, setFavourDescription] = useState('');
+    const [favourDate, setFavourDate] = useState('');
 
     return (
         <div className={classes.root}>
@@ -101,6 +102,7 @@ const RecordFavourForm = () => {
                                         name="PaidDate" 
                                         className={classes,TextField} 
                                         InputLabelProps={{shrink: true,}}
+                                        onChange={e => setFavourDate(e.target.value)}
                             />
                             <Button
                                     type="submit"
