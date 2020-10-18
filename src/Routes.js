@@ -16,7 +16,7 @@ import Cookies from "js-cookie";
 import JWTDecode from "jwt-decode";
 import ProtectedRoute from "./components/protectedRoute/index";
 import RecordFavour from "./views/RecordFavour/RecordFavour";
-import PayFavour from "./views/PayFavour/PayFavour";
+import RepayFavour from "./views/RepayFavour/RepayFavour";
 
 // const PublicRequest = () => import("./App");
 // const NavMenu = () => import("./components/NavMenu/index");
@@ -69,7 +69,7 @@ const Routes = () => {
           <Route path="/login" component={Login}></Route>
           <Route path="/public_request" component={PublicRequest} />
           <Route path="/record_favour" component={RecordFavour} />
-          <Route path="/pay_favour" component={PayFavour} />
+          <Route path="/repay_favour" component={RepayFavour} />
           {/* //Authenticated Routes */}
           <ProtectedRoute exact path="/profile" user={userData} component={Profile}></ProtectedRoute>
           <ProtectedRoute exact path="/all_list" user={userData} component={AllIOUList}></ProtectedRoute>
