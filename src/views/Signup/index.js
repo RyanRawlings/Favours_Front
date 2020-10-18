@@ -129,7 +129,18 @@ export default function Signup() {
                         Join today, to start creating and sharing IOUs with your
                         friends, teams, and companies
                       </Typography>
-                      <ToastContainer />
+                      <ToastContainer 
+                      position="top-center"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      
+                      />
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <Grid container spacing={1}>
                           <Grid item xs={12} sm={6}>
