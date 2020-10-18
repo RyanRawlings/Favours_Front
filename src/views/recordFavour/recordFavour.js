@@ -86,14 +86,7 @@ const RecordFavourForm = () => {
                                         placeholder="Who owes the favour"
                                         onChange={e => setDebtor(e.target.value)}
                             />
-                            <TextField id='favour-date' 
-                                        type="date" 
-                                        label="Paid On" 
-                                        name="PaidDate" 
-                                        className={classes,TextField} 
-                                        InputLabelProps={{shrink: true,}}
-                            />
-                            <TextField id='favour-description'  
+                              <TextField id='favour-description'  
                                         label="Description" 
                                         name="FavourDescription" 
                                         placeholder = "Add description of this favour"
@@ -101,6 +94,13 @@ const RecordFavourForm = () => {
                                         rowsMax={2}
                                         value={favourDescription}
                                         onChange={e => setFavourDescription(e.target.value)}
+                            />
+                            <TextField id='favour-date' 
+                                        type="date" 
+                                        label="Paid On" 
+                                        name="PaidDate" 
+                                        className={classes,TextField} 
+                                        InputLabelProps={{shrink: true,}}
                             />
                             <Button
                                     type="submit"
