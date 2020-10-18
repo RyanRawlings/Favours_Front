@@ -19,6 +19,7 @@ import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
 import Toast from "../toast/index";
+import SaveIcon from '@material-ui/icons/Save';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -71,7 +72,7 @@ const useStyles = makeStyles(theme => ({
   submitButtonDiv: {
     marginLeft: "auto",
     marginRight: "auto",
-    marginTop: "-2%"
+    marginBottom: "2%"
 
   },
   headingDiv: {
@@ -132,9 +133,9 @@ export default function NewPublicRequestForm() {
   const [rewards, setRewards] = useState([]);
 
   // Public Request Form Fields
-  const [requestTitle, setRequestTitle] = useState("");
+  const [requestTitle, setRequestTitle] = useState(null);
   const [requestedBy] = useState(userData.user.email);
-  const [requestTaskDescription, setRequestTaskDescription] = useState("");
+  const [requestTaskDescription, setRequestTaskDescription] = useState(null);
 
   // Toast details
   const [isSuccessful, setIsSuccessful] = useState(null);
@@ -213,6 +214,22 @@ export default function NewPublicRequestForm() {
       return <Toast IsSuccessful={isSuccessful} Message={toastMessage} />;
     }
   };
+
+  const enableSubmitButton = () => {
+    // If the required details are entered return true
+    // Else return false
+    // If error return false
+    try {
+      if (requestTitle !== null && requestTaskDescription !== null && rewards.length > 0) {
+        return false;
+      } else {
+        return true;
+      } 
+    } catch (err) {
+      return true;
+    }
+
+  }
 
   return (
     <div>
@@ -314,17 +331,17 @@ export default function NewPublicRequestForm() {
                 </List>
               </div>
             </Fragment>
-            <Grid className={classes.submitButtonDiv} item xs={6}>
+            <div className={classes.submitButtonDiv} item xs={6}>
               <Button
                 variant="contained"
                 color="primary"
-                className={classes.createbutton_styling}
-                startIcon={<LaunchIcon />}
+                disabled={enableSubmitButton() && enableSubmitButton() === true? true : false}
+                startIcon={<SaveIcon />}
                 onClick={() => handleSubmitRequest()}
               >
-                Submit Request
+                Record
               </Button>
-            </Grid>
+            </div>
             {isSuccessful !== null ? showToast() : showToast()}
           </Grid>
         </Fade>

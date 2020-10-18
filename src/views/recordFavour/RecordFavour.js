@@ -74,12 +74,13 @@ const useStyles = makeStyles((theme) => ({
 const RecordFavourForm = () => {
     const classes = useStyles();
     const [favourType, setFavourType] = useState([]);
-    const [debtor, setDebtor] = useState('');
-    const [creditor, setCreditor] = useState('');
+    const [debtor, setDebtor] = useState(null);
+    const [creditor, setCreditor] = useState(null);
     const [favourstatus, setFavourStatus] = useState('');
     const [favourTypeId, setFavourTypeId] = useState(null);
     const [favourName, setFavourName] = useState(null);
     const [favourDescription, setFavourDescription] = useState(null);
+    const [favourDate, setFavourDate] = useState(null);
   
     useEffect(() => {
       async function getFavourType() {
@@ -110,6 +111,22 @@ const RecordFavourForm = () => {
         // console.log(rewardId);
       }
 
+      const enableSubmitButton = () => {
+        // If the required details are entered return true
+        // Else return false
+        // If error return false
+        try {
+          if (favourName !== null && debtor !== null && creditor !== null && favourDate !== null && favourDescription !== null) {
+            return false;
+          } else {
+            return true;
+          } 
+        } catch (err) {
+          return true;
+        }
+    
+      }
+
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
@@ -123,7 +140,7 @@ const RecordFavourForm = () => {
                                         placeholder="Select your Favour Type"
                                         onChange={e => setFavourType(e.target.value)}
                             /> */}
-                            <Autocomplete 
+                            <Autocomplete                               
                                 className={classes.favourType}
                                 id='favour-type' 
                                 label="Favour Type" 
@@ -136,11 +153,12 @@ const RecordFavourForm = () => {
                                     setFavourName(newInputValue);
                                     setFavourIdHelper(favourType, newInputValue);                                            
                                     }}
-                                    renderInput={(params) => <TextField {...params} label="Favour Type" />
+                                    renderInput={(params) => <TextField {...params} required label="Favour Type" />
                                     
                                 }
                             />
                             <TextField className={classes.paidBy}
+                                        required
                                         id='creditor-name' 
                                         label="Paid By" 
                                         name="Creditor" value={creditor} 
@@ -148,6 +166,7 @@ const RecordFavourForm = () => {
                                         onChange={e => setCreditor(e.target.value)}
                             />
                             <TextField id='debtor-name' 
+                                        required
                                         label="Owed By" 
                                         name="Debtor" 
                                         value={debtor} 
@@ -164,6 +183,7 @@ const RecordFavourForm = () => {
                                         onChange={e => setFavourDescription(e.target.value)}
                             /> */}
                             <TextField id='favour-date' 
+                                        required
                                         type="date" 
                                         label="Paid On" 
                                         name="PaidDate" 
@@ -193,7 +213,9 @@ const RecordFavourForm = () => {
                                       color="primary"
                                       size="large"
                                       className={classes.submit}
-                                      startIcon={<SaveIcon />}
+                                      disabled={enableSubmitButton() && enableSubmitButton() === true? true: false}
+                                      startIcon={<SaveIcon />                                      
+                                    }
                               >
                                   Record
                               </Button>
