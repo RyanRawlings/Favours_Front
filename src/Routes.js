@@ -74,7 +74,7 @@ const Routes = () => {
           <ProtectedRoute exact path="/profile" user={userData} component={Profile}></ProtectedRoute>
           <ProtectedRoute exact path="/all_list" user={userData} component={AllIOUList}></ProtectedRoute>
           <ProtectedRoute exact path="/recordfavour" user={userData} component={RecordFavour}></ProtectedRoute>
-          <ProtectedRoute exact path="/payfavour" user={userData} component={PayFavour}></ProtectedRoute>
+          <ProtectedRoute exact path="/payfavour" user={userData} component={RepayFavour}></ProtectedRoute>
           <Route
             exact
             path="/all_list/debit_list"
