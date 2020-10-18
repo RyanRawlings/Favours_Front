@@ -66,9 +66,9 @@ export default function RewardForm({ addReward }) {
     }
 
     const setRewardIdHelper = (object, value) => {
-      console.log("Helper is being called...");
-      console.log("Object array", object);
-      console.log("Value", value);
+      // console.log("Helper is being called...");
+      // console.log("Object array", object);
+      // console.log("Value", value);
       const rewardsObject = Object.values(object);
       for (let i = 0; i < rewardsObject.length; i++) {
         // console.log(rewardsObject[i].Name);
@@ -126,7 +126,7 @@ export default function RewardForm({ addReward }) {
                   setRewardName(newInputValue);
                   setRewardIdHelper(favourRewards,newInputValue);                  
                 }}
-                renderInput={(params) => <TextField {...params} label="Reward Name" variant="outlined" />
+                renderInput={(params) => <TextField {...params} label="Reward Name" />
                 
               }
               />
@@ -147,8 +147,7 @@ export default function RewardForm({ addReward }) {
             <Grid item xs={'auto'} xl={'auto'} sm={4}>
               <TextField className={classes.offeredBy}
                   id="outlined-offeredBy"
-                  label="Offered By"
-                  variant="outlined"
+                  label="Offered By"                
                   InputLabelProps={{
                     shrink: true,
                   }}

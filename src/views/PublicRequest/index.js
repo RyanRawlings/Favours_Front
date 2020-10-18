@@ -61,7 +61,12 @@ const useStyles = makeStyles(theme => ({
   headingContainer: {},
   searchBar: {
     marginLeft: "1%"
-  }
+  },
+  modal: {
+    display: "inline-block",
+    marginRight: "40%",
+    marginLeft: "-40%"
+  },
 }));
 
 export default function PublicRequest(props) {
@@ -95,7 +100,7 @@ export default function PublicRequest(props) {
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  const getLocation = () => {
+  const getLocation = () => {    
     return location.pathname;
   }
 
@@ -171,7 +176,8 @@ export default function PublicRequest(props) {
                                 <div
                                   className="card_right"
                                   key={key + "-cardRight"}
-                                >
+                                > 
+                                <div className={classes.modal}>
                                   <FavourModal
                                     key={key + "-modal"}
                                     FavourTitle={data.title}
@@ -180,6 +186,7 @@ export default function PublicRequest(props) {
                                     Rewards={data.rewards}
                                     Location={getLocation()}
                                   />
+                                  </div>
                                 </div>
                               </div>
                             </CardContent>

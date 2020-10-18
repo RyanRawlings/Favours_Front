@@ -54,7 +54,7 @@ export default function Profile(props) {
     async function userDetailData() {
       const userDetailData = await UserAPI.getUserDetails();
       console.log("allUserDetailData+++++", userDetailData.result);
-      setPersonalDetails(userDetailData.result[0]);
+      // setPersonalDetails(userDetailData.result[0]);
     }
 
     userDetailData();

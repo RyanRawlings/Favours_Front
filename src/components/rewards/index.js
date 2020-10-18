@@ -37,6 +37,7 @@ export default function Rewards({ reward, index, removeReward, users }) {
 
   const getUserEmail = (userId) => {
     // Evaluate reward user id against data retrieved from db, and return relevant email
+    // console.log(users)
     for (let i = 0; i < users.length; i++) {
       if (userId === users[i]._id) {
         return (<span className={classes.listItemColumn}>{users[i].email}</span>);

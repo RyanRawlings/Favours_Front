@@ -64,12 +64,15 @@ const useStyles = makeStyles(theme => ({
   rewardContent: {
     padding: "1% 1% 1%",
     width: "120%",
+    height: "10%",
     marginLeft: "auto",
-    marginRight: "auto"
+    marginRight: "auto",
   },
   submitButtonDiv: {
     marginLeft: "auto",
-    marginRight: "auto"
+    marginRight: "auto",
+    marginTop: "-2%"
+
   },
   headingDiv: {
     backgroundColor: "#1B9AAA",
@@ -99,7 +102,23 @@ extendedIcon: {
 },
 newRewardFormDiv: {
   marginLeft: "auto",
-  marginRight: "auto"
+  marginRight: "auto",
+  marginTop: "-5%"
+
+},
+rewardList: {
+  overflow: "scroll",
+  overflowX: "hidden",
+  overflowY: "auto",
+  height: "60px",
+  border: "1px #1B9AAA solid",
+  backgroundColor: "#F6F6F6",
+  padding: "1% 1% 1% 1%"
+
+},
+rewardTitle: {
+  fontSize: "16px",
+  marginLeft: "1%"
 }
 }));
 
@@ -264,13 +283,14 @@ export default function NewPublicRequestForm() {
             </Grid>
             <Grid item xs={12} sm={12}>
               <TextareaAutosize
+                required
                 id="outlined-textarea"
-                label="Task Description"
-                placeholder="Task Description"
+                label="Task Description *"
+                placeholder="Task Description *"
                 rowsMin={6}
                 variant="outlined"
                 style={{
-                  height: "100%",
+                  height: "70%",
                   width: "100%",
                   fontFamily: "Roboto, Helvetica, Arial, sans-serif",
                   resize: "none"
@@ -278,23 +298,11 @@ export default function NewPublicRequestForm() {
                 onChange={e => setRequestTaskDescription(e.target.value)}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={12}>
-            <TextField
-                id="datetime-local"
-                label="Required before date"
-                type="datetime-local"
-                defaultValue={Date.now}
-                className={classes.textField}
-                InputLabelProps={{
-                shrink: true,
-                }}
-                onChange={e => setRequestBeforeDate(e.target.value)}           
-            />
-            </Grid> */}
         <div className={classes.newRewardFormDiv}><RewardForm addReward={addReward} /></div>
+        <div className={classes.rewardTitle}>Reward details</div>
         <Fragment>
             <div className={classes.rewardContent}>
-            <List className="reward-list">                
+            <List className={classes.rewardList}>                
                 {rewards.map((reward, index) => (
                     <Reward
                       key={index}

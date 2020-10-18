@@ -25,6 +25,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Collapse from "@material-ui/core/Collapse";
 import CloseIcon from "@material-ui/icons/Close";
 import NewPublicRequest from "../../components/publicRequests/newPublicRequestForm";
+import NewFavour from "../../components/favours/NewFavourForm";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
@@ -64,7 +65,9 @@ const useStyles = makeStyles(theme => ({
     display: "inline-block"
   },
   modal: {
-    display: "inline-block"
+    display: "inline-block",
+    marginRight: "40%",
+    marginLeft: "-40%"
   },
   createbutton: {
     display: "inline-block",
@@ -124,19 +127,19 @@ export default function AllIOUList(props) {
 
   const classes = useStyles();
 
-  const deleteFavour = async FavourId => {
-    const response = await APIServices.deleteOneFavour({ _id: FavourId });
-    console.log(response);
-    if (response.ok === true) {
-      setIsDeleted(true);
-      setToastMessage(response.message);
-      setOpen(true);
-    } else {
-      setIsDeleted(false);
-      setToastMessage(response.message);
-      setOpen(true);
-    }
-  };
+  // const deleteFavour = async FavourId => {
+  //   const response = await APIServices.deleteOneFavour({ _id: FavourId });
+  //   console.log(response);
+  //   if (response.ok === true) {
+  //     setIsDeleted(true);
+  //     setToastMessage(response.message);
+  //     setOpen(true);
+  //   } else {
+  //     setIsDeleted(false);
+  //     setToastMessage(response.message);
+  //     setOpen(true);
+  //   }
+  // };
 
   const refreshPage = () => {
     window.location.reload();
@@ -164,14 +167,15 @@ export default function AllIOUList(props) {
                   <SearchBar />
                 </div>
                 <div className={classes.createbutton}>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     startIcon={<LaunchIcon />}
                     className={classes.createbutton_styling}
                   >
                     Create a new favour
-                  </Button>
+                  </Button> */}
+                  <NewFavour />
                 </div>
                 <div className={classes.createbutton}>
                   <NewPublicRequest />
@@ -237,7 +241,7 @@ export default function AllIOUList(props) {
                                   <div className={classes.button}>
                                     {/* <Button key={key+ '-btn'}><FontAwesomeIcon key={key+ '-icon'} className={classes.trashIcon} icon={faTrash} /></Button> */}
                                     {/* <DeleteFavour FavourId={data._id}/> */}
-                                    <Button
+                                    {/* <Button
                                       key={key + "deleteFavour"}
                                       onClick={() => deleteFavour(data._id)}
                                     >
@@ -246,7 +250,7 @@ export default function AllIOUList(props) {
                                         className={classes.trashIcon}
                                         icon={faTrash}
                                       />
-                                    </Button>
+                                    </Button> */}
                                   </div>
                                 </div>
                               </div>
