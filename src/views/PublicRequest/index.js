@@ -133,6 +133,7 @@ export default function PublicRequest(props) {
     });
     setLoading(false);
     setSearchResult(newData);
+    
     console.log("searchResult", searchResult);
   };
 

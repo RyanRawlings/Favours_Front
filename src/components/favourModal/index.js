@@ -204,6 +204,7 @@ export default function FavourModal({
   const handleOpen = () => {
     // Open modal on click
     setOpen(true);
+    console.log(FavourId);
 
     // If it is an existing public request get the user details
     const getUserDetails = async () => {

@@ -74,31 +74,40 @@ const columns = [
     { id: 7, favourType: 'Cupcake', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '24/10/2020' },
 ];
   
-const RepayFavour = () => {
-    const classes = useStyles();
-    
-    return (
-        <div className={classes.root}>
-            <Paper className={classes.paper}>
-                <form className={classes.form} >
-                    <div style={{ height: 400, width: '100%'}}>
-                        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
-                    </div>
-                
-                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                        size="large"
-                                        className={classes.submit}
-                                        startIcon={<AssignmentTurnedInIcon />}
-                    >
-                        Repay Favour
-                    </Button>
-                </form>
-            </Paper>
-        </div>
-    )
+const RepayFavour = (props) => {
+    const classes = useStyles();   
+        
+          return (
+            <div className={classes.root}>
+              <div className="container">
+                <NavMenu props={props} />
+                <div className="container_right">
+                  <div className={classes.root}>
+                        <Paper className={classes.paper}>
+                            <Typography variant="h6"
+                            >Repay your favours</Typography>
+                            <form className={classes.form} >
+                                    <div style={{ height: 400, width: '100%'}}>
+                                        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+                                    </div>
+                                
+                                    <Button
+                                                        type="submit"
+                                                        variant="contained"
+                                                        color="primary"
+                                                        size="large"
+                                                        className={classes.submit}
+                                                        startIcon={<AssignmentTurnedInIcon />}
+                                    >
+                                        Repay Favour
+                                    </Button>
+                            </form>
+                        </Paper>    
+                    </div>            
+                </div>
+              </div>
+            </div>
+    );
 }
 
 

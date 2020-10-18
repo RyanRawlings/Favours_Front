@@ -28,6 +28,7 @@ import GroupDropDown from "../userGroupDropDown/index";
 import { NavLink } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Cookies from "js-cookie";
+import PaymentIcon from '@material-ui/icons/Payment';
 
 const drawerWidth = 210;
 
@@ -172,7 +173,7 @@ const getTitle = location => {
     case "/public_request":
       return "> Public Requests";
     case "/all_list":
-      return "> IOU List";
+      return "> View Favours";
     case "/all_list/debit_list":
       return "> IOU List > Debit List";
     case "/all_list/credit_list":
@@ -187,6 +188,8 @@ const getTitle = location => {
       return "> Sign up";
     case "/settings":
       return "> Personal Settings";
+    case "/repay_favour":
+      return "> Repay Favours";      
     case "/home":
       return "";
   }
@@ -368,7 +371,7 @@ export default function NavMenu(props) {
           <ListItem
             className={classes.menuItem}
             button
-            key="IOU List"
+            key="View Favours"
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/all_list")}
           >
@@ -381,7 +384,7 @@ export default function NavMenu(props) {
                 ></ListAltIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText primary="IOU List" />
+            <ListItemText primary="View Favours" />
           </ListItem>
         ) : (
           <Link
@@ -390,7 +393,7 @@ export default function NavMenu(props) {
           >
             <ListItem className={classes.menuItem}
                       button 
-                      key="IOU List"
+                      key="View Favours"
                       onClick={() => history.push("/all_list")}
              >
               <ListItemIcon>
@@ -399,10 +402,54 @@ export default function NavMenu(props) {
                   color="action"
                 ></ListAltIcon>
               </ListItemIcon>
-              <ListItemText primary="IOU List" />
+              <ListItemText primary="View Favours" />
             </ListItem>
           </Link>
         )}
+
+      {userData.user === undefined ? (
+          ""
+        ) : location.pathname === "/repay_favour" ? (
+          <ListItem
+            className={classes.menuItem}
+            button
+            key="Repay Favours"
+            style={{ color: "#292F36", backgroundColor: "white" }}
+            onClick={() => history.push("/repay_favour")}
+          >
+            <Link to={{ pathname: "/repay_favour", state: { setOpen: open } }}>
+              <ListItemIcon>
+                <PaymentIcon
+                  className={classes.icons}
+                  color="action"
+                  style={{ color: "#292F36" }}
+                ></PaymentIcon>
+              </ListItemIcon>
+            </Link>
+            <ListItemText primary="Repay Favours" />
+          </ListItem>
+        ) : (
+          <Link
+            to={{ pathname: "/repay_favour", state: { setOpen: open } }}
+            style={{ textDecoration: "none", color: "white" }}            
+          >
+            <ListItem className={classes.menuItem}
+                      button 
+                      key="Repay Favours"
+                      onClick={() => history.push("/repay_favour")}
+             >
+              <ListItemIcon>
+                <PaymentIcon
+                  className={classes.icons}
+                  color="action"
+                ></PaymentIcon>
+              </ListItemIcon>
+              <ListItemText primary="Repay Favours" />
+            </ListItem>
+          </Link>
+        )}
+
+
         {userData.user === undefined ? (
           ""
         ) : location.pathname === "/profile" ? (
