@@ -218,8 +218,8 @@ export default function FavourModal({
 
   const userDataAvailable = () => {
     try {
-      if (userData) {
-        return true;
+      if(userData.user.email) {
+        return true
       }
     } catch (err) {
       return false;

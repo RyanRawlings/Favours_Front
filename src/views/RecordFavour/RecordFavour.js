@@ -30,6 +30,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as FavourAPI from "../../api/FavourAPI";
 import { useLocation } from "react-router-dom";
 
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,

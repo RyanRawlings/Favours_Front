@@ -43,7 +43,7 @@ export default function Rewards({ reward, index, removeReward, users, location, 
   // console.log(reward)
   const classes = useStyles();
 
-  console.log("user data: ", userData);
+  // console.log("user data: ", userData);
 
   const getUserEmail = (userId, type) => {
     // Evaluate reward user id against data retrieved from db, and return relevant email

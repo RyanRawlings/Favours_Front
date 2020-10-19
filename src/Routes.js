@@ -17,6 +17,7 @@ import JWTDecode from "jwt-decode";
 import ProtectedRoute from "./components/protectedRoute/index";
 import RecordFavour from "./views/RecordFavour/RecordFavour";
 import RepayFavour from "./views/RepayFavour/RepayFavour";
+import RepaySelectedFavour from "./views/RepayFavour/RepaySelectedFavours";
 
 // const PublicRequest = () => import("./App");
 // const NavMenu = () => import("./components/NavMenu/index");
@@ -74,7 +75,18 @@ const Routes = () => {
             }}
           />
           <Route path="/record_favour" component={RecordFavour} />
-          <Route path="/repay_favour" component={RepayFavour} />
+          <ProtectedRoute 
+            exact
+            path="/repay_favour" 
+            user={userData} 
+            component={RepayFavour} 
+          />
+          <ProtectedRoute 
+            exact
+            path="/repay_selected_favours" 
+            user={userData} 
+            component={RepaySelectedFavour} 
+          />
           {/* //Authenticated Routes */}
           <ProtectedRoute
             exact

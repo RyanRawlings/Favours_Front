@@ -28,7 +28,8 @@ import { XGrid } from '@material-ui/x-grid';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import * as UserAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
-
+import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
+import { Redirect } from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,9 +37,9 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
       },
     paper: {
-        padding: theme.spacing(2),
-        margin: 'auto',
-        maxWidth: 1000,
+        padding: theme.spacing(2),        
+        width: "100%", 
+
     },  
     form: {
       '& > *': {
@@ -67,12 +68,12 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'favourType', headerName: 'Favour Type', width: 150 },
-    { field: 'favourDebtor', headerName: 'Owed By', width: 220 },
-    { field: 'favourCreditor', headerName: 'Paid By', width: 220 },
+    { field: 'id', headerName: 'ID', width: 220 },
+    { field: 'favourType', headerName: 'Favour Type', width: 200 },
+    { field: 'favourDebtor', headerName: 'Owed By', width: 240 },
+    { field: 'favourCreditor', headerName: 'Paid By', width: 240 },
     { field: 'favourStatus', headerName: 'Favour Status', width: 130 },
-    { field: 'favourDate', type:'date', headerName: 'Paid On', width: 110 },   
+    { field: 'favourDate', type:'date', headerName: 'Paid On', width: 110 },  
   ];
 //   const rows = [
 //     { id: 1, favourType: 'Coffee', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '18/10/2020' },
@@ -141,11 +142,16 @@ function CustomNoRowsOverlay(loading) {
 
 const RepayFavour = (props) => {
   const [loading, setLoading] = useState(true);
+  const [favoursSelected, setFavoursSelected] = useState([]);
 
   // console.log(props);
   // console.log(props.location.state.userData.user._id);
 
   const [rows, setRows] = useState([]);
+
+  const proofImageInput = () => {
+    return (<input type="file" />);
+  }
 
   useEffect(() => {
     async function fetchAllIOUList() {
@@ -192,12 +198,13 @@ const RepayFavour = (props) => {
             date = new Date(fetchFavours[0].credits[i].create_time);   
             
             newRow = {
-              id: i + 1,
+              // id: i + 1,
+              id: fetchFavours[0].credits[i]._id,
               favourType: fetchFavours[0].credits[i].favourOwed,
               favourDebtor: getUserEmail(fetchFavours[0].credits[i].requestUser),
               favourCreditor: getUserEmail(fetchFavours[0].credits[i].owingUser),
               favourStatus: fetchFavours[0].credits[i].is_complete === true? "Paid" : "Unpaid",
-              favourDate: date,
+              favourDate: date
             };
 
             rows.push(newRow);
@@ -220,9 +227,24 @@ const RepayFavour = (props) => {
     fetchAllIOUList();
   }, []);
 
+    const extractColumn = (arr, column) => {
+      return arr.map(x => x[column])
+    }
 
+    const handleFavourSelection = (data) => {
+      setFavoursSelected(data);    
+    }
+  
     const classes = useStyles();   
-        
+
+    const handleSubmit = () => {
+      return <Redirect  
+        to={{ 
+          pathname: "/repay_selected_favours", 
+          state: { setOpen: false, favoursSelectedToRepay: favoursSelected } 
+            }} 
+      />
+    }
           return (
             <div className={classes.root}>
               <div className="container">
@@ -233,18 +255,19 @@ const RepayFavour = (props) => {
                             <Typography variant="h6"
                             >Repay your favours</Typography>
                             <form className={classes.form} >
-                                    <div style={{ height: 400, width: '100%'}}>
+                                    <div style={{ height: "450px", width: "1200px"}}>
                                       {/* {console.log("rows: ", rows)} */}
                                         <DataGrid 
                                           components={{noRowsOverlay: () => CustomNoRowsOverlay(loading)}}                                      
                                           rows={rows? rows: rows} 
                                           columns={columns} 
                                           pageSize={5} 
-                                          checkboxSelection />
+                                          checkboxSelection 
+                                          onSelectionChange={e => handleFavourSelection(e.rows)} />
                                     </div>
                                 
                                     <Button
-                                                        type="submit"
+                                                        onClick={handleSubmit}                                                        
                                                         variant="contained"
                                                         color="primary"
                                                         size="large"
@@ -254,6 +277,7 @@ const RepayFavour = (props) => {
                                         Repay Favour
                                     </Button>
                             </form>
+
                         </Paper>    
                     </div>            
                 </div>
