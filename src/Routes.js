@@ -15,7 +15,7 @@ import Settings from "./views/Settings/index";
 import Cookies from "js-cookie";
 import JWTDecode from "jwt-decode";
 import ProtectedRoute from "./components/protectedRoute/index";
-import RecordFavour from "./views/recordFavour/recordFavour";
+import RecordFavour from "./views/RecordFavour/RecordFavour";
 import RepayFavour from "./views/RepayFavour/RepayFavour";
 
 // const PublicRequest = () => import("./App");
@@ -24,7 +24,6 @@ import RepayFavour from "./views/RepayFavour/RepayFavour";
 // const Profile = () => import("./views/Profile/index");
 
 const Routes = () => {
-  
   const [userData, setUserData] = useState({
     token: undefined,
     user: undefined
@@ -71,10 +70,30 @@ const Routes = () => {
           <Route path="/record_favour" component={RecordFavour} />
           <Route path="/repay_favour" component={RepayFavour} />
           {/* //Authenticated Routes */}
-          <ProtectedRoute exact path="/profile" user={userData} component={Profile}></ProtectedRoute>
-          <ProtectedRoute exact path="/all_list" user={userData} component={AllIOUList}></ProtectedRoute>
-          <ProtectedRoute exact path="/recordfavour" user={userData} component={RecordFavour}></ProtectedRoute>
-          <ProtectedRoute exact path="/payfavour" user={userData} component={RepayFavour}></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path="/profile"
+            user={userData}
+            component={Profile}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path="/all_list"
+            user={userData}
+            component={AllIOUList}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path="/recordfavour"
+            user={userData}
+            component={RecordFavour}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path="/payfavour"
+            user={userData}
+            component={RepayFavour}
+          ></ProtectedRoute>
           <Route
             exact
             path="/all_list/debit_list"
@@ -88,9 +107,17 @@ const Routes = () => {
             component={CreditIOUList}
           ></Route>
           <Route path="/leaderboard" component={Leaderboard}></Route>
-          <ProtectedRoute path="/settings" user={userData} component={Settings}></ProtectedRoute>
+          <ProtectedRoute
+            path="/settings"
+            user={userData}
+            component={Settings}
+          ></ProtectedRoute>
           {/* //Testing Routes */}
-          <ProtectedRoute path="/testing" user={userData} component={Testing}></ProtectedRoute>
+          <ProtectedRoute
+            path="/testing"
+            user={userData}
+            component={Testing}
+          ></ProtectedRoute>
         </Switch>
       </UserContext.Provider>
     </BrowserRouter>

@@ -19,7 +19,7 @@ import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
 import Toast from "../toast/index";
-import RecordFavour from "../../views/recordFavour/recordFavour";
+import RecordFavour from "../../views/RecordFavour/RecordFavour";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
     width: "120%",
     height: "10%",
     marginLeft: "auto",
-    marginRight: "auto",
+    marginRight: "auto"
   },
   submitButtonDiv: {
     marginLeft: "auto",
@@ -96,27 +96,26 @@ const useStyles = makeStyles(theme => ({
   margin: {
     marginTop: "0%"
   },
-extendedIcon: {
-    marginRight: theme.spacing(1),
-},
-newRewardFormDiv: {
-  marginLeft: "auto",
-  marginRight: "auto"
-},
-rewardList: {
-  overflow: "scroll",
-  overflowX: "hidden",
-  overflowY: "auto",
-  height: "60px",
-  border: "1px #1B9AAA solid",
-  backgroundColor: "#F6F6F6",
-  padding: "1% 1% 1% 1%"
-
-},
-rewardTitle: {
-  fontSize: "16px",
-  marginLeft: "1%"
-}
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  },
+  newRewardFormDiv: {
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  rewardList: {
+    overflow: "scroll",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "60px",
+    border: "1px #1B9AAA solid",
+    backgroundColor: "#F6F6F6",
+    padding: "1% 1% 1% 1%"
+  },
+  rewardTitle: {
+    fontSize: "16px",
+    marginLeft: "1%"
+  }
 }));
 
 export default function NewFavourForm() {
@@ -148,7 +147,7 @@ export default function NewFavourForm() {
     setOpen(false);
   };
 
-  const addReward = (reward) => {
+  const addReward = reward => {
     // const newRewardItem = reward.reward;
     const newReward = [...rewards, reward];
     // console.log(newReward);
@@ -181,26 +180,26 @@ export default function NewFavourForm() {
     createPublicRequest(newRequestData);
   };
 
-
   // Todo: update to the Favour function
   const createPublicRequest = async data => {
     const response = await APIServices.createPublicRequest(data);
     if (response) {
       // Set toast details
       setIsSuccessful(true);
-      setToastMessage('Successfully created the Public Request! the window will close automatically');
-      
+      setToastMessage(
+        "Successfully created the Public Request! the window will close automatically"
+      );
+
       // Reset the rewards state variable
       setRewards([]);
 
       // Hold execution for 3s then close the modal
       await delay(3000);
-      handleClose();      
-      
+      handleClose();
     } else {
       // Set toast details
       setIsSuccessful(false);
-      setToastMessage('There was an issue creating the Public Request!');
+      setToastMessage("There was an issue creating the Public Request!");
       // handleClose();
     }
   };
@@ -240,9 +239,7 @@ export default function NewFavourForm() {
         <Fade in={open}>
           <Grid container className={classes.modalContent} spacing={3}>
             <Grid className={classes.headingDiv} item xs={12}>
-              <div className={classes.modalHeading}>
-                Create New Favour
-              </div>
+              <div className={classes.modalHeading}>Create New Favour</div>
               <div className={classes.closeButtonDiv}>
                 <IconButton
                   aria-label="delete"
@@ -327,7 +324,7 @@ export default function NewFavourForm() {
               </Button>
             </Grid>
                 {isSuccessful !== null ? showToast() : showToast()}*/}
-          </Grid> 
+          </Grid>
         </Fade>
       </Modal>
     </div>
