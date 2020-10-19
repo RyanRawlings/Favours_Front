@@ -1,7 +1,7 @@
 import callAPI from "./utils/callAPI";
 import axios from "axios";
 import UserContext from "../context/UserContext";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 export function login(data) {
   console.log("logindata:", data);
@@ -32,8 +32,7 @@ export function register(data) {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
           window.location.href = "/login";
-        } 
-        else {
+        } else {
           reject(response.data);
         }
       })
@@ -68,16 +67,12 @@ export const getFavourTypes = () =>
   callAPI("get", "http://localhost:4000/api/get/get-favourType");
 
 export const createPublicRequest = data =>
-  callAPI(
-    "post",
-    "http://localhost:4000/api/publicRequest/create",
-    data
-  );
+  callAPI("post", "http://localhost:4000/api/publicRequest/create", data);
 
 export const getPublicRequests = () =>
-  callAPI("get", "http://localhost:4000/api/publicRequest/get");
+  callAPI("get", "http://localhost:4000/api/publicRequest");
 
-export const getPublicRequestUserDetails = (data) =>
+export const getPublicRequestUserDetails = data =>
   callAPI(
     "post",
     "http://localhost:4000/api/publicRequest/get-user-emails",
