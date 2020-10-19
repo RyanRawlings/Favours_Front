@@ -1,7 +1,7 @@
 import callAPI from "./utils/callAPI";
 import axios from "axios";
 import UserContext from "../context/UserContext";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 export function login(data) {
   console.log("logindata:", data);
@@ -32,8 +32,7 @@ export function register(data) {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
           window.location.href = "/login";
-        } 
-        else {
+        } else {
           reject(response.data);
         }
       })
@@ -43,6 +42,7 @@ export function register(data) {
       });
   });
 }
+
 export const test = () => callAPI("get", "http://localhost:4000/api/get/count");
 export const debitIOUList = () =>
   callAPI("get", "http://localhost:4000/api/get/debit_list");
@@ -68,16 +68,35 @@ export const getFavourTypes = () =>
   callAPI("get", "http://localhost:4000/api/get/get-favourType");
 
 export const createPublicRequest = data =>
-  callAPI(
-    "post",
-    "http://localhost:4000/api/publicRequest/create-publicRequest",
-    data
-  );
+  callAPI("post", "http://localhost:4000/api/publicRequest/create", data);
 
-export const getPublicRequests = () =>
-  callAPI("get", "http://localhost:4000/api/publicRequest");
+// export const getPublicRequests = () =>
+//   callAPI("get", "http://localhost:4000/api/publicRequest/get");
 
-export const getPublicRequestUserDetails = (data) =>
+export function getPublicRequests() {
+  return new Promise((resolve, reject) => {
+    document.cookie.split(";").map(item => {
+      console.log("cookies:", item);
+      if (item.match("auth-token")) {
+        console.log(item.replace(" auth-token=", ""));
+      }
+    });
+    axios
+      .get("http://localhost:4000/api/publicRequest/get")
+      .then(response => {
+        if (response.status >= 200 && response.status < 300) {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      })
+      .catch(reject => {
+        //console.log(reject.response);
+        toast.error(reject.response.data);
+      });
+  });
+}
+export const getPublicRequestUserDetails = data =>
   callAPI(
     "post",
     "http://localhost:4000/api/publicRequest/get-user-emails",

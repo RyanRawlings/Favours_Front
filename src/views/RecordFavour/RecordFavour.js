@@ -24,6 +24,11 @@ import './RecordFavour.css';
 import SaveIcon from '@material-ui/icons/Save';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import * as UserAPI from "../../api/UserAPI";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import * as FavourAPI from "../../api/FavourAPI";
+import { useLocation } from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,14 +37,13 @@ const useStyles = makeStyles((theme) => ({
       },
     paper: {
         padding: theme.spacing(2),
-        paddingLeft: '15%',
-        height: "auto"
-    },  
+        height: "100%",
+        width: "auto",
+    },
     form: {
       '& > *': {
-        margin: theme.spacing(1),
         width: '25ch',
-    },   
+    },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -55,20 +59,30 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
       },
     },
-    paidBy: {
-        display: "inline-block"
-    },
-    favourType: {
-        display: "inline-block"
-    },
+    // paidBy: {
+    //     display: "inline-block",
+    //     marginBottom: "4%",
+    // },
+    // favourType: {
+    //     display: "inline-block"
+    // },
     formContent: {
       marginLeft: "auto",
       marginRight: "auto",
     },
     recordButton: {
       marginLeft: "auto",
-      marginRight: "auto"
-    }
+      marginRight: "auto",
+      paddingBottom: "5%"
+    },
+    textArea: {
+      marginTop: "4%",
+      marginBottom: "4%"
+    },
+    // secondRow: {
+    //   display: "flex",
+    //   width: "auto"
+    // }
   }));
 
 const RecordFavourForm = () => {
@@ -81,7 +95,10 @@ const RecordFavourForm = () => {
     const [favourName, setFavourName] = useState(null);
     const [favourDescription, setFavourDescription] = useState(null);
     const [favourDate, setFavourDate] = useState(null);
-  
+    const [userList, setUserList] = useState([]);
+
+    const location = useLocation();
+
     useEffect(() => {
       async function getFavourType() {
         const getFavourTypes = await APIServices.getFavourTypes();
@@ -90,15 +107,33 @@ const RecordFavourForm = () => {
         const favourTypesArray = Object.values(favourTypes);
         setFavourType(favourTypesArray);
       }
-  
+
       getFavourType();
     }, []);
+
+    useEffect(() => {
+      async function getUserList() {
+        const getUsers = await UserAPI.getUsers();
+
+        // Return array of users
+        if (getUsers) {
+          setUserList(getUsers);
+          console.log("Users set...");
+        } else {
+          console.log("Error occurred fetching the user data... Please refresh");
+        }
+      }
+
+      getUserList();
+    }, []);
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
     const setFavourIdHelper = (object, value) => {
         // console.log("Helper is being called...");
         // console.log("Object array", object);
         // console.log("Value", value);
-        
+
         const favourTypesArray = Object.values(object);
         for (let i = 0; i < favourTypesArray.length; i++) {
           // console.log(rewardsObject[i].Name);
@@ -116,81 +151,144 @@ const RecordFavourForm = () => {
         // Else return false
         // If error return false
         try {
-          if (favourName !== null && debtor !== null && creditor !== null && favourDate !== null && favourDescription !== null) {
+          if (favourName !== null && debtor !== null && creditor !== null && favourDescription !== null) {
             return false;
           } else {
             return true;
-          } 
+          }
         } catch (err) {
           return true;
         }
-    
+
+      }
+
+      const getUserIdFromEmail = (email) => {
+          for (let i = 0; i < userList.length; i++) {
+            if (email === userList[i].email) {
+              return userList[i]._id;
+            }
+          }
+      }
+
+      const handleSubmit = async () => {
+        console.log(favourTypeId);
+        const newFavourData = {
+          requestUser: getUserIdFromEmail(creditor),
+          owingUser: getUserIdFromEmail(debtor),
+          description: favourDescription,
+          favourOwed: favourName,
+          is_completed: false,
+          proofs: {
+            is_uploaded: false,
+            uploadImageUrl: null,
+            snippet: ""
+          }
+        }
+
+        // console.log(newFavourData);
+        
+        const createNewFavour = await FavourAPI.createFavour(newFavourData);
+
+        if (createNewFavour) {
+          if (createNewFavour.success === true && createNewFavour.success !== null) {
+            toast.success(createNewFavour.message);
+          } else if (createNewFavour.success === true && createNewFavour.success !== null) {
+            toast.error(createNewFavour.message);
+          }
+        }    
+
+        await delay(5000);
+        window.location.reload(); 
       }
 
     return (
         <div className={classes.root}>
+            <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            />
             <Paper className={classes.paper}>
               <div className={classes.formContent}>
                 <Grid container spacing={3}>
-                    <form className={classes.form} >
-                            {/* <TextField id='favour-type' 
-                                        label="Favour Type" 
-                                        name="FavourType" 
-                                        value={favourtype} 
+                    {/* <form className={classes.form} > */}
+                            {/* <TextField id='favour-type'
+                                        label="Favour Type"
+                                        name="FavourType"
+                                        value={favourtype}
                                         placeholder="Select your Favour Type"
                                         onChange={e => setFavourType(e.target.value)}
                             /> */}
-                            <Autocomplete                               
+                            <Grid item xs={12} sm={6}>
+                            <Autocomplete
                                 className={classes.favourType}
-                                id='favour-type' 
-                                label="Favour Type" 
-                                name="FavourType" 
-                                options={favourType} 
+                                id='favour-type'
+                                label="Favour Type"
+                                name="FavourType"
+                                options={favourType}
                                 getOptionLabel={(option) => option.Name}
                                 placeholder="Select your Favour Type"
                                 // onChange={e => setFavourType(e.target.value)}
                                 onInputChange={(event, newInputValue) => {
                                     setFavourName(newInputValue);
-                                    setFavourIdHelper(favourType, newInputValue);                                            
+                                    setFavourIdHelper(favourType, newInputValue);
                                     }}
                                     renderInput={(params) => <TextField {...params} required label="Favour Type" />
-                                    
+
                                 }
                             />
-                            <TextField className={classes.paidBy}
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                            <Autocomplete className={classes.paidBy}
                                         required
-                                        id='creditor-name' 
-                                        label="Paid By" 
-                                        name="Creditor" value={creditor} 
-                                        placeholder="Who paid the favour"
-                                        onChange={e => setCreditor(e.target.value)}
+                                        id='creditor-name'
+                                        label="Paid By"
+                                        name="Creditor"
+                                        options={userList? userList: []}
+                                        getOptionLabel={(option) => option.email}
+                                        // onChange={e => setCreditor(e.target.value)}
+                                        onInputChange={(event, newInputValue) => {
+                                            setCreditor(newInputValue);
+                                          }}
+                                          renderInput={(params) => <TextField {...params} required label="Paid By" />
+
+                                      }
                             />
-                            <TextField id='debtor-name' 
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                            {/* <div className={classes.secondRow}> */}
+                            <Autocomplete id='debtor-name'
                                         required
-                                        label="Owed By" 
-                                        name="Debtor" 
-                                        value={debtor} 
-                                        placeholder="Who owes the favour"
-                                        onChange={e => setDebtor(e.target.value)}
-                            />
-                              {/* <TextField id='favour-description'  
-                                        label="Description" 
-                                        name="FavourDescription" 
-                                        placeholder = "Add description of this favour"
-                                        multiline
-                                        rowsMax={2}
-                                        value={favourDescription}
-                                        onChange={e => setFavourDescription(e.target.value)}
-                            /> */}
-                            <TextField id='favour-date' 
-                                        required
-                                        type="date" 
-                                        label="Paid On" 
-                                        name="PaidDate" 
-                                        className={classes,TextField} 
+                                        label="Owed By"
+                                        name="Debtor"
+                                        options={userList? userList: []}
+                                        getOptionLabel={(option) => option.email}
+                                        // onChange={e => setDebtor(e.target.value)}
+                                        onInputChange={(event, newInputValue) => {
+                                          setDebtor(newInputValue);
+                                          }}
+                                          renderInput={(params) => <TextField {...params} required label="Owed By" />
+
+                                      }
+                            />       
+                            </Grid>
+                            <Grid item xs={12} sm={6}>                 
+                            <TextField id='favour-date'
+                                        type="date"
+                                        label="Paid On"
+                                        name="PaidDate"
+                                        className={classes,TextField}
                                         InputLabelProps={{shrink: true,}}
                                         onChange={e => setFavourDate(e.target.value)}
                             />
+                            </Grid>
+                            {/* </div> */}
                             <TextareaAutosize
                               required
                               id="outlined-textarea"
@@ -198,9 +296,10 @@ const RecordFavourForm = () => {
                               placeholder="Task Description *"
                               rowsMin={6}
                               variant="outlined"
+                              className={classes.textArea}
                               style={{
                                 height: "30%",
-                                width: "85%",
+                                width: "100%",
                                 fontFamily: "Roboto, Helvetica, Arial, sans-serif",
                                 resize: "none"
                               }}
@@ -208,19 +307,19 @@ const RecordFavourForm = () => {
                             />
                             <div className={classes.recordButton}>
                               <Button
-                                      type="submit"
                                       variant="contained"
                                       color="primary"
                                       size="large"
                                       className={classes.submit}
                                       disabled={enableSubmitButton() && enableSubmitButton() === true? true: false}
+                                      onClick={() => handleSubmit()}
                                       startIcon={<SaveIcon />                                      
                                     }
                               >
                                   Record
                               </Button>
                             </div>
-                    </form>
+                    {/* </form> */}
                 </Grid>
                 </div>
             </Paper>

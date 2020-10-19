@@ -3,10 +3,12 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import UserContext from "../../context/UserContext";
 import * as APIServices from "../../api/TestAPI";
+import * as UserAPI from "../../api/UserAPI";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CounterButtonGroup from "../counterButtonGroup/index";
+import UserContext from "../../context/UserContext";
+import Prompt from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 //   rewardQuantity: {
@@ -24,13 +26,15 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function RewardForm({ addReward }) {
+export default function RewardForm({ addReward, userData }) {
     const classes = useStyles();
     const [value, setValue] = useState("");
-    const { userData, setUserData } = useContext(UserContext);
+    // const { userData } = useContext(UserContext);
+
 
     const [favourRewards, setFavourRewards] = useState([]);
     const [clearOptionText, setClearOptionText] = useState(false);
+    const [userList, setUserList] = useState([]);
 
     useEffect(() => {
       async function getFavourType() {
@@ -48,21 +52,21 @@ export default function RewardForm({ addReward }) {
     const [rewardName, setRewardName] = useState(null);
     const [rewardQuantity, setRewardQuantity] = useState(1);
     // Show the user email on screen
-    const [offeredBy, setOfferedBy] = useState(userData.user.email);
+    const [providedBy] = useState(userData !== undefined? userData.user.email : null);
     const [rewardId, setRewardId] = useState(null);
 
     const handleSubmit = e => {
       console.log("Add reward called...");
       e.preventDefault();
-      
+
       // Pass the user id instead
-      addReward({rewardId: rewardId, rewardName: rewardName, rewardQuantity: rewardQuantity, offeredBy: offeredBy});
+      addReward({rewardId: rewardId, rewardName: rewardName, rewardQuantity: rewardQuantity, offeredBy: userData.user.email, providedBy: userData.user._id});
       setValue("");
       setRewardName(null);
     };
 
     const enableAddButton = () => {
-        return rewardName !== null && rewardQuantity !== null && offeredBy !== null? false: true;
+        return rewardName !== null && rewardQuantity !== null && providedBy !== null? false: true;
     }
 
     const setRewardIdHelper = (object, value) => {
@@ -77,8 +81,6 @@ export default function RewardForm({ addReward }) {
           setRewardId(rewardsObject[i]._id.toString());
         }
       }
-      // console.log(rewardIdKey);
-      // console.log(rewardId);
     }
 
     const handleRewardIncrement = () => {
@@ -152,7 +154,7 @@ export default function RewardForm({ addReward }) {
                     shrink: true,
                   }}
                   disabled={true}
-                  defaultValue={userData.user.email}
+                  defaultValue={providedBy}
                   // placeholder={userData.email}
                 />
             </Grid>

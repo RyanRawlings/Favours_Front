@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
   },
   drawerOpen: {
     color: "white",
@@ -163,6 +163,10 @@ const useStyles = makeStyles(theme => ({
   homeText: {
     textDecoration: "none",
     color: "white"
+  },
+  listItemText: {
+    marginLeft: "-5%",
+    fontSize: "12px"
   }
 }));
 
@@ -173,7 +177,7 @@ const getTitle = location => {
     case "/public_request":
       return "> Public Requests";
     case "/all_list":
-      return "> View Favours";
+      return "> View and Create Favours";
     case "/all_list/debit_list":
       return "> IOU List > Debit List";
     case "/all_list/credit_list":
@@ -342,7 +346,7 @@ export default function NavMenu(props) {
                 ></EmojiPeopleIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText primary="Public Request" />
+            <ListItemText className={classes.listItemText} disableTypography={true} primary="Public Request" />
           </ListItem>
         ) : (
           <Link
@@ -361,7 +365,7 @@ export default function NavMenu(props) {
                   color="action"
                 ></EmojiPeopleIcon>
               </ListItemIcon>
-              <ListItemText primary="Public Request" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Public Request" />
             </ListItem>
           </Link>
         )}
@@ -371,7 +375,7 @@ export default function NavMenu(props) {
           <ListItem
             className={classes.menuItem}
             button
-            key="View Favours"
+            key="View and Create Favours"
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/all_list")}
           >
@@ -384,7 +388,7 @@ export default function NavMenu(props) {
                 ></ListAltIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText primary="View Favours" />
+            <ListItemText className={classes.listItemText} disableTypography={true} primary="View and Create Favours" />
           </ListItem>
         ) : (
           <Link
@@ -393,7 +397,7 @@ export default function NavMenu(props) {
           >
             <ListItem className={classes.menuItem}
                       button 
-                      key="View Favours"
+                      key="View and Create Favours"
                       onClick={() => history.push("/all_list")}
              >
               <ListItemIcon>
@@ -402,7 +406,7 @@ export default function NavMenu(props) {
                   color="action"
                 ></ListAltIcon>
               </ListItemIcon>
-              <ListItemText primary="View Favours" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="View and Create Favours" />
             </ListItem>
           </Link>
         )}
@@ -417,7 +421,7 @@ export default function NavMenu(props) {
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/repay_favour")}
           >
-            <Link to={{ pathname: "/repay_favour", state: { setOpen: open } }}>
+            <Link to={{ pathname: "/repay_favour", state: { setOpen: open, userData: userData }}}>
               <ListItemIcon>
                 <PaymentIcon
                   className={classes.icons}
@@ -426,12 +430,12 @@ export default function NavMenu(props) {
                 ></PaymentIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText primary="Repay Favours" />
+            <ListItemText className={classes.listItemText} disableTypography={true} primary="Repay Favours" />
           </ListItem>
         ) : (
           <Link
-            to={{ pathname: "/repay_favour", state: { setOpen: open } }}
-            style={{ textDecoration: "none", color: "white" }}            
+            to={{ pathname: "/repay_favour", state: { setOpen: open, userData: userData } }} 
+            style={{ textDecoration: "none", color: "white" }}  
           >
             <ListItem className={classes.menuItem}
                       button 
@@ -444,7 +448,7 @@ export default function NavMenu(props) {
                   color="action"
                 ></PaymentIcon>
               </ListItemIcon>
-              <ListItemText primary="Repay Favours" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Repay Favours" />
             </ListItem>
           </Link>
         )}
@@ -469,7 +473,7 @@ export default function NavMenu(props) {
                 ></AccountBoxIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText primary="Profile" />
+            <ListItemText className={classes.listItemText} disableTypography={true} primary="Profile" />
           </ListItem>
         ) : (
           <Link
@@ -488,7 +492,7 @@ export default function NavMenu(props) {
                   color="action"
                 ></AccountBoxIcon>
               </ListItemIcon>
-              <ListItemText primary="Profile" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Profile" />
             </ListItem>
           </Link>
         )}
@@ -509,7 +513,7 @@ export default function NavMenu(props) {
                 ></LocalActivityIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText primary="Leaderboard" />
+            <ListItemText className={classes.listItemText} disableTypography={true} primary="Leaderboard" />
           </ListItem>
         ) : (
           <Link
@@ -528,7 +532,7 @@ export default function NavMenu(props) {
                   color="action"
                 ></LocalActivityIcon>
               </ListItemIcon>
-              <ListItemText primary="Leaderboard" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Leaderboard" />
             </ListItem>
           </Link>
         )}
@@ -553,7 +557,7 @@ export default function NavMenu(props) {
                 ></SettingsIcon>
               </ListItemIcon>
 
-              <ListItemText primary="Settings" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Settings" />
             </ListItem>
           </Link>
         ) : (
@@ -569,7 +573,7 @@ export default function NavMenu(props) {
                 ></SettingsIcon>
               </ListItemIcon>
 
-              <ListItemText primary="Settings" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Settings" />
             </ListItem>
           </Link>
         )}

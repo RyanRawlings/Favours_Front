@@ -20,6 +20,9 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
 import Toast from "../toast/index";
 import SaveIcon from '@material-ui/icons/Save';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -64,7 +67,7 @@ const useStyles = makeStyles(theme => ({
   },
   rewardContent: {
     padding: "1% 1% 1%",
-    width: "120%",
+    width: "100%",
     height: "10%",
     marginLeft: "auto",
     marginRight: "auto",
@@ -129,12 +132,14 @@ export default function NewPublicRequestForm() {
   // User information from JWT
   const { userData, setUserData } = useContext(UserContext);
 
+  const location = useLocation();
+
   // Rewards created for the Public Request
   const [rewards, setRewards] = useState([]);
 
   // Public Request Form Fields
   const [requestTitle, setRequestTitle] = useState(null);
-  const [requestedBy] = useState(userData.user.email);
+  const [requestedBy] = useState(userData? userData.user.email: null);
   const [requestTaskDescription, setRequestTaskDescription] = useState(null);
 
   // Toast details
@@ -155,7 +160,7 @@ export default function NewPublicRequestForm() {
   const addReward = (reward) => {
     // const newRewardItem = reward.reward;
     const newReward = [...rewards, reward];
-    // console.log(newReward);
+    console.log(newReward);
     setRewards(newReward);
   };
 
@@ -181,27 +186,29 @@ export default function NewPublicRequestForm() {
     };
 
     // Pass the new object to the helper function to call the API
-    createPublicRequest(newRequestData);
+    createPublicRequestHelper(newRequestData);
   };
 
-  const createPublicRequest = async data => {
+  const createPublicRequestHelper = async data => {
     const response = await APIServices.createPublicRequest(data);
     if (response) {
       // Set toast details
       setIsSuccessful(true);
-      setToastMessage('Successfully created the Public Request! the window will close automatically');
-      
+      setToastMessage('Successfully created the Public Request!');
+
+      toast.success("Successfully created the Public Request");
       // Reset the rewards state variable
       setRewards([]);
 
       // Hold execution for 3s then close the modal
-      await delay(3000);
+      await delay(5000);
       handleClose();      
       
     } else {
       // Set toast details
       setIsSuccessful(false);
-      setToastMessage('There was an issue creating the Public Request!');
+      setToastMessage('Error creating the Public Request');
+      toast.error(toastMessage);
       // handleClose();
     }
   };
@@ -231,6 +238,16 @@ export default function NewPublicRequestForm() {
 
   }
 
+  const userDataAvailable = () => {
+    try {
+      if(userData.user.email) {
+        return true
+      }
+    } catch (err) {
+      return false
+    }
+  }
+
   return (
     <div>
       <Button
@@ -256,6 +273,17 @@ export default function NewPublicRequestForm() {
       >
         <Fade in={open}>
           <Grid container className={classes.modalContent} spacing={3}>
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              />
             <Grid className={classes.headingDiv} item xs={12}>
               <div className={classes.modalHeading}>
                 Create New Public Request
@@ -315,8 +343,14 @@ export default function NewPublicRequestForm() {
                 onChange={e => setRequestTaskDescription(e.target.value)}
               />
             </Grid>
-        <div className={classes.newRewardFormDiv}><RewardForm addReward={addReward} /></div>
-        <div className={classes.rewardTitle}>Reward details</div>
+        {userDataAvailable? 
+          <div className={classes.newRewardFormDiv}>
+            <RewardForm 
+              addReward={addReward} 
+              userData={userData}
+            />
+          </div> : ""}
+        {/* <div className={classes.rewardTitle}>Reward details</div> */}
         <Fragment>
             <div className={classes.rewardContent}>
             <List className={classes.rewardList}>                
@@ -326,6 +360,8 @@ export default function NewPublicRequestForm() {
                       index={index}
                       reward={reward}
                       removeReward={removeReward}
+                      location={location.pathname}
+                      userData={userData}
                     />
                   ))}
                 </List>
@@ -342,7 +378,7 @@ export default function NewPublicRequestForm() {
                 Record
               </Button>
             </div>
-            {isSuccessful !== null ? showToast() : showToast()}
+            {/* {isSuccessful !== null ? showToast() : showToast()} */}
           </Grid>
         </Fade>
       </Modal>

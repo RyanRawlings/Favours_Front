@@ -29,6 +29,8 @@ import UserContext from "../../context/UserContext";
 import DeleteFavour from "../../components/deleteFavour/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -72,10 +74,16 @@ const useStyles = makeStyles(theme => ({
     }
   },
   rewardContent: {
-    padding: "1% 1% 1%",
-    width: "120%",
-    marginLeft: "auto",
-    marginRight: "auto"
+    width: "100%",
+    // marginLeft: "auto",
+    // marginRight: "auto",
+    overflow: "scroll",
+    overflowX: "hidden",
+    overflowY: "auto",
+    border: "1px #1B9AAA solid",
+    backgroundColor: "#F6F6F6",
+    padding: "1% 1% 1% 1%",
+    height: "100px"
   },
   submitButtonDiv: {
     marginLeft: "auto",
@@ -165,6 +173,9 @@ const useStyles = makeStyles(theme => ({
     marginLeft: "auto",
     marginRight: "auto",
     marginBottom: "1%"
+  },
+  rewardHeading: {
+    marginLeft: "2%"
   }
 }));
 
@@ -178,12 +189,13 @@ export default function FavourModal({
   Location,
   FavourImageKey,
   ModalType,
-  PublicRequestData
+  PublicRequestData,
+  User
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
-
+  console.log("favourmodal props:", userData);
   // Rewards created for the Public Request
   const [rewards, setRewards] = useState(Rewards ? Rewards : []);
 
@@ -195,16 +207,36 @@ export default function FavourModal({
   // const [location, setLocation] = useState(Location);
   // const [favourImageKey ,setFavourImageKey] = useState(FavourImageKey);
 
-  const [publicRequestUserDetails, setPublicRequestUserDetails] = useState(PublicRequestData? PublicRequestData : []);
+  const [publicRequestUserDetails, setPublicRequestUserDetails] = useState(
+    PublicRequestData ? PublicRequestData : []
+  );
 
   const [isDeleted, setIsDeleted] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+
+  const userDataAvailable = () => {
+    try {
+      if(userData.user.email) {
+        return true
+      }
+    } catch (err) {
+      return false;
+    }
+  };
 
   // Controls how the Favour or Public Request component is opened to show more details
   const handleOpen = () => {
     // Open modal on click
     setOpen(true);
-    console.log(FavourId);
+
+    // Need to reset the state variables based on the props newly passed to the modal component
+    setFavourId(FavourId);
+    setFavourTitle(FavourTitle);
+    setFavourDescription(FavourDescription);
+    setRequester(Requester);
+    setRewards(Rewards);
 
     // If it is an existing public request get the user details
     const getUserDetails = async () => {
@@ -214,18 +246,28 @@ export default function FavourModal({
       // Push the userIds stored on the rewards into the userArray
       for (let i = 0; i < rewards.length; i++) {
         if (!userArray.includes(rewards[i].providedBy)) {
+          // console.log("iterative print", rewards[i].providedBy)
           userArray.push(rewards[i].providedBy);
         }
       }
+
       // Push the requesterUserId into the userArray
       if (!userArray.includes(requester._id)) userArray.push(requester._id);
+      // Push the current into the userArray, in case they want to add a reward to the public request
+      if (userDataAvailable === true) {
+        if (!userArray.includes(userData.user._id))
+          userArray.push(userData.user._id);
+      }
 
       // Get user details for the relevant userIds stored in the array
-      const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(userArray);
+      // console.log(userArray);
+      const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(
+        userArray
+      );
 
       if (getPublicRequestsUserDetails) {
         // Return array and set the request user details state
-        setPublicRequestUserDetails(getPublicRequestsUserDetails.getPublicRequests);        
+        setPublicRequestUserDetails(getPublicRequestsUserDetails);
       } else {
         console.log("There was an issue with getting the data");
       }
@@ -255,7 +297,7 @@ export default function FavourModal({
 
   const getUserEmail = (userId, nameId, label, disabled) => {
     // Evaluate reward user id against data retrieved from db, and return relevant email
-    if(publicRequestUserDetails) {
+    if (publicRequestUserDetails) {
       for (let i = 0; i < publicRequestUserDetails.length; i++) {
         if (userId === publicRequestUserDetails[i]._id) {
           // Return relevant user email
@@ -274,24 +316,26 @@ export default function FavourModal({
         }
       }
     } else {
-      console.log("PublicRequests Object is undefined or null...")
+      console.log("PublicRequests Object is undefined or null...");
     }
-    
   };
 
   const deleteFavour = async FavourId => {
-    console.log(FavourId)
-
     const response = await APIServices.deleteOneFavour({ _id: FavourId });
     if (response.ok === true) {
       setIsDeleted(true);
       setToastMessage(response.message);
-      setOpen(true);
+      toast.success("Successfully deleted Favour");
+
+      await delay(5000);
+      setOpen(false);
       refreshPage();
     } else {
-      setIsDeleted(false);
-      setToastMessage(response.message);
-      setOpen(true);
+      toast.error("Error deleting the Favour, execution has halted");
+
+      await delay(5000);
+      setOpen(false);
+      refreshPage();
     }
   };
 
@@ -305,7 +349,7 @@ export default function FavourModal({
     } else {
       return false;
     }
-  }
+  };
 
   return (
     <div>
@@ -316,7 +360,9 @@ export default function FavourModal({
         onClick={handleOpen}
         className={classes.modalButton}
       >
-        {Location === "/public_request"? "View public request details": "View favour details"}
+        {Location === "/public_request"
+          ? "View public request details"
+          : "View favour details"}
       </Button>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -333,8 +379,21 @@ export default function FavourModal({
         <Fade in={open}>
           <div className={classes.paper}>
             <Grid container className={classes.modalContent} spacing={3}>
-              <Grid className={classes.headingDiv} item xs={12}>                
-              <div className={classes.modalHeading}>{Location === "/public_request"? "Public Request" : "Favour"}</div>
+              <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              />
+              <Grid className={classes.headingDiv} item xs={12}>
+                <div className={classes.modalHeading}>
+                  {Location === "/public_request" ? "Public Request" : "Favour"}
+                </div>
                 <div className={classes.closeButtonDiv}>
                   <IconButton
                     aria-label="delete"
@@ -348,6 +407,7 @@ export default function FavourModal({
                   </IconButton>
                 </div>
               </Grid>
+              {console.log(favourTitle)}
               <Grid item xs={12} sm={6}>
                 <TextField
                   id="requestTitle"
@@ -362,18 +422,24 @@ export default function FavourModal({
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                {Location === "/public_request"?
+                {Location === "/public_request" ? (
                   <TextField
-                  id="requestedBy"
-                  name="requestedBy"
-                  label="Requested By"
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  disabled={true}
-                  defaultValue={requester.email}
-                />
-                                 : (
+                    id="requestedBy"
+                    name="requestedBy"
+                    label="Requested By"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    disabled={true}
+                    defaultValue={
+                      requester.email
+                        ? requester.email
+                        : requester
+                        ? requester
+                        : ""
+                    }
+                  />
+                ) : (
                   <TextField
                     id="requestedBy"
                     name="requestedBy"
@@ -403,78 +469,122 @@ export default function FavourModal({
                   value={favourDescription}
                   // onChange={e => setRequestTaskDescription(e.target.value)}
                 />
-              </Grid>              
+              </Grid>
               <div className={classes.centeredDiv}>
-                {Location === "/public_request"? (<NewRewardForm addReward={addReward} />) : ""}
+                {/*If the userData is available and if the Location is public request, then show the New Reward Form
+                   Else return nothing*/}
+                {userDataAvailable() === true ? (
+                  Location === "/public_request" ? (
+                    <NewRewardForm addReward={addReward} userData={userData}/>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  ""
+                )}
               </div>
-              <Fragment>
-                <div className={classes.rewardContent}>
-                  <List className="reward-list">
-                    {rewards.map((reward, index) => (
-                      <Reward
-                        key={index}
-                        index={index}
-                        reward={reward}
-                        removeReward={removeReward}
-                        users={publicRequestUserDetails}
-                      />
-                    ))}
-                  </List>
-                </div>
-              </Fragment>
-              {showDeleteFavour()?
-              (<>
-              <div className={classes.centeredDiv}>
-                <UploadImage
-                  FavourId={FavourId}
-                  FavourImageKey={FavourImageKey}
-                />
-              </div>
-                             
-              <button className={classes.deleteButtonFromDB}
-                      key={"deleteFavour"}
-                      onClick={() => deleteFavour(FavourId)}
-              >
-                <div
-                  >
-                    <FontAwesomeIcon
-                      key={"deleteFavour"}
-                      className={classes.trashIcon}
-                      icon={faTrash}
+
+              {Location === "/public_request" ? (
+                <>
+                  <div className={classes.rewardHeading}>Reward Details</div>
+                  <Grid item xs={12} sm={12}>
+                    <Fragment>
+                      <div className={classes.rewardContent}>
+                        <List className="reward-list">
+                          {rewards.map((reward, index) => (
+                            <Reward
+                              key={index}
+                              index={index}
+                              reward={reward}
+                              removeReward={removeReward}
+                              users={
+                                publicRequestUserDetails
+                                  ? publicRequestUserDetails
+                                  : ""
+                              }
+                              location={Location}
+                              userData={userData}
+                            />
+                          ))}
+                        </List>
+                      </div>
+                    </Fragment>
+                  </Grid>
+                </>
+              ) : (
+                ""
+              )}
+              {showDeleteFavour() ? (
+                <>
+                  <div className={classes.centeredDiv}>
+                    <UploadImage
+                      FavourId={FavourId}
+                      FavourImageKey={FavourImageKey}
                     />
-                </div>
-              </button>
-              </>) :
-                <div className={classes.actionButtons}>
-                <button className={classes.deleteRecordFromDB}
-                     key={"deleteFavour"}
-                     onClick={() => deleteFavour(FavourId)}>
-                  {Location === "/public_request"? "Delete request" : "Delete favour"}
-                <div className={classes.deleteButtonFromDB}>
+                  </div>
+
+                  <button
+                    className={classes.deleteButtonFromDB}
+                    key={"deleteFavour"}
+                    onClick={() => deleteFavour(FavourId)}
+                  >
                     <div>
                       <FontAwesomeIcon
                         key={"deleteFavour"}
                         className={classes.trashIcon}
                         icon={faTrash}
                       />
-                  </div>
+                    </div>
+                  </button>
+                </>
+              ) : (
+                <div className={classes.actionButtons}>
+                  {userData.token ? (
+                    <Button variant="contained" color="primary" size="large">
+                      Claim
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      href={"/login"}
+                    >
+                      Claim
+                    </Button>
+                  )}
                 </div>
-                </button>
-              <button className={classes.completeFavour}>
-              <div className={classes.deleteRecordFromDB}>{Location === "/public_request"? "" : "Complete favour"}</div>
-              <div                  
-                  // onClick={() => deleteFavour(FavourId)}
-                  >
-                    <FontAwesomeIcon
-                      key={"completeFavour"}
-                      className={classes.trashIcon}
-                      icon={faCheckSquare}
-                    />
-                </div>
-              </button>
-              </div>
+              )
+
+              //   <div className={classes.actionButtons}>
+              //   <button className={classes.deleteRecordFromDB}
+              //        key={"deleteFavour"}
+              //        onClick={() => deleteFavour(FavourId)}>
+              //     {Location === "/public_request"? "Delete request" : "Delete favour"}
+              //   <div className={classes.deleteButtonFromDB}>
+              //       <div>
+              //         <FontAwesomeIcon
+              //           key={"deleteFavour"}
+              //           className={classes.trashIcon}
+              //           icon={faTrash}
+              //         />
+              //     </div>
+              //   </div>
+              //   </button>
+              // <button className={classes.completeFavour}>
+              // <div className={classes.deleteRecordFromDB}>{Location === "/public_request"? "" : "Complete favour"}</div>
+              // <div
+              //     // onClick={() => deleteFavour(FavourId)}
+              //     >
+              //       <FontAwesomeIcon
+              //         key={"completeFavour"}
+              //         className={classes.trashIcon}
+              //         icon={faCheckSquare}
+              //       />
+              //   </div>
+              // </button>
+              // </div>
               }
-              
             </Grid>
           </div>
         </Fade>

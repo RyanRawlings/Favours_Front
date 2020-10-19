@@ -7,7 +7,8 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Paper from '@material-ui/core/Paper';
-import UserContext from "../../context/UserContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 const useStyles = makeStyles((theme) => ({
   removeButton: {
@@ -16,34 +17,72 @@ const useStyles = makeStyles((theme) => ({
   },
   removeIcon: {
     color: "red",
+    fontSize: "large",
+    "&:hover": {
+      color: "#CC0000",
+    }
+    
   },
   listItem: {
     marginTop: "1%",    
     borderRadius: "3px",
     maxWidth: "100%",
+    minHeight: "50px",
     '&$listItemColumn': {
         display: 'inline-block',
         verticalAlign: 'middle'
     }
+  },
+  trashGrid: {
+    marginLeft: "8%"
   }
 
 }));
 
-export default function Rewards({ reward, index, removeReward, users }) {
+export default function Rewards({ reward, index, removeReward, users, location, userData }) {
   // console.log(reward)
   const classes = useStyles();
 
-  const { userData, setUserData } = useContext(UserContext);
+  // console.log("user data: ", userData);
 
-  const getUserEmail = (userId) => {
+  const getUserEmail = (userId, type) => {
     // Evaluate reward user id against data retrieved from db, and return relevant email
-    // console.log(users)
-    for (let i = 0; i < users.length; i++) {
-      if (userId === users[i]._id) {
-        return (<span className={classes.listItemColumn}>{users[i].email}</span>);
+    console.log("Users: ", users, "UserId: ", userId);
+    if (users) {
+      for (let i = 0; i < users.length; i++) {
+        if (userId === users[i]._id && type === "column") {
+          return (<span className={classes.listItemColumn}>{users[i].email}</span>);
+        } else if (userId === users[i]._id && type === "value") {
+          return users[i].email;
+        }
       }
+    } else if (userData) {
+      if (type === "column") {
+          // return (<span className={classes.listItemColumn}>{userData.user.email}</span>);
+          return (<span className={classes.listItemColumn}>{userData.user.email}</span>);
+      } else if (type === "value") {     
+          return userData.user.email;
+      }      
+    }  else {
+      return "error";
+    } 
+  }
+
+  // console.log("userdata",userData);
+  // console.log("users",users);
+
+  const userDataAvailable = () => {
+    try {      
+      if(userData.user.email) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (err) {
+      return false;
     }
   }
+  // console.log(location.pathname);
 
   return (
       <Fragment>        
@@ -58,17 +97,30 @@ export default function Rewards({ reward, index, removeReward, users }) {
               {reward.quantity? <span>{reward.quantity}</span>:<span>{reward.rewardQuantity}</span>}              
             </Grid>
             <Grid item xs={12} sm={4}>
-              {users? getUserEmail(reward.providedBy? reward.providedBy : reward.offeredBy) : userData.user.email}
-            </Grid>        
+              {reward.providedBy? getUserEmail(reward.providedBy, "column") : getUserEmail(reward.offeredBy, "column")}
+            </Grid> 
+            {/* {console.log("User comparison: ", getUserEmail(reward.providedBy, "value"), userData.user.email, getUserEmail(reward.providedBy, "value") === userData.user.email)} */}
+            {/* {console.log("Data is available: ", userDataAvailable())} */}
+            {userDataAvailable() === true? 
+              getUserEmail(reward.providedBy, "value") === userData.user.email === true?
             <Grid item xs={12} sm={1}>
             <center>
-              <Button className={classes.removeButton}
-                variant="contained"
-                onClick={() => removeReward(index)}
-              ><DeleteIcon className={classes.removeIcon}/>
-              </Button>
+              {/* <Button className={classes.removeButton}
+                variant="contained"                
+              > */}
+                <FontAwesomeIcon icon={faTimesCircle} className={classes.removeIcon}
+              onClick={() => removeReward(index)}/>
+              {/* </Button> */}
               </center>
-            </Grid>
+            </Grid>: location === "/all_list"?
+            <Grid item xs={12} sm={1} className={classes.trashGrid}>
+              {/* <Button className={classes.removeButton}
+                variant="contained"                
+              > */}
+                <FontAwesomeIcon icon={faTimesCircle} className={classes.removeIcon}
+              onClick={() => removeReward(index)}/>
+              {/* </Button> */}
+            </Grid> : "" : ""}       
           </Grid>
         </ListItem>
         </Paper>

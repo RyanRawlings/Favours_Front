@@ -19,7 +19,9 @@ import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
 import Toast from "../toast/index";
-import RecordFavour from "../../views/recordFavour/recordFavour";
+import RecordFavour from "../../views/RecordFavour/RecordFavour";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -40,11 +42,10 @@ const useStyles = makeStyles(theme => ({
   },
   modalContent: {
     backgroundColor: "white",
-    maxHeight: "70%",
     overflowY: "auto",
     overflowX: "hidden",
     outline: "none",
-    borderRadius: "6px"
+    borderRadius: "6px",
   },
   createbutton_styling: {
     width: "100%",
@@ -67,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     width: "120%",
     height: "10%",
     marginLeft: "auto",
-    marginRight: "auto",
+    marginRight: "auto"
   },
   submitButtonDiv: {
     marginLeft: "auto",
@@ -96,27 +97,26 @@ const useStyles = makeStyles(theme => ({
   margin: {
     marginTop: "0%"
   },
-extendedIcon: {
-    marginRight: theme.spacing(1),
-},
-newRewardFormDiv: {
-  marginLeft: "auto",
-  marginRight: "auto"
-},
-rewardList: {
-  overflow: "scroll",
-  overflowX: "hidden",
-  overflowY: "auto",
-  height: "60px",
-  border: "1px #1B9AAA solid",
-  backgroundColor: "#F6F6F6",
-  padding: "1% 1% 1% 1%"
-
-},
-rewardTitle: {
-  fontSize: "16px",
-  marginLeft: "1%"
-}
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  },
+  newRewardFormDiv: {
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  rewardList: {
+    overflow: "scroll",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "60px",
+    border: "1px #1B9AAA solid",
+    backgroundColor: "#F6F6F6",
+    padding: "1% 1% 1% 1%"
+  },
+  rewardTitle: {
+    fontSize: "16px",
+    marginLeft: "1%"
+  }
 }));
 
 export default function NewFavourForm() {
@@ -137,6 +137,15 @@ export default function NewFavourForm() {
   const [isSuccessful, setIsSuccessful] = useState(null);
   const [toastMessage, setToastMessage] = useState("");
 
+  // Toastify
+  const recordNotification = () => {
+    if ( isSuccessful !== null && isSuccessful === true){
+      toast.success(toastMessage);
+    } else if (isSuccessful !== null && isSuccessful === false) {
+      toast.error(toastMessage);
+    }
+  }
+
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const [open, setOpen] = useState(false);
@@ -148,7 +157,7 @@ export default function NewFavourForm() {
     setOpen(false);
   };
 
-  const addReward = (reward) => {
+  const addReward = reward => {
     // const newRewardItem = reward.reward;
     const newReward = [...rewards, reward];
     // console.log(newReward);
@@ -181,7 +190,6 @@ export default function NewFavourForm() {
     createPublicRequest(newRequestData);
   };
 
-
   // Todo: update to the Favour function
   const createPublicRequest = async data => {
     const response = await APIServices.createPublicRequest(data);
@@ -189,19 +197,22 @@ export default function NewFavourForm() {
       // Set toast details
       setIsSuccessful(true);
       setToastMessage('Successfully created the Public Request! the window will close automatically');
+      toast.success("Successfully created the Public Request");
       
       // Reset the rewards state variable
       setRewards([]);
 
       // Hold execution for 3s then close the modal
-      await delay(3000);
-      handleClose();      
-      
+      await delay(5000);
+      handleClose();
     } else {
       // Set toast details
       setIsSuccessful(false);
-      setToastMessage('There was an issue creating the Public Request!');
-      // handleClose();
+      setToastMessage("There was an issue creating the Public Request!");
+      toast.success("Successfully created the Public Request");
+      
+      await delay(5000);
+      handleClose();
     }
   };
 
@@ -239,10 +250,19 @@ export default function NewFavourForm() {
       >
         <Fade in={open}>
           <Grid container className={classes.modalContent} spacing={3}>
+          <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
             <Grid className={classes.headingDiv} item xs={12}>
-              <div className={classes.modalHeading}>
-                Create New Favour
-              </div>
+              <div className={classes.modalHeading}>Create New Favour</div>
               <div className={classes.closeButtonDiv}>
                 <IconButton
                   aria-label="delete"
@@ -256,77 +276,7 @@ export default function NewFavourForm() {
                 </IconButton>
               </div>
             </Grid>
-            <RecordFavour />
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="requestTitle"
-                name="requestTitle"
-                label="Request Title"
-                InputLabelProps={{
-                  shrink: true
-                }}
-                onChange={e => setRequestTitle(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="requestedBy"
-                name="requestedBy"
-                label="Requested By"
-                InputLabelProps={{
-                  shrink: true
-                }}
-                defaultValue={requestedBy}
-                disabled={true}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextareaAutosize
-                required
-                id="outlined-textarea"
-                label="Task Description *"
-                placeholder="Task Description *"
-                rowsMin={6}
-                variant="outlined"
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-                  resize: "none"
-                }}
-                onChange={e => setRequestTaskDescription(e.target.value)}
-              />
-            </Grid>
-        <div className={classes.newRewardFormDiv}><RewardForm addReward={addReward} /></div>
-        <div className={classes.rewardTitle}>Reward details</div>
-        <Fragment>
-            <div className={classes.rewardContent}>
-            <List className={classes.rewardList}>                
-                {rewards.map((reward, index) => (
-                    <Reward
-                      key={index}
-                      index={index}
-                      reward={reward}
-                      removeReward={removeReward}
-                    />
-                  ))}
-                </List>
-              </div>
-            </Fragment>
-            <Grid className={classes.submitButtonDiv} item xs={6}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.createbutton_styling}
-                startIcon={<LaunchIcon />}
-                onClick={() => handleSubmitRequest()}
-              >
-                Submit Request
-              </Button>
-            </Grid>
-                {isSuccessful !== null ? showToast() : showToast()}*/}
+            <RecordFavour />            
           </Grid> 
         </Fade>
       </Modal>
