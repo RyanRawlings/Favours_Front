@@ -24,7 +24,10 @@ import UserContext from "../../context/UserContext";
 import './RepayFavour.css';
 import SaveIcon from '@material-ui/icons/Save';
 import { GridOverlay, DataGrid } from '@material-ui/data-grid';
+import { XGrid } from '@material-ui/x-grid';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import * as UserAPI from "../../api/TestAPI";
+import LoadingGif from "../../assets/images/loading.gif";
 
 
 
@@ -64,12 +67,12 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'favourType', headerName: 'Favour Type', width: 130 },
-    { field: 'favourDebtor', headerName: 'Owed By', width: 130 },
-    { field: 'favourCreditor', headerName: 'Paid By', width: 130 },
+    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'favourType', headerName: 'Favour Type', width: 150 },
+    { field: 'favourDebtor', headerName: 'Owed By', width: 220 },
+    { field: 'favourCreditor', headerName: 'Paid By', width: 220 },
     { field: 'favourStatus', headerName: 'Favour Status', width: 130 },
-    { field: 'favourDate', type:'date', headerName: 'Paid On', width: 130 },   
+    { field: 'favourDate', type:'date', headerName: 'Paid On', width: 110 },   
   ];
 //   const rows = [
 //     { id: 1, favourType: 'Coffee', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '18/10/2020' },
@@ -81,8 +84,10 @@ const columns = [
 //     { id: 7, favourType: 'Cupcake', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '24/10/2020' },
 // ];
   
-function CustomNoRowsOverlay() {
+function CustomNoRowsOverlay(loading) {
   const classes = useStyles();
+
+  console.log(loading)
 
   return (
     <GridOverlay className={classes.root}>
@@ -125,12 +130,18 @@ function CustomNoRowsOverlay() {
           </g>
         </g>
       </svg>
-      <div className={classes.label}>No Favours to Repay <FontAwesomeIcon className={classes.noRowsIcon} icon={faCheckCircle}/></div>
+      {loading === true? (
+        <center>
+            <img src={LoadingGif} width="100px" height="100px" alt="Loading..."/>
+        </center>) :
+      <div className={classes.label}>No Favours to Repay <FontAwesomeIcon className={classes.noRowsIcon} icon={faCheckCircle}/></div>}
     </GridOverlay>
   );
 }
 
 const RepayFavour = (props) => {
+  const [loading, setLoading] = useState(true);
+
   // console.log(props);
   // console.log(props.location.state.userData.user._id);
 
@@ -143,23 +154,50 @@ const RepayFavour = (props) => {
 
       try {        
         const fetchFavours = await FavourAPI.getFavours({userId: userId});
-        
+                
         // Store credit favours into variable
+        // console.log(repayFavours);
         const repayFavours = fetchFavours[0].credits;   
-        console.log(repayFavours);
+        
+        let userArray = []
+        repayFavours.forEach(element => {
+          if (!userArray.includes(element.requestUser)) {
+            userArray.push(element.requestUser);
+          }
+          if (!userArray.includes(element.owingUser)) {
+            userArray.push(element.owingUser);
+          }
+        })
+        
+        // console.log("UserIds: ",userArray) 
+        const fetchUsers = await UserAPI.getPublicRequestUserDetails(userArray);
+
+        const getUserEmail = (userId) => {
+          if (fetchUsers) {
+            for (let i = 0; i < fetchUsers.length; i++) {
+              if (fetchUsers[i]._id === userId) {
+                return fetchUsers[i].email;
+              }            
+            }
+          }
+        }
 
         // If there are credit favour records, run through the iteration
         let newRow = {};
         let rows = [];
+        let date = null;
+
         if (repayFavours.length > 0) {
           for (let i = 0; i < fetchFavours[0].credits.length; i++) {
+            date = new Date(fetchFavours[0].credits[i].create_time);   
+            
             newRow = {
               id: i + 1,
               favourType: fetchFavours[0].credits[i].favourOwed,
-              favourDebtor: fetchFavours[0].credits[i].requestUser,
-              favourCreditor: fetchFavours[0].credits[i].owingUser,
+              favourDebtor: getUserEmail(fetchFavours[0].credits[i].requestUser),
+              favourCreditor: getUserEmail(fetchFavours[0].credits[i].owingUser),
               favourStatus: fetchFavours[0].credits[i].is_complete === true? "Paid" : "Unpaid",
-              favourDate: fetchFavours[0].credits[i].create_time
+              favourDate: date,
             };
 
             rows.push(newRow);
@@ -176,7 +214,7 @@ const RepayFavour = (props) => {
         // setCreditFavours(fetchFavours[0].credits);      
 
       // setFavours(fetchFavours[0].credits);
-      // setLoading(false);
+      setLoading(false);
     }    
 
     fetchAllIOUList();
@@ -196,9 +234,9 @@ const RepayFavour = (props) => {
                             >Repay your favours</Typography>
                             <form className={classes.form} >
                                     <div style={{ height: 400, width: '100%'}}>
-                                      {console.log("rows: ", rows)}
+                                      {/* {console.log("rows: ", rows)} */}
                                         <DataGrid 
-                                          components={{noRowsOverlay: CustomNoRowsOverlay}}                                      
+                                          components={{noRowsOverlay: () => CustomNoRowsOverlay(loading)}}                                      
                                           rows={rows? rows: rows} 
                                           columns={columns} 
                                           pageSize={5} 

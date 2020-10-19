@@ -334,7 +334,7 @@ export default function NewPublicRequestForm() {
               />
             </Grid>
         <div className={classes.newRewardFormDiv}><RewardForm addReward={addReward} /></div>
-        <div className={classes.rewardTitle}>Reward details</div>
+        {/* <div className={classes.rewardTitle}>Reward details</div> */}
         <Fragment>
             <div className={classes.rewardContent}>
             <List className={classes.rewardList}>                
