@@ -473,9 +473,9 @@ export default function FavourModal({
               <div className={classes.centeredDiv}>
                 {/*If the userData is available and if the Location is public request, then show the New Reward Form
                    Else return nothing*/}
-                {userDataAvailable === true ? (
+                {userDataAvailable() === true ? (
                   Location === "/public_request" ? (
-                    <NewRewardForm addReward={addReward} />
+                    <NewRewardForm addReward={addReward} userData={userData}/>
                   ) : (
                     ""
                   )

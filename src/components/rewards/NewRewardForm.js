@@ -7,6 +7,8 @@ import * as APIServices from "../../api/TestAPI";
 import * as UserAPI from "../../api/UserAPI";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CounterButtonGroup from "../counterButtonGroup/index";
+import UserContext from "../../context/UserContext";
+import Prompt from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 //   rewardQuantity: {
@@ -27,6 +29,8 @@ const useStyles = makeStyles((theme) => ({
 export default function RewardForm({ addReward, userData }) {
     const classes = useStyles();
     const [value, setValue] = useState("");
+    // const { userData } = useContext(UserContext);
+
 
     const [favourRewards, setFavourRewards] = useState([]);
     const [clearOptionText, setClearOptionText] = useState(false);
@@ -48,7 +52,7 @@ export default function RewardForm({ addReward, userData }) {
     const [rewardName, setRewardName] = useState(null);
     const [rewardQuantity, setRewardQuantity] = useState(1);
     // Show the user email on screen
-    const [providedBy] = useState(userData.user !== undefined? userData.user.email : null);
+    const [providedBy] = useState(userData !== undefined? userData.user.email : null);
     const [rewardId, setRewardId] = useState(null);
 
     const handleSubmit = e => {
