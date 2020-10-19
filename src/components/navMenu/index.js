@@ -421,7 +421,7 @@ export default function NavMenu(props) {
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/repay_favour")}
           >
-            <Link to={{ pathname: "/repay_favour", state: { setOpen: open } }}>
+            <Link to={{ pathname: "/repay_favour", state: { setOpen: open, userData: userData }}}>
               <ListItemIcon>
                 <PaymentIcon
                   className={classes.icons}
@@ -434,8 +434,8 @@ export default function NavMenu(props) {
           </ListItem>
         ) : (
           <Link
-            to={{ pathname: "/repay_favour", state: { setOpen: open } }}
-            style={{ textDecoration: "none", color: "white" }}            
+            to={{ pathname: "/repay_favour", state: { setOpen: open, userData: userData } }} 
+            style={{ textDecoration: "none", color: "white" }}  
           >
             <ListItem className={classes.menuItem}
                       button 

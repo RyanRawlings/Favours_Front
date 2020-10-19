@@ -25,9 +25,9 @@ import RepayFavour from "./views/RepayFavour/RepayFavour";
 
 const Routes = () => {
   const [userData, setUserData] = useState({
-    token: undefined,
-    user: undefined
-  });
+      token: undefined,
+      user: undefined
+    });
 
   useEffect(() => {
     const checkLoggedIn = async () => {
