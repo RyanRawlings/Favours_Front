@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import UserContext from "../../context/UserContext";
 import * as APIServices from "../../api/TestAPI";
+import * as UserAPI from "../../api/UserAPI";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CounterButtonGroup from "../counterButtonGroup/index";
 
@@ -31,6 +32,7 @@ export default function RewardForm({ addReward }) {
 
     const [favourRewards, setFavourRewards] = useState([]);
     const [clearOptionText, setClearOptionText] = useState(false);
+    const [userList, setUserList] = useState([]);
 
     useEffect(() => {
       async function getFavourType() {
@@ -48,21 +50,21 @@ export default function RewardForm({ addReward }) {
     const [rewardName, setRewardName] = useState(null);
     const [rewardQuantity, setRewardQuantity] = useState(1);
     // Show the user email on screen
-    const [offeredBy, setOfferedBy] = useState(userData.user.email);
+    const [providedBy] = useState(userData.user.email);
     const [rewardId, setRewardId] = useState(null);
 
     const handleSubmit = e => {
       console.log("Add reward called...");
       e.preventDefault();
-      
+
       // Pass the user id instead
-      addReward({rewardId: rewardId, rewardName: rewardName, rewardQuantity: rewardQuantity, offeredBy: offeredBy});
+      addReward({rewardId: rewardId, rewardName: rewardName, rewardQuantity: rewardQuantity, providedBy: userData.user._id});
       setValue("");
       setRewardName(null);
     };
 
     const enableAddButton = () => {
-        return rewardName !== null && rewardQuantity !== null && offeredBy !== null? false: true;
+        return rewardName !== null && rewardQuantity !== null && providedBy !== null? false: true;
     }
 
     const setRewardIdHelper = (object, value) => {
@@ -77,8 +79,6 @@ export default function RewardForm({ addReward }) {
           setRewardId(rewardsObject[i]._id.toString());
         }
       }
-      // console.log(rewardIdKey);
-      // console.log(rewardId);
     }
 
     const handleRewardIncrement = () => {

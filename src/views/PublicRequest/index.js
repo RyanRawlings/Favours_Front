@@ -181,6 +181,7 @@ export default function PublicRequest(props) {
                                 <div className={classes.modal}>
                                   <FavourModal
                                     key={key + "-modal"}
+                                    FavourId={data._id}
                                     FavourTitle={data.title}
                                     Requester={data.requestUser}
                                     FavourDescription={data.description}

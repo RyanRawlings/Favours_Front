@@ -128,17 +128,8 @@ export default function Login() {
                           icon={faUser}
                         />
                       </div>
-                      <ToastContainer 
-                      position="top-center"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover 
-                      />
+                      {/* <ToastContainer /> */}
+                      {toast.success}
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <TextField
                           variant="outlined"

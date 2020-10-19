@@ -29,6 +29,8 @@ import UserContext from "../../context/UserContext";
 import DeleteFavour from "../../components/deleteFavour/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -200,11 +202,19 @@ export default function FavourModal({
   const [isDeleted, setIsDeleted] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+
   // Controls how the Favour or Public Request component is opened to show more details
   const handleOpen = () => {
     // Open modal on click
     setOpen(true);
-    console.log(FavourId);
+
+    // Need to reset the state variables based on the props newly passed to the modal component
+    setFavourId(FavourId);
+    setFavourTitle(FavourTitle);
+    setFavourDescription(FavourDescription);
+    setRequester(Requester);
+    setRewards(Rewards);
 
     // If it is an existing public request get the user details
     const getUserDetails = async () => {
@@ -214,18 +224,23 @@ export default function FavourModal({
       // Push the userIds stored on the rewards into the userArray
       for (let i = 0; i < rewards.length; i++) {
         if (!userArray.includes(rewards[i].providedBy)) {
+          // console.log("iterative print", rewards[i].providedBy)
           userArray.push(rewards[i].providedBy);
         }
       }
-      // Push the requesterUserId into the userArray
+
+      // Push the requesterUserId into the userArray      
       if (!userArray.includes(requester._id)) userArray.push(requester._id);
+      // Push the current into the userArray, in case they want to add a reward to the public request
+      if (!userArray.includes(userData.user._id)) userArray.push(userData.user._id);
 
       // Get user details for the relevant userIds stored in the array
+      // console.log(userArray);
       const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(userArray);
 
-      if (getPublicRequestsUserDetails) {
+      if (getPublicRequestsUserDetails) {      
         // Return array and set the request user details state
-        setPublicRequestUserDetails(getPublicRequestsUserDetails.getPublicRequests);        
+        setPublicRequestUserDetails(getPublicRequestsUserDetails);        
       } else {
         console.log("There was an issue with getting the data");
       }
@@ -280,18 +295,22 @@ export default function FavourModal({
   };
 
   const deleteFavour = async FavourId => {
-    console.log(FavourId)
 
     const response = await APIServices.deleteOneFavour({ _id: FavourId });
     if (response.ok === true) {
       setIsDeleted(true);
       setToastMessage(response.message);
-      setOpen(true);
+      toast.success("Successfully deleted Favour");
+
+      await delay(5000)
+      setOpen(false);
       refreshPage();
     } else {
-      setIsDeleted(false);
-      setToastMessage(response.message);
-      setOpen(true);
+      toast.error("Error deleting the Favour, execution has halted");
+
+      await delay(5000)
+      setOpen(false);
+      refreshPage();
     }
   };
 
@@ -333,6 +352,17 @@ export default function FavourModal({
         <Fade in={open}>
           <div className={classes.paper}>
             <Grid container className={classes.modalContent} spacing={3}>
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
               <Grid className={classes.headingDiv} item xs={12}>                
               <div className={classes.modalHeading}>{Location === "/public_request"? "Public Request" : "Favour"}</div>
                 <div className={classes.closeButtonDiv}>
@@ -348,6 +378,7 @@ export default function FavourModal({
                   </IconButton>
                 </div>
               </Grid>
+              {console.log(favourTitle)}
               <Grid item xs={12} sm={6}>
                 <TextField
                   id="requestTitle"
@@ -371,7 +402,7 @@ export default function FavourModal({
                     shrink: true
                   }}
                   disabled={true}
-                  defaultValue={requester.email}
+                  defaultValue={requester.email? requester.email : requester? requester : ""}
                 />
                                  : (
                   <TextField
@@ -407,6 +438,7 @@ export default function FavourModal({
               <div className={classes.centeredDiv}>
                 {Location === "/public_request"? (<NewRewardForm addReward={addReward} />) : ""}
               </div>
+              {Location === "/public_request"? 
               <Fragment>
                 <div className={classes.rewardContent}>
                   <List className="reward-list">
@@ -416,12 +448,13 @@ export default function FavourModal({
                         index={index}
                         reward={reward}
                         removeReward={removeReward}
-                        users={publicRequestUserDetails}
+                        users={publicRequestUserDetails? publicRequestUserDetails : ""}
+                        location={Location}
                       />
                     ))}
                   </List>
                 </div>
-              </Fragment>
+              </Fragment> : ""}
               {showDeleteFavour()?
               (<>
               <div className={classes.centeredDiv}>
@@ -444,6 +477,7 @@ export default function FavourModal({
                     />
                 </div>
               </button>
+              
               </>) :
                 <div className={classes.actionButtons}>
                 <button className={classes.deleteRecordFromDB}
