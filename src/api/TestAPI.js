@@ -42,6 +42,7 @@ export function register(data) {
       });
   });
 }
+
 export const test = () => callAPI("get", "http://localhost:4000/api/get/count");
 export const debitIOUList = () =>
   callAPI("get", "http://localhost:4000/api/get/debit_list");

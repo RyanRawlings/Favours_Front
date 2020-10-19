@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Paper from '@material-ui/core/Paper';
-import UserContext from "../../context/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -40,11 +39,11 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function Rewards({ reward, index, removeReward, users, location }) {
+export default function Rewards({ reward, index, removeReward, users, location, userData }) {
   // console.log(reward)
   const classes = useStyles();
 
-  const { userData, setUserData } = useContext(UserContext);
+  console.log("user data: ", userData);
 
   const getUserEmail = (userId, type) => {
     // Evaluate reward user id against data retrieved from db, and return relevant email
@@ -57,11 +56,32 @@ export default function Rewards({ reward, index, removeReward, users, location }
           return users[i].email;
         }
       }
-    } else {
-      return (<span className={classes.listItemColumn}>{userData.user.email}</span>);
-    }   
+    } else if (userData) {
+      if (type === "column") {
+          // return (<span className={classes.listItemColumn}>{userData.user.email}</span>);
+          return (<span className={classes.listItemColumn}>{userData.user.email}</span>);
+      } else if (type === "value") {     
+          return userData.user.email;
+      }      
+    }  else {
+      return "error";
+    } 
   }
 
+  // console.log("userdata",userData);
+  // console.log("users",users);
+
+  const userDataAvailable = () => {
+    try {      
+      if(userData.user.email) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+  }
   // console.log(location.pathname);
 
   return (
@@ -79,8 +99,10 @@ export default function Rewards({ reward, index, removeReward, users, location }
             <Grid item xs={12} sm={4}>
               {reward.providedBy? getUserEmail(reward.providedBy, "column") : getUserEmail(reward.offeredBy, "column")}
             </Grid> 
-            {/* {console.log(getUserEmail(reward.providedBy, "value"), userData.user.email)} */}
-            {getUserEmail(reward.providedBy, "value") === userData.user.email?
+            {/* {console.log("User comparison: ", getUserEmail(reward.providedBy, "value"), userData.user.email, getUserEmail(reward.providedBy, "value") === userData.user.email)} */}
+            {/* {console.log("Data is available: ", userDataAvailable())} */}
+            {userDataAvailable() === true? 
+              getUserEmail(reward.providedBy, "value") === userData.user.email === true?
             <Grid item xs={12} sm={1}>
             <center>
               {/* <Button className={classes.removeButton}
@@ -98,8 +120,7 @@ export default function Rewards({ reward, index, removeReward, users, location }
                 <FontAwesomeIcon icon={faTimesCircle} className={classes.removeIcon}
               onClick={() => removeReward(index)}/>
               {/* </Button> */}
-            </Grid> : ""
-            }       
+            </Grid> : "" : ""}       
           </Grid>
         </ListItem>
         </Paper>

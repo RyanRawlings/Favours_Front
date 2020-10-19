@@ -96,6 +96,7 @@ export default function Login() {
   const handleSubmit = async function(event) {
     event.preventDefault();
     let user = { email: email, password: password };
+
     try {
       const response = await APIServices.login(user);
       if (response) {
@@ -128,7 +129,17 @@ export default function Login() {
                           icon={faUser}
                         />
                       </div>
-                      {/* <ToastContainer /> */}
+                      <ToastContainer 
+                      position="top-center"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover                      
+                      />
                       {toast.success}
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <TextField

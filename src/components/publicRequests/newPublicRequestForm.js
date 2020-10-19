@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
   },
   rewardContent: {
     padding: "1% 1% 1%",
-    width: "120%",
+    width: "100%",
     height: "10%",
     marginLeft: "auto",
     marginRight: "auto",
@@ -139,7 +139,7 @@ export default function NewPublicRequestForm() {
 
   // Public Request Form Fields
   const [requestTitle, setRequestTitle] = useState(null);
-  const [requestedBy] = useState(userData.user.email);
+  const [requestedBy] = useState(userData? userData.user.email: null);
   const [requestTaskDescription, setRequestTaskDescription] = useState(null);
 
   // Toast details
@@ -160,7 +160,7 @@ export default function NewPublicRequestForm() {
   const addReward = (reward) => {
     // const newRewardItem = reward.reward;
     const newReward = [...rewards, reward];
-    // console.log(newReward);
+    console.log(newReward);
     setRewards(newReward);
   };
 
@@ -236,6 +236,16 @@ export default function NewPublicRequestForm() {
       return true;
     }
 
+  }
+
+  const userDataAvailable = () => {
+    try {
+      if(userData.user.email) {
+        return true
+      }
+    } catch (err) {
+      return false
+    }
   }
 
   return (
@@ -333,7 +343,13 @@ export default function NewPublicRequestForm() {
                 onChange={e => setRequestTaskDescription(e.target.value)}
               />
             </Grid>
-        <div className={classes.newRewardFormDiv}><RewardForm addReward={addReward} /></div>
+        {userDataAvailable? 
+          <div className={classes.newRewardFormDiv}>
+            <RewardForm 
+              addReward={addReward} 
+              userData={userData}
+            />
+          </div> : ""}
         {/* <div className={classes.rewardTitle}>Reward details</div> */}
         <Fragment>
             <div className={classes.rewardContent}>
@@ -345,6 +361,7 @@ export default function NewPublicRequestForm() {
                       reward={reward}
                       removeReward={removeReward}
                       location={location.pathname}
+                      userData={userData}
                     />
                   ))}
                 </List>

@@ -74,10 +74,17 @@ const useStyles = makeStyles(theme => ({
     }
   },
   rewardContent: {
-    padding: "1% 1% 1%",
-    width: "120%",
-    marginLeft: "auto",
-    marginRight: "auto"
+    width: "100%",
+    // marginLeft: "auto",
+    // marginRight: "auto",
+    overflow: "scroll",
+    overflowX: "hidden",
+    overflowY: "auto",
+    border: "1px #1B9AAA solid",
+    backgroundColor: "#F6F6F6",
+    padding: "1% 1% 1% 1%",
+    height: "100px",    
+
   },
   submitButtonDiv: {
     marginLeft: "auto",
@@ -167,6 +174,9 @@ const useStyles = makeStyles(theme => ({
     marginLeft: "auto",
     marginRight: "auto",
     marginBottom: "1%"
+  },
+  rewardHeading: {
+    marginLeft: "2%"
   }
 }));
 
@@ -180,7 +190,7 @@ export default function FavourModal({
   Location,
   FavourImageKey,
   ModalType,
-  PublicRequestData
+  PublicRequestData,
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -203,6 +213,16 @@ export default function FavourModal({
   const [toastMessage, setToastMessage] = useState(null);
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
+
+  const userDataAvailable = () => {
+    try {
+      if(userData) {
+        return true
+      }
+    } catch (err) {
+      return false
+    }
+  }
 
   // Controls how the Favour or Public Request component is opened to show more details
   const handleOpen = () => {
@@ -232,7 +252,10 @@ export default function FavourModal({
       // Push the requesterUserId into the userArray      
       if (!userArray.includes(requester._id)) userArray.push(requester._id);
       // Push the current into the userArray, in case they want to add a reward to the public request
-      if (!userArray.includes(userData.user._id)) userArray.push(userData.user._id);
+      if (userDataAvailable === true) {
+        if (!userArray.includes(userData.user._id)) userArray.push(userData.user._id);
+      }
+      
 
       // Get user details for the relevant userIds stored in the array
       // console.log(userArray);
@@ -436,9 +459,18 @@ export default function FavourModal({
                 />
               </Grid>              
               <div className={classes.centeredDiv}>
-                {Location === "/public_request"? (<NewRewardForm addReward={addReward} />) : ""}
+                {/*If the userData is available and if the Location is public request, then show the New Reward Form
+                   Else return nothing*/}
+                {userDataAvailable === true?
+                  Location === "/public_request"? (<NewRewardForm addReward={addReward} />) : "" 
+                  : ""
+                }
               </div>
+              
               {Location === "/public_request"? 
+              <>
+              <div className={classes.rewardHeading}>Reward Details</div>
+              <Grid item xs={12} sm={12}>
               <Fragment>
                 <div className={classes.rewardContent}>
                   <List className="reward-list">
@@ -450,11 +482,14 @@ export default function FavourModal({
                         removeReward={removeReward}
                         users={publicRequestUserDetails? publicRequestUserDetails : ""}
                         location={Location}
+                        userData={userData}
                       />
                     ))}
                   </List>
                 </div>
-              </Fragment> : ""}
+              </Fragment> 
+              </Grid>
+              </>: ""}
               {showDeleteFavour()?
               (<>
               <div className={classes.centeredDiv}>
@@ -480,33 +515,44 @@ export default function FavourModal({
               
               </>) :
                 <div className={classes.actionButtons}>
-                <button className={classes.deleteRecordFromDB}
-                     key={"deleteFavour"}
-                     onClick={() => deleteFavour(FavourId)}>
-                  {Location === "/public_request"? "Delete request" : "Delete favour"}
-                <div className={classes.deleteButtonFromDB}>
-                    <div>
-                      <FontAwesomeIcon
-                        key={"deleteFavour"}
-                        className={classes.trashIcon}
-                        icon={faTrash}
-                      />
-                  </div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  href={"/login"}             
+                >
+                  Claim Public Request
+                </Button>
                 </div>
-                </button>
-              <button className={classes.completeFavour}>
-              <div className={classes.deleteRecordFromDB}>{Location === "/public_request"? "" : "Complete favour"}</div>
-              <div                  
-                  // onClick={() => deleteFavour(FavourId)}
-                  >
-                    <FontAwesomeIcon
-                      key={"completeFavour"}
-                      className={classes.trashIcon}
-                      icon={faCheckSquare}
-                    />
-                </div>
-              </button>
-              </div>
+
+              //   <div className={classes.actionButtons}>
+              //   <button className={classes.deleteRecordFromDB}
+              //        key={"deleteFavour"}
+              //        onClick={() => deleteFavour(FavourId)}>
+              //     {Location === "/public_request"? "Delete request" : "Delete favour"}
+              //   <div className={classes.deleteButtonFromDB}>
+              //       <div>
+              //         <FontAwesomeIcon
+              //           key={"deleteFavour"}
+              //           className={classes.trashIcon}
+              //           icon={faTrash}
+              //         />
+              //     </div>
+              //   </div>
+              //   </button>
+              // <button className={classes.completeFavour}>
+              // <div className={classes.deleteRecordFromDB}>{Location === "/public_request"? "" : "Complete favour"}</div>
+              // <div                  
+              //     // onClick={() => deleteFavour(FavourId)}
+              //     >
+              //       <FontAwesomeIcon
+              //         key={"completeFavour"}
+              //         className={classes.trashIcon}
+              //         icon={faCheckSquare}
+              //       />
+              //   </div>
+              // </button>
+              // </div>
               }
               
             </Grid>

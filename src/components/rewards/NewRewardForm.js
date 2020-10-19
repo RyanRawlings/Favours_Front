@@ -3,7 +3,6 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import UserContext from "../../context/UserContext";
 import * as APIServices from "../../api/TestAPI";
 import * as UserAPI from "../../api/UserAPI";
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -25,10 +24,9 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function RewardForm({ addReward }) {
+export default function RewardForm({ addReward, userData }) {
     const classes = useStyles();
     const [value, setValue] = useState("");
-    const { userData, setUserData } = useContext(UserContext);
 
     const [favourRewards, setFavourRewards] = useState([]);
     const [clearOptionText, setClearOptionText] = useState(false);
@@ -50,7 +48,7 @@ export default function RewardForm({ addReward }) {
     const [rewardName, setRewardName] = useState(null);
     const [rewardQuantity, setRewardQuantity] = useState(1);
     // Show the user email on screen
-    const [providedBy] = useState(userData.user.email);
+    const [providedBy] = useState(userData.user !== undefined? userData.user.email : null);
     const [rewardId, setRewardId] = useState(null);
 
     const handleSubmit = e => {
@@ -58,7 +56,7 @@ export default function RewardForm({ addReward }) {
       e.preventDefault();
 
       // Pass the user id instead
-      addReward({rewardId: rewardId, rewardName: rewardName, rewardQuantity: rewardQuantity, providedBy: userData.user._id});
+      addReward({rewardId: rewardId, rewardName: rewardName, rewardQuantity: rewardQuantity, offeredBy: userData.user.email, providedBy: userData.user._id});
       setValue("");
       setRewardName(null);
     };
@@ -152,7 +150,7 @@ export default function RewardForm({ addReward }) {
                     shrink: true,
                   }}
                   disabled={true}
-                  defaultValue={userData.user.email}
+                  defaultValue={providedBy}
                   // placeholder={userData.email}
                 />
             </Grid>
