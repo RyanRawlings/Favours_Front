@@ -195,7 +195,7 @@ export default function FavourModal({
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
-  console.log("favourmodal props:", User);
+  console.log("favourmodal props:", userData);
   // Rewards created for the Public Request
   const [rewards, setRewards] = useState(Rewards ? Rewards : []);
 
@@ -539,7 +539,7 @@ export default function FavourModal({
                 </>
               ) : (
                 <div className={classes.actionButtons}>
-                  {User.token ? (
+                  {userData.token ? (
                     <Button variant="contained" color="primary" size="large">
                       Claim
                     </Button>
