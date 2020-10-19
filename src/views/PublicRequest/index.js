@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     display: "inline-block",
     marginRight: "40%",
     marginLeft: "-40%"
-  },
+  }
 }));
 
 export default function PublicRequest(props) {
@@ -77,10 +77,11 @@ export default function PublicRequest(props) {
   const [requestsPerPage, setRequestsPerPage] = useState(4);
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
 
+  console.log("props:", props.user.token);
   const classes = useStyles();
   // // const [tag, setTag] = useState(0);
   const location = useLocation();
-  
+
   useEffect(() => {
     async function getPublicRequestList() {
       const getPublicRequests = await APIServices.getPublicRequests();
@@ -100,9 +101,9 @@ export default function PublicRequest(props) {
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  const getLocation = () => {    
+  const getLocation = () => {
     return location.pathname;
-  }
+  };
 
   //search keywords or reward item
   const handleSearch = input => {
@@ -133,7 +134,7 @@ export default function PublicRequest(props) {
     });
     setLoading(false);
     setSearchResult(newData);
-    
+
     console.log("searchResult", searchResult);
   };
 
@@ -177,17 +178,18 @@ export default function PublicRequest(props) {
                                 <div
                                   className="card_right"
                                   key={key + "-cardRight"}
-                                > 
-                                <div className={classes.modal}>
-                                  <FavourModal
-                                    key={key + "-modal"}
-                                    FavourId={data._id}
-                                    FavourTitle={data.title}
-                                    Requester={data.requestUser}
-                                    FavourDescription={data.description}
-                                    Rewards={data.rewards}
-                                    Location={getLocation()}
-                                  />
+                                >
+                                  <div className={classes.modal}>
+                                    <FavourModal
+                                      key={key + "-modal"}
+                                      FavourId={data._id}
+                                      FavourTitle={data.title}
+                                      Requester={data.requestUser}
+                                      FavourDescription={data.description}
+                                      Rewards={data.rewards}
+                                      Location={getLocation()}
+                                      User={props.user}
+                                    />
                                   </div>
                                 </div>
                               </div>

@@ -70,9 +70,32 @@ export const getFavourTypes = () =>
 export const createPublicRequest = data =>
   callAPI("post", "http://localhost:4000/api/publicRequest/create", data);
 
-export const getPublicRequests = () =>
-  callAPI("get", "http://localhost:4000/api/publicRequest/get");
+// export const getPublicRequests = () =>
+//   callAPI("get", "http://localhost:4000/api/publicRequest/get");
 
+export function getPublicRequests() {
+  return new Promise((resolve, reject) => {
+    document.cookie.split(";").map(item => {
+      console.log("cookies:", item);
+      if (item.match("auth-token")) {
+        console.log(item.replace(" auth-token=", ""));
+      }
+    });
+    axios
+      .get("http://localhost:4000/api/publicRequest/get")
+      .then(response => {
+        if (response.status >= 200 && response.status < 300) {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      })
+      .catch(reject => {
+        //console.log(reject.response);
+        toast.error(reject.response.data);
+      });
+  });
+}
 export const getPublicRequestUserDetails = data =>
   callAPI(
     "post",

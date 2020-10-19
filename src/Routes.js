@@ -25,9 +25,9 @@ import RepayFavour from "./views/RepayFavour/RepayFavour";
 
 const Routes = () => {
   const [userData, setUserData] = useState({
-      token: undefined,
-      user: undefined
-    });
+    token: undefined,
+    user: undefined
+  });
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -66,7 +66,13 @@ const Routes = () => {
           <Route path="/home" component={HomePage}></Route>
           <Route path="/signup" component={Signup}></Route>
           <Route path="/login" component={Login}></Route>
-          <Route path="/public_request" component={PublicRequest} />
+          <Route
+            path="/public_request"
+            render={props => {
+              props["user"] = userData;
+              return <PublicRequest {...props}></PublicRequest>;
+            }}
+          />
           <Route path="/record_favour" component={RecordFavour} />
           <Route path="/repay_favour" component={RepayFavour} />
           {/* //Authenticated Routes */}

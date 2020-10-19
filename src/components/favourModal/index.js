@@ -29,8 +29,8 @@ import UserContext from "../../context/UserContext";
 import DeleteFavour from "../../components/deleteFavour/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -83,8 +83,7 @@ const useStyles = makeStyles(theme => ({
     border: "1px #1B9AAA solid",
     backgroundColor: "#F6F6F6",
     padding: "1% 1% 1% 1%",
-    height: "100px",    
-
+    height: "100px"
   },
   submitButtonDiv: {
     marginLeft: "auto",
@@ -191,11 +190,12 @@ export default function FavourModal({
   FavourImageKey,
   ModalType,
   PublicRequestData,
+  User
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
-
+  console.log("favourmodal props:", User);
   // Rewards created for the Public Request
   const [rewards, setRewards] = useState(Rewards ? Rewards : []);
 
@@ -207,7 +207,9 @@ export default function FavourModal({
   // const [location, setLocation] = useState(Location);
   // const [favourImageKey ,setFavourImageKey] = useState(FavourImageKey);
 
-  const [publicRequestUserDetails, setPublicRequestUserDetails] = useState(PublicRequestData? PublicRequestData : []);
+  const [publicRequestUserDetails, setPublicRequestUserDetails] = useState(
+    PublicRequestData ? PublicRequestData : []
+  );
 
   const [isDeleted, setIsDeleted] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
@@ -216,13 +218,13 @@ export default function FavourModal({
 
   const userDataAvailable = () => {
     try {
-      if(userData) {
-        return true
+      if (userData) {
+        return true;
       }
     } catch (err) {
-      return false
+      return false;
     }
-  }
+  };
 
   // Controls how the Favour or Public Request component is opened to show more details
   const handleOpen = () => {
@@ -249,21 +251,23 @@ export default function FavourModal({
         }
       }
 
-      // Push the requesterUserId into the userArray      
+      // Push the requesterUserId into the userArray
       if (!userArray.includes(requester._id)) userArray.push(requester._id);
       // Push the current into the userArray, in case they want to add a reward to the public request
       if (userDataAvailable === true) {
-        if (!userArray.includes(userData.user._id)) userArray.push(userData.user._id);
+        if (!userArray.includes(userData.user._id))
+          userArray.push(userData.user._id);
       }
-      
 
       // Get user details for the relevant userIds stored in the array
       // console.log(userArray);
-      const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(userArray);
+      const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(
+        userArray
+      );
 
-      if (getPublicRequestsUserDetails) {      
+      if (getPublicRequestsUserDetails) {
         // Return array and set the request user details state
-        setPublicRequestUserDetails(getPublicRequestsUserDetails);        
+        setPublicRequestUserDetails(getPublicRequestsUserDetails);
       } else {
         console.log("There was an issue with getting the data");
       }
@@ -293,7 +297,7 @@ export default function FavourModal({
 
   const getUserEmail = (userId, nameId, label, disabled) => {
     // Evaluate reward user id against data retrieved from db, and return relevant email
-    if(publicRequestUserDetails) {
+    if (publicRequestUserDetails) {
       for (let i = 0; i < publicRequestUserDetails.length; i++) {
         if (userId === publicRequestUserDetails[i]._id) {
           // Return relevant user email
@@ -312,26 +316,24 @@ export default function FavourModal({
         }
       }
     } else {
-      console.log("PublicRequests Object is undefined or null...")
+      console.log("PublicRequests Object is undefined or null...");
     }
-    
   };
 
   const deleteFavour = async FavourId => {
-
     const response = await APIServices.deleteOneFavour({ _id: FavourId });
     if (response.ok === true) {
       setIsDeleted(true);
       setToastMessage(response.message);
       toast.success("Successfully deleted Favour");
 
-      await delay(5000)
+      await delay(5000);
       setOpen(false);
       refreshPage();
     } else {
       toast.error("Error deleting the Favour, execution has halted");
 
-      await delay(5000)
+      await delay(5000);
       setOpen(false);
       refreshPage();
     }
@@ -347,7 +349,7 @@ export default function FavourModal({
     } else {
       return false;
     }
-  }
+  };
 
   return (
     <div>
@@ -358,7 +360,9 @@ export default function FavourModal({
         onClick={handleOpen}
         className={classes.modalButton}
       >
-        {Location === "/public_request"? "View public request details": "View favour details"}
+        {Location === "/public_request"
+          ? "View public request details"
+          : "View favour details"}
       </Button>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -375,19 +379,21 @@ export default function FavourModal({
         <Fade in={open}>
           <div className={classes.paper}>
             <Grid container className={classes.modalContent} spacing={3}>
-            <ToastContainer
-              position="top-center"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
-              <Grid className={classes.headingDiv} item xs={12}>                
-              <div className={classes.modalHeading}>{Location === "/public_request"? "Public Request" : "Favour"}</div>
+              <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              />
+              <Grid className={classes.headingDiv} item xs={12}>
+                <div className={classes.modalHeading}>
+                  {Location === "/public_request" ? "Public Request" : "Favour"}
+                </div>
                 <div className={classes.closeButtonDiv}>
                   <IconButton
                     aria-label="delete"
@@ -416,18 +422,24 @@ export default function FavourModal({
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                {Location === "/public_request"?
+                {Location === "/public_request" ? (
                   <TextField
-                  id="requestedBy"
-                  name="requestedBy"
-                  label="Requested By"
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  disabled={true}
-                  defaultValue={requester.email? requester.email : requester? requester : ""}
-                />
-                                 : (
+                    id="requestedBy"
+                    name="requestedBy"
+                    label="Requested By"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    disabled={true}
+                    defaultValue={
+                      requester.email
+                        ? requester.email
+                        : requester
+                        ? requester
+                        : ""
+                    }
+                  />
+                ) : (
                   <TextField
                     id="requestedBy"
                     name="requestedBy"
@@ -457,73 +469,92 @@ export default function FavourModal({
                   value={favourDescription}
                   // onChange={e => setRequestTaskDescription(e.target.value)}
                 />
-              </Grid>              
+              </Grid>
               <div className={classes.centeredDiv}>
                 {/*If the userData is available and if the Location is public request, then show the New Reward Form
                    Else return nothing*/}
-                {userDataAvailable === true?
-                  Location === "/public_request"? (<NewRewardForm addReward={addReward} />) : "" 
-                  : ""
-                }
+                {userDataAvailable === true ? (
+                  Location === "/public_request" ? (
+                    <NewRewardForm addReward={addReward} />
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  ""
+                )}
               </div>
-              
-              {Location === "/public_request"? 
-              <>
-              <div className={classes.rewardHeading}>Reward Details</div>
-              <Grid item xs={12} sm={12}>
-              <Fragment>
-                <div className={classes.rewardContent}>
-                  <List className="reward-list">
-                    {rewards.map((reward, index) => (
-                      <Reward
-                        key={index}
-                        index={index}
-                        reward={reward}
-                        removeReward={removeReward}
-                        users={publicRequestUserDetails? publicRequestUserDetails : ""}
-                        location={Location}
-                        userData={userData}
-                      />
-                    ))}
-                  </List>
-                </div>
-              </Fragment> 
-              </Grid>
-              </>: ""}
-              {showDeleteFavour()?
-              (<>
-              <div className={classes.centeredDiv}>
-                <UploadImage
-                  FavourId={FavourId}
-                  FavourImageKey={FavourImageKey}
-                />
-              </div>
-                             
-              <button className={classes.deleteButtonFromDB}
-                      key={"deleteFavour"}
-                      onClick={() => deleteFavour(FavourId)}
-              >
-                <div
-                  >
-                    <FontAwesomeIcon
-                      key={"deleteFavour"}
-                      className={classes.trashIcon}
-                      icon={faTrash}
+
+              {Location === "/public_request" ? (
+                <>
+                  <div className={classes.rewardHeading}>Reward Details</div>
+                  <Grid item xs={12} sm={12}>
+                    <Fragment>
+                      <div className={classes.rewardContent}>
+                        <List className="reward-list">
+                          {rewards.map((reward, index) => (
+                            <Reward
+                              key={index}
+                              index={index}
+                              reward={reward}
+                              removeReward={removeReward}
+                              users={
+                                publicRequestUserDetails
+                                  ? publicRequestUserDetails
+                                  : ""
+                              }
+                              location={Location}
+                              userData={userData}
+                            />
+                          ))}
+                        </List>
+                      </div>
+                    </Fragment>
+                  </Grid>
+                </>
+              ) : (
+                ""
+              )}
+              {showDeleteFavour() ? (
+                <>
+                  <div className={classes.centeredDiv}>
+                    <UploadImage
+                      FavourId={FavourId}
+                      FavourImageKey={FavourImageKey}
                     />
-                </div>
-              </button>
-              
-              </>) :
+                  </div>
+
+                  <button
+                    className={classes.deleteButtonFromDB}
+                    key={"deleteFavour"}
+                    onClick={() => deleteFavour(FavourId)}
+                  >
+                    <div>
+                      <FontAwesomeIcon
+                        key={"deleteFavour"}
+                        className={classes.trashIcon}
+                        icon={faTrash}
+                      />
+                    </div>
+                  </button>
+                </>
+              ) : (
                 <div className={classes.actionButtons}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  href={"/login"}             
-                >
-                  Claim Public Request
-                </Button>
+                  {User.token ? (
+                    <Button variant="contained" color="primary" size="large">
+                      Claim
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      href={"/login"}
+                    >
+                      Claim
+                    </Button>
+                  )}
                 </div>
+              )
 
               //   <div className={classes.actionButtons}>
               //   <button className={classes.deleteRecordFromDB}
@@ -542,7 +573,7 @@ export default function FavourModal({
               //   </button>
               // <button className={classes.completeFavour}>
               // <div className={classes.deleteRecordFromDB}>{Location === "/public_request"? "" : "Complete favour"}</div>
-              // <div                  
+              // <div
               //     // onClick={() => deleteFavour(FavourId)}
               //     >
               //       <FontAwesomeIcon
@@ -554,7 +585,6 @@ export default function FavourModal({
               // </button>
               // </div>
               }
-              
             </Grid>
           </div>
         </Fade>
