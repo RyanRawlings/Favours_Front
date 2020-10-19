@@ -29,6 +29,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as FavourAPI from "../../api/FavourAPI";
 import { useLocation } from "react-router-dom";
+import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -71,8 +72,8 @@ const useStyles = makeStyles((theme) => ({
       marginRight: "auto",
     },
     recordButton: {
-      marginLeft: "auto",
-      marginRight: "auto",
+      marginLeft: "15%",
+      marginTop: "5%",
       paddingBottom: "5%"
     },
     textArea: {
@@ -82,10 +83,26 @@ const useStyles = makeStyles((theme) => ({
     // secondRow: {
     //   display: "flex",
     //   width: "auto"
-    // }
+    // },
+    imageBox: {
+      marginLeft: "10%",
+      marginTop: "5%",
+      border: "1px solid",      
+      borderRadius: "3px",
+      padding: "0% 1% 1%",
+      height: "10%",
+      backgroundColor: "#1B9AAA",
+      color: "white"
+
+
+    },
+    uploadProof: {
+      marginTop: "5%",
+      marginLeft: "2%"
+    }
   }));
 
-const RecordFavourForm = () => {
+const RecordFavourForm = ({ userData }) => {
     const classes = useStyles();
     const [favourType, setFavourType] = useState([]);
     const [debtor, setDebtor] = useState(null);
@@ -96,6 +113,7 @@ const RecordFavourForm = () => {
     const [favourDescription, setFavourDescription] = useState(null);
     const [favourDate, setFavourDate] = useState(null);
     const [userList, setUserList] = useState([]);
+    const [fileList, setFileList] = useState([]);
 
     const location = useLocation();
 
@@ -170,20 +188,46 @@ const RecordFavourForm = () => {
           }
       }
 
-      const handleSubmit = async () => {
-        console.log(favourTypeId);
-        const newFavourData = {
-          requestUser: getUserIdFromEmail(creditor),
-          owingUser: getUserIdFromEmail(debtor),
-          description: favourDescription,
-          favourOwed: favourName,
-          is_completed: false,
-          proofs: {
-            is_uploaded: false,
-            uploadImageUrl: null,
-            snippet: ""
-          }
+      const favourValidation = () => {
+        // let validationResult = true;
+        if (creditor === debtor) {          
+          // toast.error("You have set the creditor and debtor to the same value");
+          // validationResult = false;
+          return [false, "You have set the creditor and debtor to the same value"];
         }
+        if (creditor !== userData.user.email && fileList.length === 0) {
+          // toast.error("You have to provide proof to create favours other people owe you");
+          // validationResult = false;
+          return [false, "You have to provide proof to create favours other people owe you"];
+        }
+        if (favourName === null) {
+          // toast.error("You haven't choosen a Favour type");
+          // validationResult = false;
+          return [false, "You haven't choosen a Favour type"]
+        }
+
+        return [true, "Success"];
+      }
+
+      console.log(debtor)
+
+      const handleSubmit = async () => {
+        // console.log(favourValidation());
+        let favourValidationResult = favourValidation();
+        if (favourValidationResult[0] === true) {
+          // console.log(favourTypeId);
+            const newFavourData = {
+              requestUser: getUserIdFromEmail(creditor),
+              owingUser: getUserIdFromEmail(debtor),
+              description: favourDescription,
+              favourOwed: favourName,
+              is_completed: false,
+              proofs: {
+                        is_uploaded: false,
+                        uploadImageUrl: null,
+                        snippet: ""
+                    }
+            }
 
         // console.log(newFavourData);
         
@@ -197,9 +241,21 @@ const RecordFavourForm = () => {
           }
         }    
 
-        await delay(5000);
-        window.location.reload(); 
+          await delay(5000);
+          window.location.reload();
+        } else {
+          toast.error(favourValidationResult[1]);
+        }
       }
+
+      const addFile = (data) => {
+        let tempFileList = fileList;
+        tempFileList.push(data);
+    
+        setFileList(tempFileList);
+      }
+
+      console.log(fileList);
 
     return (
         <div className={classes.root}>
@@ -283,7 +339,6 @@ const RecordFavourForm = () => {
                                         type="date"
                                         label="Paid On"
                                         name="PaidDate"
-                                        className={classes,TextField}
                                         InputLabelProps={{shrink: true,}}
                                         onChange={e => setFavourDate(e.target.value)}
                             />
@@ -305,6 +360,10 @@ const RecordFavourForm = () => {
                               }}
                               onChange={e => setFavourDescription(e.target.value)}
                             />
+                            <div className={classes.imageBox}>
+                                <ImageDragAndDrop addFile={addFile}/>
+                            </div>
+                            <div className={classes.uploadProof}><Typography>Upload Proof</Typography></div>
                             <div className={classes.recordButton}>
                               <Button
                                       variant="contained"

@@ -36,7 +36,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
     position: "relative",
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
+    overflow: "hidden"
   },
   appBar: {
     backgroundColor: "#1B9AAA",

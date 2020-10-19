@@ -1,39 +1,40 @@
 import React, {useEffect, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
+import { makeStyles } from "@material-ui/core/styles";
 
-const thumbsContainer = {
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  marginTop: 16
-};
+const useStyles = makeStyles((theme) => ({
+  thumbsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: "-35%"
+  },
+  thumb: {
+    display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    width: 100,
+    height: 100,
 
-const thumb = {
-  display: 'inline-flex',
-  borderRadius: 2,
-  border: '1px solid #eaeaea',
-  marginBottom: 8,
-  marginRight: 8,
-  width: 100,
-  height: 100,
-  padding: 4,
-  boxSizing: 'border-box'
-};
+  },
+  thumbInner: {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden'
+  },
+  img: {
+    display: 'block',
+    width: 'auto',
+    height: '100%'
+  },
+  infoText: {
+    marginLeft: "auto",
+    marginRight: "auto",
+  }
+}));
 
-const thumbInner = {
-  display: 'flex',
-  minWidth: 0,
-  overflow: 'hidden'
-};
-
-const img = {
-  display: 'block',
-  width: 'auto',
-  height: '100%'
-};
-
-
-export default function Previews(props) {
+export default function Previews({props, addFile}) {
+  const classes = useStyles();
   const [files, setFiles] = useState([]);
   const {getRootProps, getInputProps} = useDropzone({
     accept: 'image/*',
@@ -41,15 +42,19 @@ export default function Previews(props) {
       setFiles(acceptedFiles.map(file => Object.assign(file, {
         preview: URL.createObjectURL(file)
       })));
+      
+      addFile(acceptedFiles.map(file => Object.assign(file, {
+        preview: URL.createObjectURL(file)
+      })))
     }
   });
-  
+
   const thumbs = files.map(file => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
+    <div className={classes.thumb} key={file.name}>
+      <div className={classes.thumbInner}>
         <img
           src={file.preview}
-          style={img}
+          className={classes.img}
         />
       </div>
     </div>
@@ -64,13 +69,14 @@ export default function Previews(props) {
     <section className="container">
       <div {...getRootProps({className: 'dropzone'})}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop a file here, or click to select a file</p>
-        <div>
-          <aside style={thumbsContainer}>
+        {files.length > 0? 
+        <div className={classes.imgDiv}>
+          <div className={classes.thumbsContainer}>
             {thumbs}
-          </aside>
-        </div>
+          </div>
+        </div> : <div className={classes.infoText}>Browse for files</div>}
       </div>
+      
 
     </section>
   );

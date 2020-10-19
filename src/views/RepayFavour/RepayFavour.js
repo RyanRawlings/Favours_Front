@@ -30,6 +30,7 @@ import * as UserAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 import { Redirect } from "react-router-dom";
+// import UserContext from "../../context/UserContext";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -143,6 +144,7 @@ function CustomNoRowsOverlay(loading) {
 const RepayFavour = (props) => {
   const [loading, setLoading] = useState(true);
   const [favoursSelected, setFavoursSelected] = useState([]);
+  const { userData } = useContext(UserContext);
 
   // console.log(props);
   // console.log(props.location.state.userData.user._id);
@@ -156,7 +158,7 @@ const RepayFavour = (props) => {
   useEffect(() => {
     async function fetchAllIOUList() {
       // const fetchFavours = await APIServices.allIOUList();
-      const userId = props.location.state.userData.user._id;                
+      const userId = userData.user._id? userData.user._id : props.location.state.userData.user._id? props.location.state.userData.user._id : "";                
 
       try {        
         const fetchFavours = await FavourAPI.getFavours({userId: userId});
@@ -203,7 +205,7 @@ const RepayFavour = (props) => {
               favourType: fetchFavours[0].credits[i].favourOwed,
               favourDebtor: getUserEmail(fetchFavours[0].credits[i].requestUser),
               favourCreditor: getUserEmail(fetchFavours[0].credits[i].owingUser),
-              favourStatus: fetchFavours[0].credits[i].is_complete === true? "Paid" : "Unpaid",
+              favourStatus: fetchFavours[0].credits[i].is_completed === true? "Paid" : "Unpaid",
               favourDate: date
             };
 
@@ -238,12 +240,17 @@ const RepayFavour = (props) => {
     const classes = useStyles();   
 
     const handleSubmit = () => {
-      return <Redirect  
-        to={{ 
-          pathname: "/repay_selected_favours", 
-          state: { setOpen: false, favoursSelectedToRepay: favoursSelected } 
-            }} 
-      />
+      // return <Redirect  
+      //   to={{ 
+      //     pathname: "/repay_selected_favours", 
+      //     state: { setOpen: false, favoursSelectedToRepay: favoursSelected } 
+      //       }} 
+      //     />
+      props.history.push({
+            pathname: "/repay_selected_favours",
+            state: {setOpen: false,
+                    favoursToBeRepayed: favoursSelected}
+          })
     }
           return (
             <div className={classes.root}>
@@ -261,7 +268,7 @@ const RepayFavour = (props) => {
                                           components={{noRowsOverlay: () => CustomNoRowsOverlay(loading)}}                                      
                                           rows={rows? rows: rows} 
                                           columns={columns} 
-                                          pageSize={5} 
+                                          pageSize={6} 
                                           checkboxSelection 
                                           onSelectionChange={e => handleFavourSelection(e.rows)} />
                                     </div>

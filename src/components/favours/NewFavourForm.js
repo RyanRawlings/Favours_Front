@@ -276,7 +276,7 @@ export default function NewFavourForm() {
                 </IconButton>
               </div>
             </Grid>
-            <RecordFavour />            
+            <RecordFavour userData={userData}/>            
           </Grid> 
         </Fade>
       </Modal>

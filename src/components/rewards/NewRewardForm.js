@@ -8,7 +8,6 @@ import * as UserAPI from "../../api/UserAPI";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CounterButtonGroup from "../counterButtonGroup/index";
 import UserContext from "../../context/UserContext";
-import Prompt from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 //   rewardQuantity: {
@@ -106,6 +105,7 @@ export default function RewardForm({ addReward, userData }) {
     }
 
     return (
+
       <form onSubmit={handleSubmit}>
          <Grid className={classes.listHeading} container spacing={1}>
             <Grid item xs={'auto'} xl={'auto'} sm={4}>

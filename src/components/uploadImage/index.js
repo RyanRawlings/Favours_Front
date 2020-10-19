@@ -83,6 +83,7 @@ export default function UploadImage({ FavourId, FavourImageKey }) {
         current.src = e.target.result;
       };
       // const blob = reader.readAsDataURL(file);
+      console.log("File: ", file);
       setFileToUpload(file);
     }
   };
