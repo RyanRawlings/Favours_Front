@@ -305,6 +305,7 @@ export default function FavourModal({
     ];
     setPublicRequestUserDetails(newPublicRequestUserDetails);
     // add new reward
+
     const newReward = [
       ...rewards,
       {
@@ -326,10 +327,31 @@ export default function FavourModal({
     console.log("resultadd:", response.data.rewards);
   };
 
-  const removeReward = index => {
+  const removeReward = async index => {
+    //slice reward
     const newReward = [...rewards];
     newReward.splice(index, 1);
-    setRewards(newReward);
+
+    // fetch new user
+    const newPublicRequestUserDetails = [
+      ...publicRequestUserDetails,
+      {
+        _id: userData.user._id,
+        firstname: userData.user.firstname,
+        email: userData.user.email
+      }
+    ];
+    setPublicRequestUserDetails(newPublicRequestUserDetails);
+    // fetch new reward
+
+    const response = await APIServices.addReward(
+      favourId,
+      newReward,
+      newPublicRequestUserDetails
+    );
+    setToastMessage(response.message);
+    setRewards(response.data.rewards);
+    console.log("result removez:", response.data.rewards);
     toast.success("Successfully removed reward from request");
   };
 
