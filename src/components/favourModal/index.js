@@ -27,6 +27,7 @@ import * as APIServices from "../../api/TestAPI";
 import UploadImage from "../uploadImage/index";
 import UserContext from "../../context/UserContext";
 import DeleteFavour from "../../components/deleteFavour/index";
+import ClaimModal from "../claimModal/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
@@ -194,7 +195,7 @@ export default function FavourModal({
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { userData, setUserData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext ? UserContext : {});
   console.log("favourmodal props:", userData);
   // Rewards created for the Public Request
   const [rewards, setRewards] = useState(Rewards ? Rewards : []);
@@ -218,8 +219,8 @@ export default function FavourModal({
 
   const userDataAvailable = () => {
     try {
-      if(userData.user.email) {
-        return true
+      if (userData.user.email) {
+        return true;
       }
     } catch (err) {
       return false;
@@ -401,7 +402,7 @@ export default function FavourModal({
                     onClick={handleClose}
                   >
                     <CancelPresentationIcon
-                      fontSize="medium"
+                      fontSize="default"
                       className={classes.closeButton}
                     />
                   </IconButton>
@@ -539,20 +540,7 @@ export default function FavourModal({
                 </>
               ) : (
                 <div className={classes.actionButtons}>
-                  {userData.token ? (
-                    <Button variant="contained" color="primary" size="large">
-                      Claim
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="large"
-                      href={"/login"}
-                    >
-                      Claim
-                    </Button>
-                  )}
+                  <ClaimModal />
                 </div>
               )
 
