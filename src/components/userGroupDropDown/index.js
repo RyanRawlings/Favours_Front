@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect }from "react";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import * as UserAPI from "../../api/UserAPI";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -10,14 +11,18 @@ const useStyles = makeStyles(theme => ({
     fontSize: "20px"
   },
   menu: {
-    marginTop: "2%"
+    marginTop: "2%",
   }
 }));
 
-export default function GroupDropDown() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+const GroupDropDown = ({ props, userData }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [groups, setGroups] = useState([]);
+  const [activeGroup, setActiveGroup] = useState([]);
+
   const classes = useStyles();
   const theme = useTheme();
+
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -25,6 +30,21 @@ export default function GroupDropDown() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    async function getUserGroupList() {
+      const userGroups = await UserAPI.getUserGroups({ userId: userData.user._id });
+      
+      if (userGroups) {
+        console.log(userGroups);
+        setGroups(userGroups);
+        setActiveGroup(userGroups[0]? userGroups[0] : []);
+      }
+      
+    }
+  
+    getUserGroupList();
+  }, []);
 
   return (
     <div>
@@ -34,7 +54,7 @@ export default function GroupDropDown() {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        UTS
+        {activeGroup? activeGroup.group_name : ""}
       </Button>
       <Menu
         id="simple-menu"
@@ -44,14 +64,18 @@ export default function GroupDropDown() {
         onClose={handleClose}
         className={classes.menu}
       >
-        <MenuItem onClick={handleClose}>UTS</MenuItem>
-        <MenuItem onClick={handleClose}>
-          UTS - Advanced Internet Programming
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          UTS - Applications Programming
-        </MenuItem>
+        {groups?
+          groups.map((item, index) => (
+            <MenuItem 
+              onClick={handleClose}
+              key={index}
+            >{item.group_name}
+            </MenuItem>
+          )) : ""          
+        }
       </Menu>
     </div>
   );
 }
+
+export default GroupDropDown;

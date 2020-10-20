@@ -330,6 +330,7 @@ export default function FavourModal({
     const newReward = [...rewards];
     newReward.splice(index, 1);
     setRewards(newReward);
+    toast.success("Successfully removed reward from request");
   };
 
   const getUserEmail = (userId, nameId, label, disabled) => {
