@@ -32,7 +32,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop"
+import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -388,12 +388,12 @@ export default function FavourModal({
     }
   };
 
-  const addFile = (data) => {
+  const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);
 
     setFileList(tempFileList);
-  }
+  };
 
   return (
     <div>
@@ -583,7 +583,7 @@ export default function FavourModal({
                 </>
               ) : (
                 <div className={classes.actionButtons}>
-                  <ClaimModal />
+                  <ClaimModal favourId={FavourId} />
                 </div>
               )
 
