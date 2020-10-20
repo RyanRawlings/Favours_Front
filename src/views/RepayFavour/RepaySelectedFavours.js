@@ -102,7 +102,7 @@ const RepaySelectedFavours = (props) => {
     }
 
     //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
-    const uploadToS3 = await axios.post("/api/image/upload", imageForm)
+    const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
             .then( function(response) {
                 toast.success("Successfully stored images on AWS... Now starting database processing");
                 uploadToMongoDB(response);
