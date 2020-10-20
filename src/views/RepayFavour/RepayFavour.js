@@ -38,9 +38,8 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
       },
     paper: {
-        padding: theme.spacing(2),        
+        padding: theme.spacing(1),        
         width: "100%", 
-
     },  
     form: {
       '& > *': {
@@ -89,7 +88,7 @@ const columns = [
 function CustomNoRowsOverlay(loading) {
   const classes = useStyles();
 
-  console.log(loading)
+  // console.log(loading)
 
   return (
     <GridOverlay className={classes.root}>
@@ -197,19 +196,22 @@ const RepayFavour = (props) => {
 
         if (repayFavours.length > 0) {
           for (let i = 0; i < fetchFavours[0].credits.length; i++) {
-            date = new Date(fetchFavours[0].credits[i].create_time);   
+            if (fetchFavours[0].credits[i].is_completed === false) {
+              date = new Date(fetchFavours[0].credits[i].create_time);   
             
-            newRow = {
-              // id: i + 1,
-              id: fetchFavours[0].credits[i]._id,
-              favourType: fetchFavours[0].credits[i].favourOwed,
-              favourDebtor: getUserEmail(fetchFavours[0].credits[i].requestUser),
-              favourCreditor: getUserEmail(fetchFavours[0].credits[i].owingUser),
-              favourStatus: fetchFavours[0].credits[i].is_completed === true? "Paid" : "Unpaid",
-              favourDate: date
-            };
-
-            rows.push(newRow);
+              newRow = {
+                // id: i + 1,
+                id: fetchFavours[0].credits[i]._id,
+                favourType: fetchFavours[0].credits[i].favourOwed,
+                favourDebtor: getUserEmail(fetchFavours[0].credits[i].requestUser),
+                favourCreditor: getUserEmail(fetchFavours[0].credits[i].owingUser),
+                favourStatus: fetchFavours[0].credits[i].is_completed === true? "Paid" : "Unpaid",
+                favourDate: date
+              };
+  
+              rows.push(newRow);
+            }
+            
           }
         } 
         // console.log("new rowset: ", rows);
@@ -259,10 +261,13 @@ const RepayFavour = (props) => {
                 <div className="container_right">
                   <div className={classes.root}>
                         <Paper className={classes.paper}>
-                            <Typography variant="h6"
-                            >Repay your favours</Typography>
                             <form className={classes.form} >
-                                    <div style={{ height: "450px", width: "1200px"}}>
+                                    <div style={{ backgroundColor: "white",
+                                                  boxShadow: "0 2px 4px 0 rgba(0,0,0,0.2)",
+                                                  transition: "0.3s",
+                                                  marginTop: "1%",
+                                                  height: "500px",
+                                                  width: "1250px"}}>
                                       {/* {console.log("rows: ", rows)} */}
                                         <DataGrid 
                                           components={{noRowsOverlay: () => CustomNoRowsOverlay(loading)}}                                      
@@ -280,6 +285,7 @@ const RepayFavour = (props) => {
                                                         size="large"
                                                         className={classes.submit}
                                                         startIcon={<AssignmentTurnedInIcon />}
+                                                        disabled={favoursSelected.length > 0? false: true}
                                     >
                                         Repay Favour
                                     </Button>

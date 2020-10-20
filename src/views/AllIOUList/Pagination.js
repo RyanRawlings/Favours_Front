@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     },
   });
 
-const FavoursPagination = ({ favoursPerPage, totalFavours, paginate }) => {    
+const FavoursPagination = ({ favoursPerPage, totalFavours, paginate, pageReset }) => {    
     const classes = useStyles();
     const [page, setPage] = useState(1);
 
@@ -22,8 +22,9 @@ const FavoursPagination = ({ favoursPerPage, totalFavours, paginate }) => {
     const pages = pageNumbers.length > 0? pageNumbers.length : null;
 
     const handleChange = (event,value) => {        
-        setPage(value);
-        paginate(value);
+          setPage(value);
+          paginate(value);
+ 
     }
 
     return <Pagination 

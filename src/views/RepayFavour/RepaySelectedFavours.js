@@ -81,16 +81,19 @@ const RepaySelectedFavours = (props) => {
   const classes = useStyles();
   const [favoursToBeRepayed] = useState(props.location.state.favoursToBeRepayed? props.location.state.favoursToBeRepayed : []);
   const [fileList, setFileList] = useState([]);
+  const [fileCount, setFileCount] = useState(0);
   const location = useLocation();
 
   const addFile = (data) => {
     let tempFileList = fileList;
     tempFileList.push(data);
+    let tempFileCount = fileCount;
+    tempFileCount += 1;
 
     setFileList(tempFileList);
+    setFileCount(tempFileCount);
   }
 
-//   console.log(fileList);
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const handleSubmit = async () => {
@@ -131,6 +134,7 @@ const RepaySelectedFavours = (props) => {
         props.history.push("/repay_favour");
     }
   }   
+
 return (
 <div className={classes.root}>
     <div className="container">
@@ -148,6 +152,7 @@ return (
                         color="primary"
                         variant="contained"
                         className={classes.repayButton}
+                        disabled={props.location.state.favoursToBeRepayed.length === fileList.length? false: true}
                     >Repay Favours
                     </Button>
                 </div>

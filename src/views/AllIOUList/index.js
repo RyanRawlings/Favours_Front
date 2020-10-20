@@ -240,6 +240,27 @@ const handleSearch = input => {
   const indexOfFirstFavour = indexOfLastFavour - favoursPerPage;
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
+  const pageReset = 1;
+
+  const pageUpdates = (pageView) => {
+    if (pageView === "all") {
+      updateActiveFavours("all"); 
+      setActiveButton("all"); 
+      setCurrentPage(1);      
+    } else if (pageView === "debit") {
+      updateActiveFavours("debit"); 
+      setActiveButton("debit"); 
+      setCurrentPage(1);
+    } else if (pageView === "credit") {
+      updateActiveFavours("credit"); 
+      setActiveButton("credit"); 
+      setCurrentPage(1);
+    }
+  }
+
+  const buttonPress = () => {
+
+  }
 
   return (
     <div className={classes.root}>
@@ -258,14 +279,6 @@ const handleSearch = input => {
                               placeHolder={searchBarPlaceHolder}/>
                 </div>
                 <div className={classes.createbutton}>
-                  {/* <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<LaunchIcon />}
-                    className={classes.createbutton_styling}
-                  >
-                    Create a new favour
-                  </Button> */}
                   <NewFavour />
                 </div>
                 <div className={classes.createbutton}>
@@ -277,13 +290,13 @@ const handleSearch = input => {
                   <div className={classes.listlinks}>
                       <ButtonGroup className={classes.buttons}>
                         <Button 
-                          onClick={() => { updateActiveFavours("all"); setActiveButton("all") }} 
+                          onClick={() => {pageUpdates("all"); console.log("Page after button press", currentPage)}} 
                           className={classes.actionbutton} 
                           style={{backgroundColor: activeButton === "all"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
                                   color: activeButton === "all"? "black" : "white"}}
                         >All</Button>
                         <Button 
-                          onClick={() => { updateActiveFavours("debit"); setActiveButton("debit") }}
+                          onClick={() => { pageUpdates("debit"); ;console.log("Page after button press", currentPage)}}
                           className={classes.actionbutton}
                           style={{backgroundColor: activeButton === "debit"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
                                   color: activeButton === "debit"? "black" : "white"}}
@@ -293,7 +306,7 @@ const handleSearch = input => {
                                 />
                         </Button>
                         <Button 
-                          onClick={() => { updateActiveFavours("credit"); setActiveButton("credit") }} 
+                          onClick={() => { pageUpdates("credit") ; console.log("Page after button press", currentPage)}} 
                           className={classes.actionbutton}
                           style={{backgroundColor: activeButton === "credit"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
                                   color: activeButton === "credit"? "black" : "white"}}
@@ -347,7 +360,7 @@ const handleSearch = input => {
                                   className="card_left"
                                   key={key + "-cardDescription"}
                                 >
-                                  {data.favourOwed}
+                                  Favour Type:&nbsp;<strong>{data.favourOwed}</strong>&nbsp;|&nbsp;Status:&nbsp;<strong>{data.is_completed === true? "Paid": "Unpaid"}</strong>
                                 </div>
                                 <div className="btn" key={key + "-btnDiv"}>
                                   <div className={classes.modal}>
@@ -397,7 +410,7 @@ const handleSearch = input => {
                   totalFavours={
                     searchResult ? searchResult.length : 0
                   }
-                  paginate={paginate}
+                  paginate={paginate}  
                 />
               ) : (
                 ""

@@ -30,7 +30,7 @@ import UserContext from "../../context/UserContext";
 import Cookies from "js-cookie";
 import PaymentIcon from '@material-ui/icons/Payment';
 
-const drawerWidth = 210;
+const drawerWidth = 180;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -178,7 +178,7 @@ const getTitle = location => {
     case "/public_request":
       return "> Public Requests";
     case "/all_list":
-      return "> View and Create Favours";
+      return "> Manage Favours";
     case "/all_list/debit_list":
       return "> IOU List > Debit List";
     case "/all_list/credit_list":
@@ -194,7 +194,7 @@ const getTitle = location => {
     case "/settings":
       return "> Personal Settings";
     case "/repay_favour":
-      return "> Repay Favours";      
+      return "> Multi Repay";      
     case "/home":
       return "";
   }
@@ -376,7 +376,7 @@ export default function NavMenu(props) {
           <ListItem
             className={classes.menuItem}
             button
-            key="View and Create Favours"
+            key="Manage Favours"
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/all_list")}
           >
@@ -389,7 +389,7 @@ export default function NavMenu(props) {
                 ></ListAltIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText className={classes.listItemText} disableTypography={true} primary="View and Create Favours" />
+            <ListItemText className={classes.listItemText} disableTypography={true} primary="Manage Favours" />
           </ListItem>
         ) : (
           <Link
@@ -398,7 +398,7 @@ export default function NavMenu(props) {
           >
             <ListItem className={classes.menuItem}
                       button 
-                      key="View and Create Favours"
+                      key="Manage Favours"
                       onClick={() => history.push("/all_list")}
              >
               <ListItemIcon>
@@ -407,7 +407,7 @@ export default function NavMenu(props) {
                   color="action"
                 ></ListAltIcon>
               </ListItemIcon>
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="View and Create Favours" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Manage Favours" />
             </ListItem>
           </Link>
         )}
@@ -418,7 +418,7 @@ export default function NavMenu(props) {
           <ListItem
             className={classes.menuItem}
             button
-            key="Repay Favours"
+            key="Multi Repay"
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/repay_favour")}
           >
@@ -431,7 +431,7 @@ export default function NavMenu(props) {
                 ></PaymentIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText className={classes.listItemText} disableTypography={true} primary="Repay Favours" />
+            <ListItemText className={classes.listItemText} disableTypography={true} primary="Multi Repay" />
           </ListItem>
         ) : (
           <Link
@@ -440,7 +440,7 @@ export default function NavMenu(props) {
           >
             <ListItem className={classes.menuItem}
                       button 
-                      key="Repay Favours"
+                      key="Multi Repay"
                       onClick={() => history.push("/repay_favour")}
              >
               <ListItemIcon>
@@ -449,7 +449,7 @@ export default function NavMenu(props) {
                   color="action"
                 ></PaymentIcon>
               </ListItemIcon>
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Repay Favours" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="Multi Repay" />
             </ListItem>
           </Link>
         )}

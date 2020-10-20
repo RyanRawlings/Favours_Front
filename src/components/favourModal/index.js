@@ -32,6 +32,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop"
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -215,6 +216,8 @@ export default function FavourModal({
   const [isDeleted, setIsDeleted] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
+  const [fileList, setFileList] = useState([]);
+
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const userDataAvailable = () => {
@@ -385,6 +388,13 @@ export default function FavourModal({
     }
   };
 
+  const addFile = (data) => {
+    let tempFileList = fileList;
+    tempFileList.push(data);
+
+    setFileList(tempFileList);
+  }
+
   return (
     <div>
       <Button
@@ -520,9 +530,7 @@ export default function FavourModal({
 
               {Location === "/public_request" ? (
                 <>
-                  <Grid citem xs={12} className={classes.rewardHeading}>
-                    Reward Details
-                  </Grid>
+                  {/* <div className={classes.rewardHeading}>Reward Details</div> */}
                   <Grid item xs={12} sm={12}>
                     <Fragment>
                       <div className={classes.rewardContent}>

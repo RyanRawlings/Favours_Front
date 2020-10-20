@@ -9,6 +9,7 @@ import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import { ToastContainer, toast } from "react-toastify";
 import TextField from "@material-ui/core/TextField";
+import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -63,6 +64,9 @@ const useStyles = makeStyles(theme => ({
     // marginRight: "auto",
     // marginBottom: "2%",
     margin: "4% auto 2% auto"
+  },
+  uploadImage: {
+    marginBottom: "5%"
   }
 }));
 const ClaimModal = () => {
@@ -72,6 +76,7 @@ const ClaimModal = () => {
   const [open, setOpen] = useState(false);
   // todo upload successfully or not
   const [toastMsg, setToastMsg] = useState("");
+  const [fileList, setFileList] = useState([]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -82,6 +87,13 @@ const ClaimModal = () => {
   const handleSubmit = () => {
     //todo submit proof
   };
+
+  const addFile = (data) => {
+    let tempFileList = fileList;
+    tempFileList.push(data);
+
+    setFileList(tempFileList);
+  }
 
   return (
     <div>
@@ -141,7 +153,7 @@ const ClaimModal = () => {
               </Grid>
               <Grid container xs={12} className={classes.body}>
                 <Grid item xs={12} className={classes.uploadImage}>
-                  upload image
+                  <ImageDragAndDrop addFile={addFile}/>
                 </Grid>
 
                 <TextField
