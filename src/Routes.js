@@ -40,14 +40,15 @@ const Routes = () => {
       // console.log(response);
       if (authToken) {
         const userAttributes = JWTDecode(authToken);
-        // console.log(userAttributes);
+        console.log("user attributes: ",userAttributes);
         setUserData({
           token: authToken,
           user: {
             _id: userAttributes._id,
             firstname: userAttributes.firstname,
             lastname: userAttributes.lastname,
-            email: userAttributes.email
+            email: userAttributes.email,
+            // activeGroupId: userAttributes.group[0]
           }
         });
       }

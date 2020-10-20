@@ -192,7 +192,7 @@ const getTitle = location => {
     case "/signup":
       return "> Sign up";
     case "/settings":
-      return "> Personal Settings";
+      return "> User Settings";
     case "/repay_favour":
       return "> Multi Repay";      
     case "/home":
@@ -320,7 +320,10 @@ export default function NavMenu(props) {
             </IconButton>
           </div>
           <div className={classes.groupDropDown}>
-            <GroupDropDown />
+            {
+              userData.user? <GroupDropDown props={props} userData={userData}/> : ""
+            }
+            
           </div>
         </div>
         <Divider />
@@ -547,7 +550,7 @@ export default function NavMenu(props) {
             <ListItem
               className={classes.menuItem}
               button
-              key="Settings"
+              key="User Settings"
               style={{ color: "#292F36", backgroundColor: "white" }}
             >
               <ListItemIcon>
@@ -558,7 +561,7 @@ export default function NavMenu(props) {
                 ></SettingsIcon>
               </ListItemIcon>
 
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Settings" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="User Settings" />
             </ListItem>
           </Link>
         ) : (
@@ -566,7 +569,7 @@ export default function NavMenu(props) {
             to={{ pathname: "/settings", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            <ListItem className={classes.menuItem} button key="Settings">
+            <ListItem className={classes.menuItem} button key="User Settings">
               <ListItemIcon>
                 <SettingsIcon
                   className={classes.icons}
@@ -574,7 +577,7 @@ export default function NavMenu(props) {
                 ></SettingsIcon>
               </ListItemIcon>
 
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Settings" />
+              <ListItemText className={classes.listItemText} disableTypography={true} primary="User Settings" />
             </ListItem>
           </Link>
         )}
