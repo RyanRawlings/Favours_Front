@@ -229,6 +229,7 @@ export default function FavourModal({
 
   // Controls how the Favour or Public Request component is opened to show more details
   const handleOpen = () => {
+    console.log("open");
     // Open modal on click
     setOpen(true);
 
@@ -237,7 +238,12 @@ export default function FavourModal({
     setFavourTitle(FavourTitle);
     setFavourDescription(FavourDescription);
     setRequester(Requester);
-    setRewards(Rewards);
+    //todo point
+    if (rewards) {
+      setRewards(rewards);
+    } else {
+      setRewards(Rewards);
+    }
 
     // If it is an existing public request get the user details
     const getUserDetails = async () => {
@@ -261,7 +267,8 @@ export default function FavourModal({
       }
 
       // Get user details for the relevant userIds stored in the array
-      // console.log(userArray);
+      console.log("userArray:", userArray);
+      console.log("getUserdetial:", rewards);
       const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(
         userArray
       );
@@ -283,11 +290,37 @@ export default function FavourModal({
     setOpen(false);
   };
 
-  const addReward = reward => {
-    // const newRewardItem = reward.reward;
-    const newReward = [...rewards, reward];
-    // console.log(newReward);
-    setRewards(newReward);
+  const addReward = async reward => {
+    // add new user
+    const newPublicRequestUserDetails = [
+      ...publicRequestUserDetails,
+      {
+        _id: userData.user._id,
+        firstname: userData.user.firstname,
+        email: userData.user.email
+      }
+    ];
+    setPublicRequestUserDetails(newPublicRequestUserDetails);
+    // add new reward
+    const newReward = [
+      ...rewards,
+      {
+        _id: reward.rewardId,
+        item: reward.rewardName,
+        quantity: reward.rewardQuantity,
+        providedBy: reward.providedBy
+      }
+    ];
+    console.log("newrewards:", newReward);
+
+    const response = await APIServices.addReward(
+      favourId,
+      newReward,
+      newPublicRequestUserDetails
+    );
+    setToastMessage(response.message);
+    setRewards(response.data.rewards);
+    console.log("resultadd:", response.data.rewards);
   };
 
   const removeReward = index => {
@@ -476,7 +509,7 @@ export default function FavourModal({
                    Else return nothing*/}
                 {userDataAvailable() === true ? (
                   Location === "/public_request" ? (
-                    <NewRewardForm addReward={addReward} userData={userData}/>
+                    <NewRewardForm addReward={addReward} userData={userData} />
                   ) : (
                     ""
                   )
@@ -487,7 +520,9 @@ export default function FavourModal({
 
               {Location === "/public_request" ? (
                 <>
-                  <div className={classes.rewardHeading}>Reward Details</div>
+                  <Grid citem xs={12} className={classes.rewardHeading}>
+                    Reward Details
+                  </Grid>
                   <Grid item xs={12} sm={12}>
                     <Fragment>
                       <div className={classes.rewardContent}>
