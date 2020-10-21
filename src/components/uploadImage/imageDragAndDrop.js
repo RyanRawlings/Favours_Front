@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   infoText: {
     // marginLeft: "auto",
     // marginRight: "auto",
-    padding: "50px",
+    padding: "10px 5px 10px 5px",
     margin: "4% 0 4% 0",
     border: "dotted 1px"
   }
