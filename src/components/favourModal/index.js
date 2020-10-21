@@ -266,7 +266,7 @@ export default function FavourModal({
   // auto delete 0 reward request
   useEffect(() => {
     if (rewards) {
-      if (rewards.length === 0) {
+      if (Location === "/public_request" && rewards.length === 0) {
         const deletePublicRequest = async () => {
           console.log("favourid", favourId);
   
