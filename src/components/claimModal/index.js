@@ -10,6 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import { ToastContainer, toast } from "react-toastify";
 import TextField from "@material-ui/core/TextField";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
+import * as APIServices from "../../api/TestAPI";
+import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -75,9 +77,7 @@ const ClaimModal = ({ favourId, requester }) => {
   console.log(userData);
   const [open, setOpen] = useState(false);
   // todo upload successfully or not
-  const [toastMsg, setToastMsg] = useState("");
   const [fileList, setFileList] = useState([]);
-
   const handleOpen = () => {
     setOpen(true);
   };
@@ -88,17 +88,31 @@ const ClaimModal = ({ favourId, requester }) => {
     //todo submit proof
   };
 
-  const addFile = (data) => {
+  const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);
 
     setFileList(tempFileList);
-  }
+  };
+  const handleDelete = async () => {
+    console.log("favourid", favourId);
 
-  return (
-    <div>
-      {userData.token ? (
-        <Button
+    let response = await APIServices.deletePublicRequest(favourId);
+
+    if (response) {
+      console.log("delete response:", response.message);
+
+      toast.success("successfully deleted public request");
+
+      await delay(3000);
+      window.location.reload();
+    } else {
+      toast.error("There was an error deleting the public request");
+    }
+  };
+
+  {
+    /* <Button
           variant="contained"
           color="primary"
           size="large"
@@ -106,16 +120,44 @@ const ClaimModal = ({ favourId, requester }) => {
           disabled={userData? requester? userData.user.email === requester.email? true: false: false: false}
         >
           Claim
-        </Button>
+        </Button> */
+  }
+
+  return (
+    <div>
+      {userData.token ? (
+        requester ? (
+          userData.user.email === requester.email ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={handleOpen}
+            >
+              Claim
+            </Button>
+          )
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            href={"/login"}
+          >
+            Claim
+          </Button>
+        )
       ) : (
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          href={"/login"}          
-        >
-          Claim
-        </Button>
+        ""
       )}
 
       <Modal
@@ -140,7 +182,7 @@ const ClaimModal = ({ favourId, requester }) => {
             >
               <ToastContainer
                 position="top-center"
-                autoClose={5000}
+                autoClose={2000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -154,7 +196,7 @@ const ClaimModal = ({ favourId, requester }) => {
               </Grid>
               <Grid container xs={12} className={classes.body}>
                 <Grid item xs={12} className={classes.uploadImage}>
-                  <ImageDragAndDrop addFile={addFile}/>
+                  <ImageDragAndDrop addFile={addFile} />
                 </Grid>
 
                 <TextField

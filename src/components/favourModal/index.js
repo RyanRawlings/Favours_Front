@@ -194,7 +194,6 @@ export default function FavourModal({
   PublicRequestData,
   User,
   CurrentPage
-
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -231,6 +230,28 @@ export default function FavourModal({
       return false;
     }
   };
+  // auto delete 0 reward request
+  useEffect(() => {
+    if (rewards.length === 0) {
+      const deletePublicRequest = async () => {
+        console.log("favourid", favourId);
+
+        let response = await APIServices.deletePublicRequest(favourId);
+
+        if (response) {
+          console.log("delete response:", response.message);
+
+          toast.success("No reward left. Automatically delete the request...");
+
+          await delay(5000);
+          window.location.reload();
+        } else {
+          toast.error("There was an error deleting the public request");
+        }
+      };
+      deletePublicRequest();
+    }
+  }, [favourId, rewards]);
 
   // Controls how the Favour or Public Request component is opened to show more details
   const handleOpen = () => {
@@ -247,7 +268,7 @@ export default function FavourModal({
     if (changeReward) {
       setRewards(rewards);
     } else {
-      setRewards(Rewards? Rewards: []);
+      setRewards(Rewards ? Rewards : []);
       setChangeReward(false);
     }
 
@@ -341,7 +362,7 @@ export default function FavourModal({
     //slice reward
     const newReward = [...rewards];
     newReward.splice(index, 1);
-
+    console.log("newReward is:", newReward);
     // fetch new user
     const newPublicRequestUserDetails = [
       ...publicRequestUserDetails,
@@ -360,7 +381,8 @@ export default function FavourModal({
       newPublicRequestUserDetails
     );
     setToastMessage(response.message);
-    setRewards(response.data.rewards);
+    // setRewards(response.data.rewards);
+    setRewards(newReward);
     console.log("result removez:", response.data.rewards);
     setChangeReward(true);
     toast.success("Successfully removed reward from request");
@@ -617,7 +639,7 @@ export default function FavourModal({
                 </>
               ) : (
                 <div className={classes.actionButtons}>
-                  <ClaimModal favourId={FavourId} requester={Requester}/>
+                  <ClaimModal favourId={FavourId} requester={Requester} />
                 </div>
               )
 

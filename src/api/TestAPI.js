@@ -125,3 +125,24 @@ export function addReward(favourId, newReward, newUserDetails) {
       });
   });
 }
+
+export function deletePublicRequest(id) {
+  const query = {
+    _id: id
+  };
+  return new Promise((resolve, reject) => {
+    axios
+      .post("http://localhost:4000/api/publicRequest/delete", query)
+      .then(response => {
+        if (response.status >= 200 && response.status < 300) {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      })
+      .catch(reject => {
+        console.log(reject.response);
+        toast.error(reject.response.data);
+      });
+  });
+}
