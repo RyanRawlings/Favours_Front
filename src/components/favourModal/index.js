@@ -217,6 +217,7 @@ export default function FavourModal({
   const [toastMessage, setToastMessage] = useState(null);
 
   const [fileList, setFileList] = useState([]);
+  const [changeReward, setChangeReward] = useState(false);
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -241,8 +242,8 @@ export default function FavourModal({
     setFavourTitle(FavourTitle);
     setFavourDescription(FavourDescription);
     setRequester(Requester);
-    //todo point
-    if (rewards) {
+    //
+    if (changeReward) {
       setRewards(rewards);
     } else {
       setRewards(Rewards);
@@ -279,6 +280,10 @@ export default function FavourModal({
       if (getPublicRequestsUserDetails) {
         // Return array and set the request user details state
         setPublicRequestUserDetails(getPublicRequestsUserDetails);
+        console.log(
+          "getPublicRequestsUserDetails is:",
+          getPublicRequestsUserDetails
+        );
       } else {
         console.log("There was an issue with getting the data");
       }
@@ -324,6 +329,7 @@ export default function FavourModal({
     );
     setToastMessage(response.message);
     setRewards(response.data.rewards);
+    setChangeReward(true);
     console.log("resultadd:", response.data.rewards);
   };
 
@@ -352,6 +358,7 @@ export default function FavourModal({
     setToastMessage(response.message);
     setRewards(response.data.rewards);
     console.log("result removez:", response.data.rewards);
+    setChangeReward(true);
     toast.success("Successfully removed reward from request");
   };
 
