@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   btnContainer: {
-    padding: "50px"
+    // padding: "50px"
   },
   thumbsContainer: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    //
-    margin: "10% 0 30% 0"
+    margin: "-10%"
   },
   thumb: {
     display: "inline-flex",
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     // marginLeft: "auto",
     // marginRight: "auto",
     padding: "10px 5px 10px 5px",
-    margin: "4% 0 4% 0",
+    margin: "0% 0 4% 0",
     border: "dotted 1px"
   }
 }));
@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 export default function Previews({ props, addFile }) {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
+  const location = useLocation();
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     onDrop: acceptedFiles => {
@@ -64,12 +65,23 @@ export default function Previews({ props, addFile }) {
     }
   });
 
-  const thumbs = files.map(file => (
+  // console.log("Props", props)
+  
+  const thumbs = 
+  files.map((file, index) => (
+    location.pathname ==="/public_request"?      
+      <div style={{ marginBottom: "1%", marginLeft: "10%"}} key={index}>
+         Filename: {file.name}
+      </div> : 
+    location.pathname ==="/all_list"?      
+      <div style={{ marginTop: "-6%", marginBottom: "1%", width: "100%"}}key={index}>
+          <span style={{color: "black"}}>Filename: {file.name}</span>
+      </div> : 
     <div className={classes.thumb} key={file.name}>
-      <div className={classes.thumbInner}>
+      <div className={classes.thumbInner}>  
         <img src={file.preview} className={classes.img} />
-      </div>
-    </div>
+     </div>
+     </div>
   ));
 
   useEffect(

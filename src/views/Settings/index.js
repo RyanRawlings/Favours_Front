@@ -27,16 +27,18 @@ import UserContext from "../../context/UserContext";
 import List from "@material-ui/core/List";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
   },
   container: {
     marginLeft: "1%",
     marginRight: "1%",
-    marginTop: "-0.5%"
+    marginTop: "-0.5%",
+    height: "100vh"
   },
   card_container: {
     margin: "20px",
@@ -104,12 +106,24 @@ const useStyles = makeStyles(theme => ({
   },
   container_right_bottom: {
     padding: "1% 1% 1%",
-    height: "90vh"
   },
   groupForm: {
     marginTop: "8%",
     marginLeft: "-40%",
-    padding: "2% 2% 2%"
+    padding: "2% 2% 2%",
+    maxHeight: "100%"
+  },
+  userList: {
+    position: "static",
+    width: '100%',
+    maxWidth: 360,
+    minHeight: "80px",
+    maxHeight: "100%",
+    height: "40%",
+    overflow: "scroll",
+    overflowX: "hidden",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px #dfdfdf solid"
   }
 }));
 
@@ -129,24 +143,31 @@ renderRow.propTypes = {
 };
 
 const Settings = (props) => {
-
-
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [favoursPerPage, setFavoursPerPage] = useState(4);
   const location = useLocation();
   const { userData } = useContext(UserContext);
   const [groups, setGroups] = useState([]);
+  const [groupUsers, setGroupUsers] = useState([]);
   const [activeGroup, setActiveGroup] = useState([]);
+  const [groupUserDetails, setGroupUserDetails] = useState([]);
 
   useEffect(() => {
     async function getUserGroupList() {
       const userGroups = await UserAPI.getUserGroups({ userId: userData.user._id });
       
-      if (userGroups) {
-        console.log(userGroups);
+      if (userGroups) {        
         setGroups(userGroups);
-        setActiveGroup(userGroups[0]? userGroups[0] : []);
+        setActiveGroup(userGroups? userGroups[0] : []);
+        // console.log(userGroups);      
+        
+        const groupUserEmails = await UserAPI.getGroupUserEmails({ groups: userGroups });
+        // console.log("response from backend", groupUserEmails);
+        if (groupUserEmails) {
+          setGroupUserDetails(groupUserEmails);
+          setGroupUsers(groupUserEmails[0]['users']);
+        }
       }
       
     }
@@ -156,8 +177,20 @@ const Settings = (props) => {
 
   const classes = useStyles();
 
-  console.log("Active Group: ", activeGroup);
+  // console.log("Active Group: ", activeGroup);
+  // console.log("Group Users: ", groupUsers);
 
+  const handleGroupUpdate = (groupId) => {
+    for (let i = 0; i < groups.length; i++) {
+      if (groupId === groups[i]._id) {
+        setActiveGroup(groups[i]);
+        setGroupUsers(groupUserDetails[i]['users']);
+      }
+    }
+  }
+
+  console.log("active group", activeGroup);
+  console.log("group details", groupUserDetails);
   return (
     <div className={classes.root}>
       <div className="container">
@@ -174,7 +207,7 @@ const Settings = (props) => {
                     {groups.length > 0? 
                       groups.map((item, index) => (
                           <ListItem style={{backgroundColor: activeGroup._id === item._id? "#f6f6f6": "white"}} key={index} button>
-                            <ListItemText primary={item.group_name} key={index}/>
+                            <ListItemText onClick={() => handleGroupUpdate(item._id)} primary={item.group_name} key={index}/>
                           </ListItem>                
                     )) : ""                
                     }   
@@ -215,19 +248,16 @@ const Settings = (props) => {
                           <Typography variant="h6">Users in Group</Typography>
                         </Grid>
                           <Grid item xs={12} sm={6}>
-                          <List component="nav" className={classes.listComponent} aria-label="contacts">
-                              {groups.length > 0? 
-                                groups.map((item, index) => (
-                                    <ListItem style={{backgroundColor: activeGroup._id === item._id? "#f6f6f6": "white"}} key={index} button>
-                                      <ListItemText primary={item.group_name} key={index}/>
-                                    </ListItem>                
-                              )) : ""                
-                              }   
-                              </List>   
+                          <Autocomplete
+                            id="combo-box-demo"
+                            options={groupUsers}
+                            getOptionLabel={(option) => option}
+                            style={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="User Emails" variant="outlined" />}
+                          />
                           </Grid>
                         </Grid>
-                      </Paper>
-                      
+                      </Paper>                      
                       </Grid>                 
                 </Grid>                                                         
               </div>

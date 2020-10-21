@@ -10,3 +10,5 @@ export const getUsers = () =>
   callAPI("get", "http://localhost:4000/api/user/get");
 export const getUserGroups = (data) => 
   callAPI("post", "http://localhost:4000/api/user/groups", data);
+export const getGroupUserEmails = (data) => 
+  callAPI("post", "http://localhost:4000/api/user/group-users", data);  

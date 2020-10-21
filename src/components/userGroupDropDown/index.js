@@ -1,24 +1,33 @@
-import React, { useState, useEffect }from "react";
+import React, { useState, useEffect, useContext, Fragment }from "react";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import * as UserAPI from "../../api/UserAPI";
+import UserContext from "../../context/UserContext";
 
 const useStyles = makeStyles(theme => ({
   button: {
-    color: "white",
-    fontSize: "20px"
+    color: "black",   
+    textTransform: "capitalize",
+    backgroundColor: "#f6f6f6",
+    "&:hover": {
+      color: "white",
+      border: "1px white solid"
+
+    }
   },
   menu: {
-    marginTop: "2%",
+    marginTop: "2.5%",
+    width: "100%"
   }
 }));
 
-const GroupDropDown = ({ props, userData }) => {
+const GroupDropDown = ({ props }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [groups, setGroups] = useState([]);
   const [activeGroup, setActiveGroup] = useState([]);
+  const { userData } = useContext(UserContext);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -28,8 +37,18 @@ const GroupDropDown = ({ props, userData }) => {
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+      setAnchorEl(null);
   };
+
+  const handleChange = (groupId) => {
+    for (let i = 0; i < groups.length; i++) {
+      if (groupId === groups[i]._id) {
+        console.log(groups[i]);
+        setActiveGroup(groups[i].group_name);
+      }
+    }
+  }  
+  console.log("active group", activeGroup)
 
   useEffect(() => {
     async function getUserGroupList() {
@@ -54,26 +73,34 @@ const GroupDropDown = ({ props, userData }) => {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        {activeGroup? activeGroup.group_name : ""}
+        {activeGroup? "Active group: " + activeGroup.group_name : ""}
+        {console.log(activeGroup)}
       </Button>
+      <Fragment>
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
-        onClose={handleClose}
+        onClose={() => handleClose("Parent")}
         className={classes.menu}
-      >
+      >        
         {groups?
-          groups.map((item, index) => (
+          (groups.map((item, index) => {
+            return (
             <MenuItem 
-              onClick={handleClose}
+              onClick={() => handleClose()}
+              onChange={() => handleChange(item._id)}
               key={index}
+              className={classes.menuText}              
             >{item.group_name}
             </MenuItem>
-          )) : ""          
-        }
+            )
+            
+          })) : ""          
+        }        
       </Menu>
+      </Fragment>
     </div>
   );
 }

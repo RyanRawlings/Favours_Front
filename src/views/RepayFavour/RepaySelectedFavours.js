@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     imageBox: {
         marginLeft: "auto",
         marginRight: "auto",
+        marginTop: "-10%"
     },
     form: {
         backgroundColor: "white"

@@ -343,7 +343,7 @@ const handleSearch = input => {
                 </Collapse>
                 {/* {isDeleted === true ? <Alert variant="filled" severity="success">Successful in deleting favour</Alert> : ""}
               {isDeleted === false ? <Alert variant="filled" severity="success">Unsuccessful in deleting favour</Alert> : ""} */}
-              {console.log(favours)}
+              {/* {console.log(favours)} */}
                 <React.Fragment>
                   {searchResult ? (
                     searchResult

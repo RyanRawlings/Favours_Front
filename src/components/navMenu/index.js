@@ -168,6 +168,9 @@ const useStyles = makeStyles(theme => ({
   listItemText: {
     marginLeft: "-5%",
     fontSize: "12px"
+  },
+  groupDropDown: {
+    marginRight: "5%"
   }
 }));
 
@@ -267,6 +270,13 @@ export default function NavMenu(props) {
             </Link>{" "}
             {getTitle(location.pathname)}
           </Typography>
+          
+          {/* <div className={classes.groupDropDown}>
+            {
+              userData.user? <GroupDropDown props={props} /> : ""
+            }
+            
+          </div> */}
           <div>
             {userData.user ? (
               <div className={classes.userName}>
@@ -318,12 +328,6 @@ export default function NavMenu(props) {
                 <ChevronLeftIcon />
               )}
             </IconButton>
-          </div>
-          <div className={classes.groupDropDown}>
-            {
-              userData.user? <GroupDropDown props={props} userData={userData}/> : ""
-            }
-            
           </div>
         </div>
         <Divider />
