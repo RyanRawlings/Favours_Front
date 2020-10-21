@@ -5,3 +5,6 @@ export const createFavour = (data) =>
 
 export const getFavours = (data) =>
   callAPI("post", "http://localhost:4000/api/favour/get", data);
+
+export const forgiveFavour = (data) =>
+  callAPI("post", "http://localhost:4000/api/favour/forgive-debt", data);

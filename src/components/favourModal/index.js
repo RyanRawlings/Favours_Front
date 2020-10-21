@@ -33,6 +33,10 @@ import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
+import axios from "axios";
+import * as ImageAPI from "../../api/ImageAPI";
+import * as UserAPI from "../../api/UserAPI";
+import * as FavourAPI from "../../api/FavourAPI";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -178,6 +182,30 @@ const useStyles = makeStyles(theme => ({
   },
   rewardHeading: {
     marginLeft: "2%"
+  },
+  deleteFavour: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: "2%"
+  },
+  imageRepayFavours: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: "1%"
+  },
+  repayFavour: {
+    marginLeft: "2%",
+    marginBottom: "2%"
+  },
+  imageBox: {
+    display: "inline-block",
+    marginRight: "10%",
+
+  },
+  forgiveDebt: {
+    marginTop: "4%",
+    marginLeft: "1%",
+    whiteSpace: "nowrap"
   }
 }));
 
@@ -186,14 +214,17 @@ export default function FavourModal({
   FavourTitle,
   Requester,
   FavourDescription,
-  Rewards,
+  Rewards,  
   FavourDate,
   Location,
   FavourImageKey,
   ModalType,
   PublicRequestData,
   User,
-  CurrentPage
+  CurrentPage,
+  Complete,
+  OwingUser
+
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -206,10 +237,12 @@ export default function FavourModal({
   const [favourId, setFavourId] = useState(FavourId);
   const [favourTitle, setFavourTitle] = useState(FavourTitle);
   const [requester, setRequester] = useState(Requester);
+  const [owingUser, setOwingUser] = useState(OwingUser);
   const [favourDescription, setFavourDescription] = useState(FavourDescription);
+
   // const [favourDate ,setFavourDate] = useState(FavourDate);
   // const [location, setLocation] = useState(Location);
-  // const [favourImageKey ,setFavourImageKey] = useState(FavourImageKey);
+  const [favourImageKey ,setFavourImageKey] = useState(FavourImageKey);
 
   const [publicRequestUserDetails, setPublicRequestUserDetails] = useState([]);
 
@@ -276,22 +309,28 @@ export default function FavourModal({
     const getUserDetails = async () => {
       // Create a new array for the Users
       let userArray = [];
-
-      // Push the userIds stored on the rewards into the userArray
-      for (let i = 0; i < rewards.length; i++) {
-        if (!userArray.includes(rewards[i].providedBy)) {
-          // console.log("iterative print", rewards[i].providedBy)
-          userArray.push(rewards[i].providedBy);
+      if (Location === "/public_request") {
+        // Push the userIds stored on the rewards into the userArray
+        for (let i = 0; i < rewards.length; i++) {
+          if (!userArray.includes(rewards[i].providedBy)) {
+            // console.log("iterative print", rewards[i].providedBy)
+            userArray.push(rewards[i].providedBy);
+          }
         }
+
+        // Push the requesterUserId into the userArray
+        if (!userArray.includes(requester._id)) userArray.push(requester._id);
+        // Push the current into the userArray, in case they want to add a reward to the public request
+        if (userDataAvailable === true) {
+          if (!userArray.includes(userData.user._id))
+            userArray.push(userData.user._id);
+        }      
+
+      } else if (Location === "/all_list") {
+        userArray.push(Requester);
+        userArray.push(OwingUser);
       }
 
-      // Push the requesterUserId into the userArray
-      if (!userArray.includes(requester._id)) userArray.push(requester._id);
-      // Push the current into the userArray, in case they want to add a reward to the public request
-      if (userDataAvailable === true) {
-        if (!userArray.includes(userData.user._id))
-          userArray.push(userData.user._id);
-      }
 
       // Get user details for the relevant userIds stored in the array
       // console.log("userArray:", userArray);
@@ -312,9 +351,7 @@ export default function FavourModal({
       }
     };
 
-    if (Location === "/public_request") {
-      getUserDetails();
-    }
+    getUserDetails();
   };
 
   const handleClose = () => {
@@ -389,11 +426,28 @@ export default function FavourModal({
   };
 
   const getUserEmail = (userId, nameId, label, disabled) => {
+    // console.log(userId)
+    console.log("get user email: ", userId, nameId, label, disabled);
+    // console.log(publicRequestUserDetails);
     // Evaluate reward user id against data retrieved from db, and return relevant email
     if (publicRequestUserDetails) {
       for (let i = 0; i < publicRequestUserDetails.length; i++) {
         if (userId === publicRequestUserDetails[i]._id) {
           // Return relevant user email
+          if (Location === "/public_request") {
+            return (
+              <TextField
+                id={nameId}
+                name={nameId}
+                label={label}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                disabled={disabled}
+                value={publicRequestUserDetails[i].requestUser.email}
+              />
+            );
+          } else {
           return (
             <TextField
               id={nameId}
@@ -403,9 +457,10 @@ export default function FavourModal({
                 shrink: true
               }}
               disabled={disabled}
-              defaultValue={publicRequestUserDetails[i].requestUser.email}
+              value={publicRequestUserDetails[i].email}
             />
           );
+          }
         }
       }
     } else {
@@ -432,24 +487,108 @@ export default function FavourModal({
     }
   };
 
+  const forgiveFavour = async FavourId => {
+    const response = await FavourAPI.forgiveFavour({ _id: FavourId });
+    if (response) {
+      toast.success("Successfully forgave favour debt... page will refresh to update");
+
+      await delay(5000);
+      setOpen(false);
+      refreshPage();
+    } else {
+      toast.error("Error forgiving the favour debt... page will refresh to update");
+
+      await delay(5000);
+      setOpen(false);
+      refreshPage();
+    }
+  };
+
   const refreshPage = () => {
     window.location.reload();
   };
 
   const showDeleteFavour = () => {
-    if (Location === "/all_list" && userData.user.email === requester.email) {
+    if (userData.user._id === owingUser || FavourImageKey) {
       return true;
     } else {
       return false;
     }
   };
 
-  const addFile = data => {
-    let tempFileList = fileList;
-    tempFileList.push(data);
+  const addFile = async data => {
 
-    setFileList(tempFileList);
+    try {
+      // If there is more than one file, show user error and reload the page
+      if (data[1]) {        
+        toast.error("You can only upload one image... Window will refresh");
+
+        await delay(5000);
+        window.location.reload();
+      } 
+
+      // Else update file list
+      let tempFileList = fileList;
+  
+      tempFileList.push(data);        
+      setFileList(tempFileList);
+    } catch (error) {
+      // If error occurs show user error and close modal
+      toast.error("An error occurred in upload...  Window will refresh");
+
+      await delay(5000);
+      handleClose();
+    }    
   };
+
+  const handleSubmit = async () => {
+
+    if (fileList.length > 1) {
+      toast.error("You have tried to upload more than one image...");
+      return console.log("More than one file added...");
+    } else if (fileList.length === 0) {
+      toast.error("You haven't uploaded an image.");
+      return console.log("No file added...");
+    }
+
+    let imageForm = new FormData();
+
+    for (let i = 0; i < fileList.length; i++) {
+        // console.log(fileList[i][0]);
+        imageForm.append("image", fileList[i][0]);
+    }
+
+    //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
+    const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
+            .then( function(response) {
+                toast.success("Successfully stored images on AWS... Now starting database processing");
+                uploadToMongoDB(response);
+            })
+            .catch( function (error) {
+                toast.error(error);
+            })
+  }
+
+  const uploadToMongoDB = async (response) => {
+    let imageArray = [];
+    if (response) {
+        for (let i = 0; i < response.data.locationArray.length; i++) {
+            imageArray.push({ _id: FavourId, imageUrl: response.data.locationArray[i] });
+        }        
+    }
+  
+    imageArray.push({type: "Repay"});
+  
+    const storeImageData = await ImageAPI.storeImageData(imageArray);
+    if (storeImageData) {
+        toast.success("Completed image update process...");
+        
+        await delay(5000);
+        window.location.reload();
+    }
+  }  
+
+  // console.log(fileList, fileCount);
 
   return (
     <div>
@@ -507,12 +646,11 @@ export default function FavourModal({
                   </IconButton>
                 </div>
               </Grid>
-              {console.log(favourTitle)}
               <Grid item xs={12} sm={6}>
                 <TextField
-                  id="requestTitle"
-                  name="requestTitle"
-                  label="Request Title"
+                  id={Location === "/public_request"? "requestTitle" : "favourType"}
+                  name={Location === "/public_request"? "requestTitle" : "favourType"}
+                  label={Location === "/public_request"? "Request Title" : "Favour Type"}
                   disabled={true}
                   InputLabelProps={{
                     shrink: true
@@ -539,19 +677,14 @@ export default function FavourModal({
                         : ""
                     }
                   />
-                ) : (
-                  <TextField
-                    id="requestedBy"
-                    name="requestedBy"
-                    label="Requested By"
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    disabled={true}
-                    defaultValue={userData.user.email}
-                  />
-                )}
+                ) : Location === "/all_list"?
+                 (getUserEmail(Requester, "paidBy", "Paid By", true)) : ""} 
               </Grid>
+              <Grid item xs={12} sm={6}>
+              {Location === "/all_list"? 
+              getUserEmail(OwingUser, "owingBy", "Owing By", true)
+              : ""}
+              </Grid>                
               <Grid item xs={12} sm={12}>
                 <TextareaAutosize
                   id="outlined-textarea"
@@ -614,64 +747,71 @@ export default function FavourModal({
               ) : (
                 ""
               )}
-              {showDeleteFavour() ? (
-                <>
-                  <div className={classes.centeredDiv}>
-                    <UploadImage
-                      FavourId={FavourId}
-                      FavourImageKey={FavourImageKey}
-                    />
+              {
+                Location === "/public_request"? 
+                (
+                  <div className={classes.actionButtons}>
+                    <ClaimModal favourId={FavourId} requester={Requester}/>
                   </div>
-
-                  <button
-                    className={classes.deleteButtonFromDB}
+                ) : ""
+              }              
+              {Location === "/public_request"? "": Location === "/all_list" && showDeleteFavour() === true ? 
+              <>
+              <div className={classes.deleteFavour}>
+                  <Button
                     key={"deleteFavour"}
                     onClick={() => deleteFavour(FavourId)}
+                    color="primary"
+                    variant="contained"                
                   >
-                    <div>
-                      <FontAwesomeIcon
-                        key={"deleteFavour"}
-                        className={classes.trashIcon}
-                        icon={faTrash}
-                      />
-                    </div>
-                  </button>
-                </>
-              ) : (
-                <div className={classes.actionButtons}>
-                  <ClaimModal favourId={FavourId} requester={Requester} />
+                    Delete
+                  </Button>
+                  <div className={classes.forgiveDebt}>
+                    <Button
+                      key={"forgiveFavour"}
+                      onClick={() => forgiveFavour(FavourId)}
+                      color="primary"
+                      variant="contained"                
+                    >
+                      Forgive Debt
+                    </Button>
+                  </div> 
                 </div>
-              )
-
-              //   <div className={classes.actionButtons}>
-              //   <button className={classes.deleteRecordFromDB}
-              //        key={"deleteFavour"}
-              //        onClick={() => deleteFavour(FavourId)}>
-              //     {Location === "/public_request"? "Delete request" : "Delete favour"}
-              //   <div className={classes.deleteButtonFromDB}>
-              //       <div>
-              //         <FontAwesomeIcon
-              //           key={"deleteFavour"}
-              //           className={classes.trashIcon}
-              //           icon={faTrash}
-              //         />
-              //     </div>
-              //   </div>
-              //   </button>
-              // <button className={classes.completeFavour}>
-              // <div className={classes.deleteRecordFromDB}>{Location === "/public_request"? "" : "Complete favour"}</div>
-              // <div
-              //     // onClick={() => deleteFavour(FavourId)}
-              //     >
-              //       <FontAwesomeIcon
-              //         key={"completeFavour"}
-              //         className={classes.trashIcon}
-              //         icon={faCheckSquare}
-              //       />
-              //   </div>
-              // </button>
-              // </div>
-              }
+              
+                {FavourImageKey?
+                <div className={classes.imageRepayFavours}>
+                  <div>Uploaded Proof</div>
+                    <img src={FavourImageKey} width="100px" height="100px"/>
+                </div>:                 
+                  <div className={classes.imageRepayFavours}>Uploaded Proof: No file present</div>
+                }
+                
+              </>
+               :<> 
+                  <div className={classes.repayFavour}>
+                    <Button 
+                          color="primary"
+                          variant="contained"
+                          onClick={handleSubmit}
+                          disabled={Complete === false? false: true}
+                    >Repay
+                    </Button>
+                  </div>
+                  <div className={classes.imageRepayFavours}>
+                      {Complete === true? 
+                              <div className={classes.imageRepayFavours}>
+                                <div>Uploaded Proof</div>                                
+                                <div>
+                                    {FavourImageKey? 
+                                    <img src={FavourImageKey} width="100px" height="100px"/> : ""
+                                  }
+                                </div>
+                                
+                              </div>
+                              : <ImageDragAndDrop addFile={addFile}/>}
+                  </div>                              
+                </>
+                }
             </Grid>
           </div>
         </Fade>

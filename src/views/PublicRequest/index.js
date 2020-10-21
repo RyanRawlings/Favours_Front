@@ -174,7 +174,7 @@ export default function PublicRequest(props) {
                                   className="card_left"
                                   key={key + "-cardDescription"}
                                 >
-                                  {data.title}
+                                  Request Title:&nbsp;<strong>{data.title}</strong>&nbsp;|&nbsp;Favour Rewards Offered:&nbsp;<strong>{data.rewards.length}</strong>
                                 </div>
                                 <div
                                   className="card_right"

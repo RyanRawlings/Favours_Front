@@ -7,7 +7,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoffee, faTrash, faUser,faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import { faPrayingHands, faUser,faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
 import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as APIServices from "../../api/TestAPI";
@@ -127,6 +127,11 @@ const useStyles = makeStyles(theme => ({
         color: 'black',
         backgroundColor: "rgba(0, 0, 0, 0.04)"
       }
+    },
+
+    filterIcon_forgiven: {
+      marginLeft: "10%",
+      color: "#0D4F8B",
     }
 }));
 
@@ -135,6 +140,8 @@ export default function AllIOUList(props) {
   const [allFavours, setAllFavours] = useState([]);
   const [creditFavours, setCreditFavours] = useState([]);
   const [debitFavours, setDebitFavours] = useState([]);
+  const [forgivenFavours, setForgivenFavours] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [isDeleted, setIsDeleted] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
@@ -157,17 +164,23 @@ export default function AllIOUList(props) {
 
       if (fetchFavours) {
         console.log(fetchFavours[0].credits.concat(fetchFavours[1].debits));
-        setAllFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits));
+        setAllFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
 
         console.log(fetchFavours[0].credits);
         setCreditFavours(fetchFavours[0].credits);
 
         console.log(fetchFavours[1].debits);
         setDebitFavours(fetchFavours[1].debits);
+
+        console.log(fetchFavours[2].forgivenFavours);
+        setForgivenFavours(fetchFavours[2].forgivenFavours);
       }
 
-      setFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits));
-      setSearchResult(fetchFavours[0].credits.concat(fetchFavours[1].debits));
+      // console.log("result", fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
+      // setFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits).concat(fetchFavours[1].forgivenFavours));
+      // setSearchResult(fetchFavours[0].credits.concat(fetchFavours[1].debits).concat(fetchFavours[1].forgivenFavours));
+      setFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
+      setSearchResult(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
       setLoading(false);
     }
     
@@ -187,6 +200,9 @@ export default function AllIOUList(props) {
     } else if (sliceType === "debit") {
       setFavours(debitFavours);
       setSearchResult(debitFavours);
+    } else if (sliceType === "forgiven") {
+      setFavours(forgivenFavours);
+      setSearchResult(forgivenFavours);
     }
   }
 
@@ -255,12 +271,16 @@ const handleSearch = input => {
       updateActiveFavours("credit"); 
       setActiveButton("credit"); 
       setCurrentPage(1);
+    } else if (pageView === "forgiven") {
+      updateActiveFavours("forgiven"); 
+      setActiveButton("forgiven"); 
+      setCurrentPage(1);
     }
   }
 
-  const buttonPress = () => {
+  // const buttonPress = () => {
 
-  }
+  // }
 
   return (
     <div className={classes.root}>
@@ -296,7 +316,7 @@ const handleSearch = input => {
                                   color: activeButton === "all"? "black" : "white"}}
                         >All</Button>
                         <Button 
-                          onClick={() => { pageUpdates("debit"); ;console.log("Page after button press", currentPage)}}
+                          onClick={() => { pageUpdates("debit");console.log("Page after button press", currentPage)}}
                           className={classes.actionbutton}
                           style={{backgroundColor: activeButton === "debit"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
                                   color: activeButton === "debit"? "black" : "white"}}
@@ -314,6 +334,17 @@ const handleSearch = input => {
                           <FontAwesomeIcon 
                             className={classes.filterIcon_credit} 
                             icon={faThumbsDown} 
+                          />
+                        </Button>
+                        <Button 
+                          onClick={() => { pageUpdates("forgiven") ; console.log("Page after button press", currentPage)}} 
+                          className={classes.actionbutton}
+                          style={{backgroundColor: activeButton === "forgiven"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
+                                  color: activeButton === "forgiven"? "black" : "white"}}
+                        >Forgiven 
+                          <FontAwesomeIcon 
+                            className={classes.filterIcon_forgiven} 
+                            icon={faPrayingHands} 
                           />
                         </Button>
                       </ButtonGroup>
@@ -343,9 +374,10 @@ const handleSearch = input => {
                 </Collapse>
                 {/* {isDeleted === true ? <Alert variant="filled" severity="success">Successful in deleting favour</Alert> : ""}
               {isDeleted === false ? <Alert variant="filled" severity="success">Unsuccessful in deleting favour</Alert> : ""} */}
-              {/* {console.log(favours)} */}
+              {console.log(searchResult)}
+
                 <React.Fragment>
-                  {searchResult ? (
+                  {searchResult? (
                     searchResult
                       .slice(indexOfFirstFavour, indexOfLastFavour)
                       .map((data, key) => {
@@ -360,18 +392,20 @@ const handleSearch = input => {
                                   className="card_left"
                                   key={key + "-cardDescription"}
                                 >
-                                  Favour Type:&nbsp;<strong>{data.favourOwed}</strong>&nbsp;|&nbsp;Status:&nbsp;<strong>{data.is_completed === true? "Paid": "Unpaid"}</strong>
+                                  Favour Type:&nbsp;<strong>{data.favourOwed}</strong>&nbsp;|&nbsp;Status:&nbsp;<strong>{data.is_completed === true? "Paid": "Unpaid"}</strong>&nbsp;|&nbsp;Debt Forgiven:&nbsp;<strong>{data.debt_forgiven === true? "Yes": "No"}</strong>&nbsp;|&nbsp;Debit or Credit:&nbsp;<strong>{userData.user._id === data.owingUser ? "Debit": "Credit"}</strong>&nbsp;
                                 </div>
                                 <div className="btn" key={key + "-btnDiv"}>
                                   <div className={classes.modal}>
                                     <FavourModal
                                       FavourId={data._id}
                                       FavourTitle={data.favourOwed}
-                                      Requester={data.requestUser}
+                                      Requester={data.requestUser}                                      
                                       FavourDescription={data.description}
                                       FavourDate={data.create_time}
-                                      Location={location}
+                                      Location={location.pathname}
                                       FavourImageKey={data.proofs.uploadImageUrl}
+                                      Complete={data.is_completed}
+                                      OwingUser={data.owingUser}
                                     />
                                   </div>
                                   <div className={classes.button}>

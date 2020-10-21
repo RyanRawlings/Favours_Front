@@ -203,8 +203,8 @@ const RepayFavour = (props) => {
                 // id: i + 1,
                 id: fetchFavours[0].credits[i]._id,
                 favourType: fetchFavours[0].credits[i].favourOwed,
-                favourDebtor: getUserEmail(fetchFavours[0].credits[i].requestUser),
-                favourCreditor: getUserEmail(fetchFavours[0].credits[i].owingUser),
+                favourDebtor: getUserEmail(fetchFavours[0].credits[i].owingUser),
+                favourCreditor: getUserEmail(fetchFavours[0].credits[i].requestUser),
                 favourStatus: fetchFavours[0].credits[i].is_completed === true? "Paid" : "Unpaid",
                 favourDate: date
               };

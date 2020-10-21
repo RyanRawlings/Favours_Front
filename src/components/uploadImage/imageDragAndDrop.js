@@ -74,7 +74,7 @@ export default function Previews({ props, addFile }) {
          Filename: {file.name}
       </div> : 
     location.pathname ==="/all_list"?      
-      <div style={{ marginTop: "-6%", marginBottom: "1%", width: "100%"}}key={index}>
+      <div style={{ marginTop: "15%", width: "100%"}}key={index}>
           <span style={{color: "black"}}>Filename: {file.name}</span>
       </div> : 
     <div className={classes.thumb} key={file.name}>
@@ -102,7 +102,7 @@ export default function Previews({ props, addFile }) {
           </div>
         ) : (
           <Button className={classes.infoText}>
-            Drag file to upload or click to browse file
+            Drag or click to browse proof file
           </Button>
         )}
       </div>

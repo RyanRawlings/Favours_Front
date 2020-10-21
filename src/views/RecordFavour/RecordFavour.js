@@ -90,7 +90,6 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "3px",
     padding: "0% 1% 1%",
     height: "5%",
-    backgroundColor: "#1B9AAA",
     color: "white"
   },
   uploadProof: {
@@ -196,7 +195,7 @@ const RecordFavourForm = ({ userData }) => {
       // validationResult = false;
       return [false, "You have set the creditor and debtor to the same value"];
     }
-    if (creditor !== userData.user.email && fileList.length === 0) {
+    if (debtor === userData.user.email && fileList.length === 0) {
       // toast.error("You have to provide proof to create favours other people owe you");
       // validationResult = false;
       return [
@@ -226,6 +225,7 @@ const RecordFavourForm = ({ userData }) => {
         description: favourDescription,
         favourOwed: favourName,
         is_completed: false,
+        debt_forgiven: false,
         proofs: {
           is_uploaded: false,
           uploadImageUrl: null,
@@ -373,13 +373,12 @@ const RecordFavourForm = ({ userData }) => {
               }}
               onChange={e => setFavourDescription(e.target.value)}
             />
-            <div className={classes.uploadProof}>
-              <Typography>Upload Proof</Typography>
-            </div>
-
+            {userData? debtor === userData.user.email?
             <div className={classes.imageBox}>
               <ImageDragAndDrop addFile={addFile} />
             </div>
+            : "" : ""
+            }
             <div className={classes.recordButton}>
               <Button
                 variant="contained"
