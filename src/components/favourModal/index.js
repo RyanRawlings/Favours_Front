@@ -265,24 +265,26 @@ export default function FavourModal({
   };
   // auto delete 0 reward request
   useEffect(() => {
-    if (rewards.length === 0) {
-      const deletePublicRequest = async () => {
-        console.log("favourid", favourId);
-
-        let response = await APIServices.deletePublicRequest(favourId);
-
-        if (response) {
-          console.log("delete response:", response.message);
-
-          toast.success("No reward left. Automatically delete the request...");
-
-          await delay(5000);
-          window.location.reload();
-        } else {
-          toast.error("There was an error deleting the public request");
-        }
-      };
+    if (rewards) {
+      if (rewards.length === 0) {
+        const deletePublicRequest = async () => {
+          console.log("favourid", favourId);
+  
+          let response = await APIServices.deletePublicRequest(favourId);
+  
+          if (response) {
+            console.log("delete response:", response.message);
+  
+            toast.success("No reward left. Automatically delete the request...");
+  
+            await delay(5000);
+            window.location.reload();
+          } else {
+            toast.error("There was an error deleting the public request");
+          }
+      }
       deletePublicRequest();
+    }        
     }
   }, [favourId, rewards]);
 
