@@ -131,7 +131,7 @@ export default function Rewards({
               (getUserEmail(reward.providedBy, "value") ===
                 userData.user.email) ===
               true ? (
-                <Grid item xs={12} sm={1}>
+                <Grid item xs={12} sm={1} className={classes.trashGrid}>
                   <center>
                     {/* <Button className={classes.removeButton}
                 variant="contained"                

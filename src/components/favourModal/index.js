@@ -192,14 +192,17 @@ export default function FavourModal({
   FavourImageKey,
   ModalType,
   PublicRequestData,
-  User
+  User,
+  CurrentPage
+
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { userData, setUserData } = useContext(UserContext ? UserContext : {});
-  console.log("favourmodal props:", userData);
+  // console.log("favourmodal props:", userData);
   // Rewards created for the Public Request
-  const [rewards, setRewards] = useState(Rewards ? Rewards : []);
+  const [rewards, setRewards] = useState(Rewards);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [favourId, setFavourId] = useState(FavourId);
   const [favourTitle, setFavourTitle] = useState(FavourTitle);
@@ -209,9 +212,7 @@ export default function FavourModal({
   // const [location, setLocation] = useState(Location);
   // const [favourImageKey ,setFavourImageKey] = useState(FavourImageKey);
 
-  const [publicRequestUserDetails, setPublicRequestUserDetails] = useState(
-    PublicRequestData ? PublicRequestData : []
-  );
+  const [publicRequestUserDetails, setPublicRequestUserDetails] = useState([]);
 
   const [isDeleted, setIsDeleted] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
@@ -233,7 +234,7 @@ export default function FavourModal({
 
   // Controls how the Favour or Public Request component is opened to show more details
   const handleOpen = () => {
-    console.log("open");
+    console.log("Open Clicked!!!!");
     // Open modal on click
     setOpen(true);
 
@@ -246,7 +247,8 @@ export default function FavourModal({
     if (changeReward) {
       setRewards(rewards);
     } else {
-      setRewards(Rewards);
+      setRewards(Rewards? Rewards: []);
+      setChangeReward(false);
     }
 
     // If it is an existing public request get the user details
@@ -271,8 +273,8 @@ export default function FavourModal({
       }
 
       // Get user details for the relevant userIds stored in the array
-      console.log("userArray:", userArray);
-      console.log("getUserdetial:", rewards);
+      // console.log("userArray:", userArray);
+      // console.log("getUserdetial:", rewards);
       const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(
         userArray
       );
@@ -299,6 +301,7 @@ export default function FavourModal({
   };
 
   const addReward = async reward => {
+    setChangeReward(true);
     // add new user
     const newPublicRequestUserDetails = [
       ...publicRequestUserDetails,
@@ -308,9 +311,9 @@ export default function FavourModal({
         email: userData.user.email
       }
     ];
+
     setPublicRequestUserDetails(newPublicRequestUserDetails);
     // add new reward
-
     const newReward = [
       ...rewards,
       {
@@ -320,7 +323,7 @@ export default function FavourModal({
         providedBy: reward.providedBy
       }
     ];
-    console.log("newrewards:", newReward);
+    // console.log("newrewards:", newReward);
 
     const response = await APIServices.addReward(
       favourId,
@@ -334,6 +337,7 @@ export default function FavourModal({
   };
 
   const removeReward = async index => {
+    setChangeReward(true);
     //slice reward
     const newReward = [...rewards];
     newReward.splice(index, 1);
@@ -613,7 +617,7 @@ export default function FavourModal({
                 </>
               ) : (
                 <div className={classes.actionButtons}>
-                  <ClaimModal favourId={FavourId} />
+                  <ClaimModal favourId={FavourId} requester={Requester}/>
                 </div>
               )
 

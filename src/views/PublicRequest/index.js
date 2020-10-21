@@ -77,7 +77,8 @@ export default function PublicRequest(props) {
   const [requestsPerPage, setRequestsPerPage] = useState(4);
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
 
-  console.log("props:", props.user.token);
+  // console.log("props:", props.user.token);
+
   const classes = useStyles();
   // // const [tag, setTag] = useState(0);
   const location = useLocation();
@@ -86,7 +87,7 @@ export default function PublicRequest(props) {
     async function getPublicRequestList() {
       const getPublicRequests = await APIServices.getPublicRequests();
       // Return array and set the Favours state
-      console.log("getPublicRequests:", getPublicRequests);
+      // console.log("getPublicRequests:", getPublicRequests);
       setPublicRequests(getPublicRequests);
       setSearchResult(getPublicRequests);
       setLoading(false);
@@ -107,12 +108,12 @@ export default function PublicRequest(props) {
 
   //search keywords or reward item
   const handleSearch = input => {
-    console.log("input:", input);
-    console.log(publicRequests);
+    // console.log("input:", input);
+    // console.log(publicRequests);
     setSearchBarPlaceHolder(input);
     let newData = [];
     publicRequests.map(item => {
-      console.log("item:", item);
+      // console.log("item:", item);
 
       //check reward array
       let checkReward;
@@ -135,7 +136,7 @@ export default function PublicRequest(props) {
     setLoading(false);
     setSearchResult(newData);
 
-    console.log("searchResult", searchResult);
+    // console.log("searchResult", searchResult);
   };
 
   return (
@@ -157,7 +158,7 @@ export default function PublicRequest(props) {
                 />
               </div>
               <div className="cards_container">
-                <React.Fragment>
+                <Fragment>
                   {searchResult ? (
                     searchResult
                       .slice(indexOfFirstRequest, indexOfLastRequest)
@@ -180,6 +181,7 @@ export default function PublicRequest(props) {
                                   key={key + "-cardRight"}
                                 >
                                   <div className={classes.modal}>
+                                    {/* {console.log(data.title, data.rewards)} */}
                                     <FavourModal
                                       key={key + "-modal"}
                                       FavourId={data._id}
@@ -189,6 +191,7 @@ export default function PublicRequest(props) {
                                       Rewards={data.rewards}
                                       Location={getLocation()}
                                       User={props.user}
+                                      CurrentPage={currentPage}
                                     />
                                   </div>
                                 </div>
@@ -207,7 +210,7 @@ export default function PublicRequest(props) {
                       />
                     </center>
                   )}
-                </React.Fragment>
+                </Fragment>
               </div>
               {searchResult ? (
                 <Pagination

@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: "5%"
   }
 }));
-const ClaimModal = () => {
+const ClaimModal = ({ favourId, requester }) => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
   console.log(userData);
@@ -103,6 +103,7 @@ const ClaimModal = () => {
           color="primary"
           size="large"
           onClick={handleOpen}
+          disabled={userData? requester? userData.user.email === requester.email? true: false: false: false}
         >
           Claim
         </Button>
@@ -111,7 +112,7 @@ const ClaimModal = () => {
           variant="contained"
           color="primary"
           size="large"
-          href={"/login"}
+          href={"/login"}          
         >
           Claim
         </Button>
