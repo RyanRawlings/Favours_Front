@@ -97,23 +97,6 @@ const ClaimModal = ({
     //post imagekey, completed true
     console.log("filelist:,", fileList);
 
-    // let query=[];
-    // favourOwed.map((item,index)=>{
-    //   query.push({
-    //     _id: favourId,
-    //     requestUser: "currentuser",
-    //     owingUser: requester,
-    //     description: snippet,
-    //     favourOwed: item,
-    //     is_completed: true,
-    //     debt_forgiven: false,
-    //     proofs: {
-    //       is_uploaded: true,
-    //       uploadImageUrl: null,
-    //       snippet: ""
-    //     }
-    //   });
-    // })
     if (fileList.length > 1) {
       toast.error("You have tried to upload more than one image...");
       return console.log("More than one file added...");
@@ -128,8 +111,6 @@ const ClaimModal = ({
       // console.log(fileList[i][0]);
       imageForm.append("image", fileList[i][0]);
     }
-
-    //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
     const uploadToS3 = await axios
       .post("http://localhost:4000/api/image/upload", imageForm)
       .then(function(response) {
@@ -137,10 +118,39 @@ const ClaimModal = ({
           "Successfully stored images on AWS... Now starting database processing"
         );
         uploadToMongoDB(response);
+        transferToFavour(response);
+        console.log("uploads3 response:", response.data.locationArray);
       })
       .catch(function(error) {
         toast.error(error);
       });
+    console.log("uploadToS3 is:", uploadToS3);
+
+    //const transferToFavour = await axios.post("http://localhost:4000/api/publicRequest/claim",query)
+  };
+
+  const transferToFavour = async imageFile => {
+    imageFile = imageFile.data.locationArray;
+    let query = [];
+    favourOwed.map(favour => {
+      query.push({
+        _id: favourId,
+        requestUser: userData.user._id,
+        owingUser: favour.providedBy,
+        description: snippet,
+        favourOwed: favour.item,
+        is_completed: true,
+        debt_forgiven: false,
+        proofs: {
+          is_uploaded: true,
+          uploadImageUrl: imageFile[imageFile.length - 1],
+          snippet: snippet
+        }
+      });
+    });
+    console.log("queryfor favour data is:", query);
+    let msg = await APIServices.claimPublicRequest(query);
+    console.log("msg  data is:", msg);
   };
 
   const uploadToMongoDB = async response => {
@@ -175,6 +185,7 @@ const ClaimModal = ({
 
     setFileList(tempFileList);
   };
+
   const handleDelete = async () => {
     console.log("favourid", favourId);
 
@@ -191,18 +202,6 @@ const ClaimModal = ({
       toast.error("There was an error deleting the public request");
     }
   };
-
-  {
-    /* <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={handleOpen}
-          disabled={userData? requester? userData.user.email === requester.email? true: false: false: false}
-        >
-          Claim
-        </Button> */
-  }
 
   return (
     <div>

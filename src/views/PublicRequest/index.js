@@ -24,7 +24,7 @@ import Pagination from "../AllIOUList/Pagination";
 import FavourModal from "../../components/favourModal/index";
 import { useLocation } from "react-router-dom";
 import SearchBar from "../../components/searchBar/index";
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import UserContext from "../../context/UserContext";
 
@@ -93,7 +93,6 @@ const useStyles = makeStyles(theme => ({
   anonymousButtonGroup: {
     display: "flex"
   }
-
 }));
 
 export default function PublicRequest(props) {
@@ -117,8 +116,14 @@ export default function PublicRequest(props) {
       const getPublicRequests = await APIServices.getPublicRequests();
       // Return array and set the Favours state
       // console.log("getPublicRequests:", getPublicRequests);
-      setPublicRequests(getPublicRequests);
-      setSearchResult(getPublicRequests);
+      let result = getPublicRequests.filter(item => {
+        return item.completed === false;
+      });
+
+      // setPublicRequests(getPublicRequests);
+      // setSearchResult(getPublicRequests);
+      setPublicRequests(result);
+      setSearchResult(result);
       setLoading(false);
     }
 
@@ -200,28 +205,37 @@ export default function PublicRequest(props) {
                   />
                 </div>
                 <div className={classes.rewardList}>
-                <Autocomplete
-                  id="rewards"
-                  options={favourRewards}
-                  getOptionLabel={(option) => option.Name}
-                  onInputChange={(event, newInputValue) => {
-                    
-                  }}
-                  renderInput={(params) => <TextField {...params} label="View Rewards on Offer" variant="outlined" />
-                  }/>              
+                  <Autocomplete
+                    id="rewards"
+                    options={favourRewards}
+                    getOptionLabel={option => option.Name}
+                    onInputChange={(event, newInputValue) => {}}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="View Rewards on Offer"
+                        variant="outlined"
+                      />
+                    )}
+                  />
                 </div>
-                {
-                  userData.user?
-                  "" : 
+                {userData.user ? (
+                  ""
+                ) : (
                   <div className={classes.anonymousButtonGroup}>
                     <div className={classes.homeButton}>
-                      <Button variant="contained" href={"/home"}> Back to Home</Button>
+                      <Button variant="contained" href={"/home"}>
+                        {" "}
+                        Back to Home
+                      </Button>
                     </div>
                     <div className={classes.leaderboardButton}>
-                      <Button variant="contained" href={"/leaderboard"}>View Leaderboard</Button>
+                      <Button variant="contained" href={"/leaderboard"}>
+                        View Leaderboard
+                      </Button>
                     </div>
                   </div>
-                }
+                )}
               </div>
               <div className="cards_container">
                 <Fragment>
@@ -240,7 +254,10 @@ export default function PublicRequest(props) {
                                   className="card_left"
                                   key={key + "-cardDescription"}
                                 >
-                                  Request Title:&nbsp;<strong>{data.title}</strong>&nbsp;|&nbsp;Favour Rewards Offered:&nbsp;<strong>{data.rewards.length}</strong>
+                                  Request Title:&nbsp;
+                                  <strong>{data.title}</strong>
+                                  &nbsp;|&nbsp;Favour Rewards Offered:&nbsp;
+                                  <strong>{data.rewards.length}</strong>
                                 </div>
                                 <div
                                   className="card_right"
