@@ -164,12 +164,16 @@ const Settings = (props) => {
         
         const groupUserEmails = await UserAPI.getGroupUserEmails({ groups: userGroups });
         // console.log("response from backend", groupUserEmails);
-        if (groupUserEmails) {
-          setGroupUserDetails(groupUserEmails);
-          setGroupUsers(groupUserEmails[0]['users']);
+        try {
+          if (groupUserEmails[0]['users']) {
+            setGroupUserDetails(groupUserEmails);
+            setGroupUsers(groupUserEmails[0]['users']);
+          }        
+        } catch (error ) {
+          console.log(error);
         }
+        
       }
-      
     }
   
     getUserGroupList();
@@ -184,7 +188,10 @@ const Settings = (props) => {
     for (let i = 0; i < groups.length; i++) {
       if (groupId === groups[i]._id) {
         setActiveGroup(groups[i]);
-        setGroupUsers(groupUserDetails[i]['users']);
+        if (groupUserDetails) {
+          setGroupUsers(groupUserDetails[i]['users']);
+        }
+        
       }
     }
   }
@@ -204,7 +211,7 @@ const Settings = (props) => {
                           
                   <div className={classes.subHeading}><Typography>Your Groups</Typography></div>                
                   <List component="nav" className={classes.listComponent} aria-label="contacts">
-                    {groups.length > 0? 
+                    {groups && groupUsers? 
                       groups.map((item, index) => (
                           <ListItem style={{backgroundColor: activeGroup._id === item._id? "#f6f6f6": "white"}} key={index} button>
                             <ListItemText onClick={() => handleGroupUpdate(item._id)} primary={item.group_name} key={index}/>
@@ -213,12 +220,13 @@ const Settings = (props) => {
                     }   
                     </List>    
                 </Grid>  
+                {groups? 
                 <Grid item xs={12} sm={6}>
                 <Paper className={classes.groupForm}>                
                   <Grid container spacing={3}>
                       <Grid item xs={12}>
                         <Typography variant="h6">Group Details</Typography>
-                      </Grid>
+                      </Grid>                      
                       <Grid item xs={6}>
                         <TextField value={activeGroup? activeGroup.group_name : ""} variant="outlined" label="Group name" InputLabelProps={{shrink:true}}/>
                       </Grid>
@@ -258,8 +266,10 @@ const Settings = (props) => {
                           </Grid>
                         </Grid>
                       </Paper>                      
-                      </Grid>                 
-                </Grid>                                                         
+                      </Grid>
+                      :""}
+                </Grid>  
+                                                                       
               </div>
           </Paper>
         </div>

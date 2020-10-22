@@ -23,6 +23,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLocation } from "react-router-dom";
+import * as UserAPI from "../../api/UserAPI";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -191,7 +192,17 @@ export default function NewPublicRequestForm() {
 
   const createPublicRequestHelper = async data => {
     const response = await APIServices.createPublicRequest(data);
+    console.log(response);
     if (response) {
+      let userId = userData.user._id;
+      let action = "Created new public request";
+      let newActivityData = {
+        userId: userId,
+        action: action
+      }
+
+      const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+
       // Set toast details
       setIsSuccessful(true);
       setToastMessage('Successfully created the Public Request!');

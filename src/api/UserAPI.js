@@ -23,6 +23,8 @@ export const createUserActivity = (data) =>
   callAPI("post", "http://localhost:4000/api/user/create/activity", data);
 export const getUserActivity = (data) => 
   callAPI("post", "http://localhost:4000/api/user/get/activity", data);    
+export const partyDetection = (data) => 
+  callAPI("post", "http://localhost:4000/api/user/party-detection", data);    
 
-
+  
   

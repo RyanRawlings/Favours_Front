@@ -76,6 +76,14 @@ const useStyles = makeStyles(theme => ({
   },
   actionButtons: {
     display: "flex"
+  },
+  partyDetection: {
+    fontSize: "10px",
+    textTransform: "capitalize",
+    marginTop: "10%",
+    display: "inline",
+    whiteSpace: "nowrap",
+    maxHeight: "30px"
   }
 }));
 
@@ -88,6 +96,7 @@ export default function Profile(props) {
   const { userData } = useContext(UserContext);
   const [fileList, setFileList] = useState([]);
   const [user, setUser] = useState([]);
+  const [partyDetectionEmails,setPartyDetectionEmails] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [userActivityPerPage, setUserActivityPerPage] = useState(8);
@@ -122,6 +131,18 @@ export default function Profile(props) {
 
     getUserActions();
   }, []);
+
+  // useEffect(() => {
+  //   async function partyDetectionData() {
+  //     const partyDetection = await UserAPI.partyDetection({ _id: userData.user._id });
+  //     if (partyDetection) {
+  //       console.log(partyDetection)
+  //     }
+  //     setPartyDetectionEmails(partyDetection);
+  //   }
+
+  //   partyDetectionData();
+  // }, []);
 
   // console.log("personalDetails:", personalDetails);
 
@@ -178,6 +199,25 @@ export default function Profile(props) {
 
     setFileList(tempFileList);
   };
+
+  const handlePartyDetection = async () => {
+    // toast.success("Party detection generation started");
+    const partyDetection = await UserAPI.partyDetection({ _id: userData.user._id })
+    // .then(result => {
+    //   toast.success("You should form a party with " + result);
+    // })
+    // .catch(error=> {
+    //   toast.error(`An error occurred ${error}`);
+    // })
+    if (partyDetection !== null && partyDetection !== undefined) {
+      let partyString = "";
+      for (let i = 0; i < partyDetection.length; i++) {
+        partyString += partyDetection[i] + " ";
+      }
+      toast.success("You should create a party with " + partyString);
+    }
+    
+  }
 
   return (
     <div className={classes.root}>
@@ -236,7 +276,15 @@ export default function Profile(props) {
                       </tr>
                     </tbody>
                   </table>
-                </CardContent>
+                  <center>
+                    <Button 
+                      color="primary"
+                      variant="contained"
+                      className={classes.partyDetection}
+                      onClick={() => handlePartyDetection()}
+                      >Party Detection</Button>
+                  </center>
+                </CardContent>                
               </Card>
               <Card className={classes.personalDetailsCard}>
                   <CardContent className={classes.personalDetailsCardContent}>Recent Activity

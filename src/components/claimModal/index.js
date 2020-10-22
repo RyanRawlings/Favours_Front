@@ -14,6 +14,7 @@ import axios from "axios";
 import * as APIServices from "../../api/TestAPI";
 import * as ImageAPI from "../../api/ImageAPI";
 import { delay } from "q";
+import * as UserAPI from "../../api/UserAPI";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -127,6 +128,15 @@ const ClaimModal = ({
     console.log("uploadToS3 is:", uploadToS3);
 
     //const transferToFavour = await axios.post("http://localhost:4000/api/publicRequest/claim",query)
+
+    let userId = userData.user._id;
+    let action = "Claimed a public request";
+    let newActivityData = {
+      userId: userId,
+      action: action
+    }
+
+    const newUserActivity = await UserAPI.createUserActivity(newActivityData);
   };
 
   const transferToFavour = async imageFile => {
