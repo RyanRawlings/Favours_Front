@@ -37,6 +37,13 @@ const useStyles = makeStyles(theme => ({
     padding: "10px 5px 10px 5px",
     margin: "0% 0 4% 0",
     border: "dotted 1px"
+  },
+  profileImageText: {
+    fontSize: "10px",
+    textTransform: "capitalize",
+    marginTop: "2%",
+    whiteSpace: "nowrap",
+    dispay: "inline"
   }
 }));
 
@@ -76,11 +83,15 @@ export default function Previews({ props, addFile }) {
     location.pathname ==="/all_list"?      
       <div style={{ marginTop: "15%", width: "100%"}}key={index}>
           <span style={{color: "black"}}>Filename: {file.name}</span>
+      </div> :     
+      location.pathname ==="/profile"?      
+      <div style={{ marginTop: "15%", width: "100%", fontSize: "10px"}}key={index}>
+          <span style={{color: "black"}}>File uploaded click save</span>
       </div> : 
     <div className={classes.thumb} key={file.name}>
       <div className={classes.thumbInner}>  
         <img src={file.preview} className={classes.img} />
-     </div>
+      </div>
      </div>
   ));
 
@@ -100,10 +111,21 @@ export default function Previews({ props, addFile }) {
           <div className={classes.imgDiv}>
             <div className={classes.thumbsContainer}>{thumbs}</div>
           </div>
-        ) : (
-          <Button className={classes.infoText}>
+        ) : ( 
+          (location.pathname === "/profile"?
+          <div style={{marginLeft: "10%"}}>
+          <Button 
+              className={classes.profileImageText}
+              color="primary"
+              variant="contained">
+            Click to add          
+          </Button> 
+          </div>:
+            <Button className={classes.infoText}>
             Drag or click to browse proof file
           </Button>
+          )
+          
         )}
       </div>
     </section>

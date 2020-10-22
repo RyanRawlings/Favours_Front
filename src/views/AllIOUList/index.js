@@ -251,7 +251,7 @@ const handleSearch = input => {
     window.location.reload();
   };
 
-  //Get current posts
+  //Get current favours
   const indexOfLastFavour = currentPage * favoursPerPage;
   const indexOfFirstFavour = indexOfLastFavour - favoursPerPage;
 

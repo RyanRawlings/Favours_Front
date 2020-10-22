@@ -20,6 +20,7 @@
     "axios": "^0.20.0",
     "buffer": "^5.6.0",
     "cors": "^2.8.5",
+    "date-diff": "^0.2.2",
     "form-data": "^3.0.0",
     "http-proxy-middleware": "^1.0.6",
     "js-cookie": "^2.2.1",
@@ -43,7 +44,8 @@
     "react-scripts": "3.4.3",
     "react-toastify": "^6.0.9",
     "react-window": "^1.8.5",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "sort-objects-array": "^1.7.1"
   },
   "scripts": {
     "start": "react-scripts start",

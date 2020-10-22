@@ -27,6 +27,7 @@ import SearchBar from "../../components/searchBar/index";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import UserContext from "../../context/UserContext";
+import DateDiff from "date-diff";
 
 const useStyles = makeStyles(theme => ({
   root: {

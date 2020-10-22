@@ -220,33 +220,44 @@ const RecordFavourForm = ({ userData }) => {
     // console.log(favourValidation());
     let favourValidationResult = favourValidation();
     
-    if (fileList.length > 1) {
-      toast.error("You have tried to upload more than one image...");
-      return console.log("More than one file added...");
-    } else if (fileList.length === 0) {
-      toast.error("You haven't uploaded an image.");
-      return console.log("No file added...");
-    }
+    if (favourValidationResult[0] === false) {
+      toast.error(favourValidationResult[1])
+      return console.log(favourValidationResult[1])
+    } 
 
+    if (debtor === userData.user.email) {
+      if (fileList.length > 1) {
+        toast.error("You have tried to upload more than one image...");
+        return console.log("More than one file added...");
+      } else if (fileList.length === 0) {
+        toast.error("You haven't uploaded an image.");
+        return console.log("No file added...");
+      }
+    } else if (debtor !== userData.user.email) {
+      uploadToMongoDB(null, favourValidationResult, "creditor");
+      return console.log("No file upload required.");
+    }
+  
     let imageForm = new FormData();
+    imageForm.append('image', fileList[0][0]);
 
-    for (let i = 0; i < fileList.length; i++) {
-        // console.log(fileList[i][0]);
-        imageForm.append("image", fileList[i][0]);
-    }
+    // for (let i = 0; i < fileList.length; i++) {
+    //     // console.log(fileList[i][0]);
+    //     imageForm.append("image", fileList[i][0]);
+    // }
 
     //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
     const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
             .then( function(response) {
                 toast.success("Successfully stored images on AWS... Now starting database processing");
-                uploadToMongoDB(response, favourValidationResult);
+                uploadToMongoDB(response, favourValidationResult, "debtor");
             })
             .catch( function (error) {
                 toast.error(error);
             })
-  }
+    }
 
-  const uploadToMongoDB = async (response, favourValidationResult) => {
+  const uploadToMongoDB = async (response, favourValidationResult, type) => {
     let newFavour = {};
     if (favourValidationResult[0] === true) {
       // console.log(favourTypeId);
@@ -269,11 +280,25 @@ const RecordFavourForm = ({ userData }) => {
       const createNewFavour = await FavourAPI.createFavour(newFavourData);
   
       if (createNewFavour) {
+        let userId = userData.user._id;
+        let action = "Created new favour " + createNewFavour.favourOwed.toString();
+        let newActivityData = {
+          userId: userId,
+          action: action
+        }
+
+        const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+
+        if (newUserActivity) {
+          console.log("new user action log: 200")
+        }
+
         if (
           createNewFavour.success === true &&
           createNewFavour.success !== null
         ) {
-          toast.success(createNewFavour.message);
+          toast.success(createNewFavour.message);           
+          
         } else if (
           createNewFavour.success === true &&
           createNewFavour.success !== null
@@ -283,29 +308,33 @@ const RecordFavourForm = ({ userData }) => {
       }
       newFavour = createNewFavour;
       await delay(5000);
+      window.location.reload();
       
     } else {
       toast.error(favourValidationResult[1]);
     }
 
-    let imageArray = [];
-    console.log("new Favour", newFavour);
-    if (response) {
-        for (let i = 0; i < response.data.locationArray.length; i++) {
-            imageArray.push({ _id: newFavour._id, imageUrl: response.data.locationArray[i] });
-        }        
+    if (type === "debtor") {
+      let imageArray = [];
+      console.log("new Favour", newFavour);
+      if (response) {
+          for (let i = 0; i < response.data.locationArray.length; i++) {
+              imageArray.push({ _id: newFavour._id, imageUrl: response.data.locationArray[i] });
+          }        
+      }
+    
+      imageArray.push({type: "Record"});
+      console.log("Sending off the data to the server now");
+    
+      const storeImageData = await ImageAPI.storeImageData(imageArray);
+      if (storeImageData) {
+          toast.success("Completed image update process... Taking you back to the Repay favours screen");
+          
+          await delay(5000)
+          window.location.reload();
+      } 
     }
-  
-    imageArray.push({type: "Record"});
-    console.log("Sending off the data to the server now");
-  
-    const storeImageData = await ImageAPI.storeImageData(imageArray);
-    if (storeImageData) {
-        toast.success("Completed image update process... Taking you back to the Repay favours screen");
-        
-        await delay(5000)
-        window.location.reload();
-    }
+    
 
   };
 
