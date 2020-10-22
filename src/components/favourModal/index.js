@@ -199,8 +199,7 @@ const useStyles = makeStyles(theme => ({
   },
   imageBox: {
     display: "inline-block",
-    marginRight: "10%",
-
+    marginRight: "10%"
   },
   forgiveDebt: {
     marginTop: "4%",
@@ -214,7 +213,7 @@ export default function FavourModal({
   FavourTitle,
   Requester,
   FavourDescription,
-  Rewards,  
+  Rewards,
   FavourDate,
   Location,
   FavourImageKey,
@@ -224,7 +223,6 @@ export default function FavourModal({
   CurrentPage,
   Complete,
   OwingUser
-
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -242,7 +240,7 @@ export default function FavourModal({
 
   // const [favourDate ,setFavourDate] = useState(FavourDate);
   // const [location, setLocation] = useState(Location);
-  const [favourImageKey ,setFavourImageKey] = useState(FavourImageKey);
+  const [favourImageKey, setFavourImageKey] = useState(FavourImageKey);
 
   const [publicRequestUserDetails, setPublicRequestUserDetails] = useState([]);
 
@@ -269,22 +267,24 @@ export default function FavourModal({
       if (Location === "/public_request" && rewards.length === 0) {
         const deletePublicRequest = async () => {
           console.log("favourid", favourId);
-  
+
           let response = await APIServices.deletePublicRequest(favourId);
-  
+
           if (response) {
             console.log("delete response:", response.message);
-  
-            toast.success("No reward left. Automatically delete the request...");
-  
+
+            toast.success(
+              "No reward left. Automatically delete the request..."
+            );
+
             await delay(5000);
             window.location.reload();
           } else {
             toast.error("There was an error deleting the public request");
           }
+        };
+        deletePublicRequest();
       }
-      deletePublicRequest();
-    }        
     }
   }, [favourId, rewards]);
 
@@ -326,13 +326,11 @@ export default function FavourModal({
         if (userDataAvailable === true) {
           if (!userArray.includes(userData.user._id))
             userArray.push(userData.user._id);
-        }      
-
+        }
       } else if (Location === "/all_list") {
         userArray.push(Requester);
         userArray.push(OwingUser);
       }
-
 
       // Get user details for the relevant userIds stored in the array
       // console.log("userArray:", userArray);
@@ -450,18 +448,18 @@ export default function FavourModal({
               />
             );
           } else {
-          return (
-            <TextField
-              id={nameId}
-              name={nameId}
-              label={label}
-              InputLabelProps={{
-                shrink: true
-              }}
-              disabled={disabled}
-              value={publicRequestUserDetails[i].email}
-            />
-          );
+            return (
+              <TextField
+                id={nameId}
+                name={nameId}
+                label={label}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                disabled={disabled}
+                value={publicRequestUserDetails[i].email}
+              />
+            );
           }
         }
       }
@@ -492,13 +490,17 @@ export default function FavourModal({
   const forgiveFavour = async FavourId => {
     const response = await FavourAPI.forgiveFavour({ _id: FavourId });
     if (response) {
-      toast.success("Successfully forgave favour debt... page will refresh to update");
+      toast.success(
+        "Successfully forgave favour debt... page will refresh to update"
+      );
 
       await delay(5000);
       setOpen(false);
       refreshPage();
     } else {
-      toast.error("Error forgiving the favour debt... page will refresh to update");
+      toast.error(
+        "Error forgiving the favour debt... page will refresh to update"
+      );
 
       await delay(5000);
       setOpen(false);
@@ -519,20 +521,19 @@ export default function FavourModal({
   };
 
   const addFile = async data => {
-
     try {
       // If there is more than one file, show user error and reload the page
-      if (data[1]) {        
+      if (data[1]) {
         toast.error("You can only upload one image... Window will refresh");
 
         await delay(5000);
         window.location.reload();
-      } 
+      }
 
       // Else update file list
       let tempFileList = fileList;
-  
-      tempFileList.push(data);        
+
+      tempFileList.push(data);
       setFileList(tempFileList);
     } catch (error) {
       // If error occurs show user error and close modal
@@ -540,11 +541,10 @@ export default function FavourModal({
 
       await delay(5000);
       handleClose();
-    }    
+    }
   };
 
   const handleSubmit = async () => {
-
     if (fileList.length > 1) {
       toast.error("You have tried to upload more than one image...");
       return console.log("More than one file added...");
@@ -556,39 +556,45 @@ export default function FavourModal({
     let imageForm = new FormData();
 
     for (let i = 0; i < fileList.length; i++) {
-        // console.log(fileList[i][0]);
-        imageForm.append("image", fileList[i][0]);
+      // console.log(fileList[i][0]);
+      imageForm.append("image", fileList[i][0]);
     }
 
     //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
-    const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
-            .then( function(response) {
-                toast.success("Successfully stored images on AWS... Now starting database processing");
-                uploadToMongoDB(response);
-            })
-            .catch( function (error) {
-                toast.error(error);
-            })
-  }
+    const uploadToS3 = await axios
+      .post("http://localhost:4000/api/image/upload", imageForm)
+      .then(function(response) {
+        toast.success(
+          "Successfully stored images on AWS... Now starting database processing"
+        );
+        uploadToMongoDB(response);
+      })
+      .catch(function(error) {
+        toast.error(error);
+      });
+  };
 
-  const uploadToMongoDB = async (response) => {
+  const uploadToMongoDB = async response => {
     let imageArray = [];
     if (response) {
-        for (let i = 0; i < response.data.locationArray.length; i++) {
-            imageArray.push({ _id: FavourId, imageUrl: response.data.locationArray[i] });
-        }        
+      for (let i = 0; i < response.data.locationArray.length; i++) {
+        imageArray.push({
+          _id: FavourId,
+          imageUrl: response.data.locationArray[i]
+        });
+      }
     }
-  
-    imageArray.push({type: "Repay"});
-  
+
+    imageArray.push({ type: "Repay" });
+
     const storeImageData = await ImageAPI.storeImageData(imageArray);
     if (storeImageData) {
-        toast.success("Completed image update process...");
-        
-        await delay(5000);
-        window.location.reload();
+      toast.success("Completed image update process...");
+
+      await delay(5000);
+      window.location.reload();
     }
-  }  
+  };
 
   // console.log(fileList, fileCount);
 
@@ -650,9 +656,21 @@ export default function FavourModal({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  id={Location === "/public_request"? "requestTitle" : "favourType"}
-                  name={Location === "/public_request"? "requestTitle" : "favourType"}
-                  label={Location === "/public_request"? "Request Title" : "Favour Type"}
+                  id={
+                    Location === "/public_request"
+                      ? "requestTitle"
+                      : "favourType"
+                  }
+                  name={
+                    Location === "/public_request"
+                      ? "requestTitle"
+                      : "favourType"
+                  }
+                  label={
+                    Location === "/public_request"
+                      ? "Request Title"
+                      : "Favour Type"
+                  }
                   disabled={true}
                   InputLabelProps={{
                     shrink: true
@@ -679,14 +697,17 @@ export default function FavourModal({
                         : ""
                     }
                   />
-                ) : Location === "/all_list"?
-                 (getUserEmail(Requester, "paidBy", "Paid By", true)) : ""} 
+                ) : Location === "/all_list" ? (
+                  getUserEmail(Requester, "paidBy", "Paid By", true)
+                ) : (
+                  ""
+                )}
               </Grid>
               <Grid item xs={12} sm={6}>
-              {Location === "/all_list"? 
-              getUserEmail(OwingUser, "owingBy", "Owing By", true)
-              : ""}
-              </Grid>                
+                {Location === "/all_list"
+                  ? getUserEmail(OwingUser, "owingBy", "Owing By", true)
+                  : ""}
+              </Grid>
               <Grid item xs={12} sm={12}>
                 <TextareaAutosize
                   id="outlined-textarea"
@@ -749,71 +770,89 @@ export default function FavourModal({
               ) : (
                 ""
               )}
-              {
-                Location === "/public_request"? 
-                (
-                  <div className={classes.actionButtons}>
-                    <ClaimModal favourId={FavourId} requester={Requester}/>
-                  </div>
-                ) : ""
-              }              
-              {Location === "/public_request"? "": Location === "/all_list" && showDeleteFavour() === true ? 
-              <>
-              <div className={classes.deleteFavour}>
-                  <Button
-                    key={"deleteFavour"}
-                    onClick={() => deleteFavour(FavourId)}
-                    color="primary"
-                    variant="contained"                
-                  >
-                    Delete
-                  </Button>
-                  <div className={classes.forgiveDebt}>
-                    <Button
-                      key={"forgiveFavour"}
-                      onClick={() => forgiveFavour(FavourId)}
-                      color="primary"
-                      variant="contained"                
-                    >
-                      Forgive Debt
-                    </Button>
-                  </div> 
+              {Location === "/public_request" ? (
+                <div className={classes.actionButtons}>
+                  <ClaimModal
+                    favourId={FavourId}
+                    requester={Requester}
+                    claimUser={userData}
+                    description={FavourDescription}
+                    favourOwed={rewards}
+                  />
                 </div>
-              
-                {FavourImageKey?
-                <div className={classes.imageRepayFavours}>
-                  <div>Uploaded Proof</div>
-                    <img src={FavourImageKey} width="100px" height="100px"/>
-                </div>:                 
-                  <div className={classes.imageRepayFavours}>Uploaded Proof: No file present</div>
-                }
-                
-              </>
-               :<> 
+              ) : (
+                ""
+              )}
+              {Location === "/public_request" ? (
+                ""
+              ) : Location === "/all_list" && showDeleteFavour() === true ? (
+                <>
+                  <div className={classes.deleteFavour}>
+                    <Button
+                      key={"deleteFavour"}
+                      onClick={() => deleteFavour(FavourId)}
+                      color="primary"
+                      variant="contained"
+                    >
+                      Delete
+                    </Button>
+                    <div className={classes.forgiveDebt}>
+                      <Button
+                        key={"forgiveFavour"}
+                        onClick={() => forgiveFavour(FavourId)}
+                        color="primary"
+                        variant="contained"
+                      >
+                        Forgive Debt
+                      </Button>
+                    </div>
+                  </div>
+
+                  {FavourImageKey ? (
+                    <div className={classes.imageRepayFavours}>
+                      <div>Uploaded Proof</div>
+                      <img src={FavourImageKey} width="100px" height="100px" />
+                    </div>
+                  ) : (
+                    <div className={classes.imageRepayFavours}>
+                      Uploaded Proof: No file present
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
                   <div className={classes.repayFavour}>
-                    <Button 
-                          color="primary"
-                          variant="contained"
-                          onClick={handleSubmit}
-                          disabled={Complete === false? false: true}
-                    >Repay
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={handleSubmit}
+                      disabled={Complete === false ? false : true}
+                    >
+                      Repay
                     </Button>
                   </div>
                   <div className={classes.imageRepayFavours}>
-                      {Complete === true? 
-                              <div className={classes.imageRepayFavours}>
-                                <div>Uploaded Proof</div>                                
-                                <div>
-                                    {FavourImageKey? 
-                                    <img src={FavourImageKey} width="100px" height="100px"/> : ""
-                                  }
-                                </div>
-                                
-                              </div>
-                              : <ImageDragAndDrop addFile={addFile}/>}
-                  </div>                              
+                    {Complete === true ? (
+                      <div className={classes.imageRepayFavours}>
+                        <div>Uploaded Proof</div>
+                        <div>
+                          {FavourImageKey ? (
+                            <img
+                              src={FavourImageKey}
+                              width="100px"
+                              height="100px"
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <ImageDragAndDrop addFile={addFile} />
+                    )}
+                  </div>
                 </>
-                }
+              )}
             </Grid>
           </div>
         </Fade>

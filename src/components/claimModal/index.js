@@ -10,7 +10,9 @@ import Grid from "@material-ui/core/Grid";
 import { ToastContainer, toast } from "react-toastify";
 import TextField from "@material-ui/core/TextField";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
+import axios from "axios";
 import * as APIServices from "../../api/TestAPI";
+import * as ImageAPI from "../../api/ImageAPI";
 import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
@@ -71,21 +73,100 @@ const useStyles = makeStyles(theme => ({
     marginBottom: "5%"
   }
 }));
-const ClaimModal = ({ favourId, requester }) => {
+const ClaimModal = ({
+  favourId,
+  requester,
+  claimUser,
+  description,
+  favourOwed
+}) => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
   console.log(userData);
   const [open, setOpen] = useState(false);
   // todo upload successfully or not
   const [fileList, setFileList] = useState([]);
+  const [snippet, setSnippet] = useState("Thank you");
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
-  const handleSubmit = () => {
-    //todo submit proof
+  const handleSubmit = async () => {
+    //post imagekey, completed true
+    console.log("filelist:,", fileList);
+
+    // let query=[];
+    // favourOwed.map((item,index)=>{
+    //   query.push({
+    //     _id: favourId,
+    //     requestUser: "currentuser",
+    //     owingUser: requester,
+    //     description: snippet,
+    //     favourOwed: item,
+    //     is_completed: true,
+    //     debt_forgiven: false,
+    //     proofs: {
+    //       is_uploaded: true,
+    //       uploadImageUrl: null,
+    //       snippet: ""
+    //     }
+    //   });
+    // })
+    if (fileList.length > 1) {
+      toast.error("You have tried to upload more than one image...");
+      return console.log("More than one file added...");
+    } else if (fileList.length === 0) {
+      toast.error("You haven't uploaded an image.");
+      return console.log("No file added...");
+    }
+
+    let imageForm = new FormData();
+
+    for (let i = 0; i < fileList.length; i++) {
+      // console.log(fileList[i][0]);
+      imageForm.append("image", fileList[i][0]);
+    }
+
+    //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
+    const uploadToS3 = await axios
+      .post("http://localhost:4000/api/image/upload", imageForm)
+      .then(function(response) {
+        toast.success(
+          "Successfully stored images on AWS... Now starting database processing"
+        );
+        uploadToMongoDB(response);
+      })
+      .catch(function(error) {
+        toast.error(error);
+      });
+  };
+
+  const uploadToMongoDB = async response => {
+    let imageArray = [];
+    if (response) {
+      for (let i = 0; i < response.data.locationArray.length; i++) {
+        imageArray.push({
+          _id: favourId,
+          imageUrl: response.data.locationArray[i]
+        });
+      }
+    }
+
+    imageArray.push({
+      type: "ClaimPublicRequest",
+      uploadedBy: userData.user._id,
+      snippet: snippet
+    });
+
+    const storeImageData = await ImageAPI.storeImageData(imageArray);
+    if (storeImageData) {
+      toast.success("Completed image update process...");
+
+      await delay(5000);
+      window.location.reload();
+    }
   };
 
   const addFile = data => {
@@ -205,6 +286,7 @@ const ClaimModal = ({ favourId, requester }) => {
                   rows={4}
                   defaultValue="Thank you"
                   variant="outlined"
+                  onChange={e => setSnippet(e.target.value)}
                 />
                 <div className={classes.actionButtons}>
                   <Button

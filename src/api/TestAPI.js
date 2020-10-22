@@ -146,3 +146,21 @@ export function deletePublicRequest(id) {
       });
   });
 }
+
+export function claimPublicRequest(data) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post("http://localhost:4000/api/publicRequest/claim", data)
+      .then(response => {
+        if (response.status >= 200 && response.status < 300) {
+          resolve(response.data);
+        } else {
+          reject(response.data);
+        }
+      })
+      .catch(reject => {
+        console.log(reject.response);
+        toast.error(reject.response.data);
+      });
+  });
+}
