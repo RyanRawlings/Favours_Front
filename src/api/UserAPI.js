@@ -16,4 +16,8 @@ export const getGroupUserEmails = (data) =>
 export const getUser = (data) => 
   callAPI("post", "http://localhost:4000/api/user/get-one", data);  
 
+export const getLeaderboard = () => 
+  callAPI("get", "http://localhost:4000/api/user/get-leaderboard");    
+  
+
   

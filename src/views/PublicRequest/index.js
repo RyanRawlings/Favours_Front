@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import "./style.scss";
 import Paper from "@material-ui/core/Paper";
@@ -12,7 +12,8 @@ import {
   faTrash,
   faThumbsUp,
   faThumbsDown,
-  faUsers
+  faUsers,
+  faSprayCan
 } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
 import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
@@ -23,6 +24,9 @@ import Pagination from "../AllIOUList/Pagination";
 import FavourModal from "../../components/favourModal/index";
 import { useLocation } from "react-router-dom";
 import SearchBar from "../../components/searchBar/index";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from "@material-ui/core/TextField";
+import UserContext from "../../context/UserContext";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -66,7 +70,30 @@ const useStyles = makeStyles(theme => ({
     display: "inline-block",
     marginRight: "40%",
     marginLeft: "-40%"
+  },
+  rewardList: {
+    display: "inline",
+    backgroundColor: "white",
+    width: "20%",
+    marginLeft: "1%"
+  },
+  subheadingRow: {
+    display: "flex"
+  },
+  homeButton: {
+    marginLeft: "1%",
+    display: "inline",
+    whiteSpace: "nowrap"
+  },
+  leaderboardButton: {
+    display: "inline",
+    marginLeft: "1%",
+    whiteSpace: "nowrap"
+  },
+  anonymousButtonGroup: {
+    display: "flex"
   }
+
 }));
 
 export default function PublicRequest(props) {
@@ -76,6 +103,8 @@ export default function PublicRequest(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage, setRequestsPerPage] = useState(4);
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
+  const [favourRewards, setFavourRewards] = useState([]);
+  const { userData } = useContext(UserContext);
 
   // console.log("props:", props.user.token);
 
@@ -94,6 +123,18 @@ export default function PublicRequest(props) {
     }
 
     getPublicRequestList();
+  }, []);
+
+  useEffect(() => {
+    async function getFavourType() {
+      const getFavourTypes = await APIServices.getFavourTypes();
+      // Return array and set the Favours state
+      const { favourTypes } = getFavourTypes;
+      const favourTypesArray = Object.values(favourTypes);
+      setFavourRewards(favourTypesArray);
+    }
+
+    getFavourType();
   }, []);
 
   //Get current posts
@@ -151,11 +192,36 @@ export default function PublicRequest(props) {
                   Public Requests <FontAwesomeIcon icon={faUsers} />
                 </h2>
               </div>
-              <div className={classes.searchBar}>
-                <SearchBar
-                  onSearch={handleSearch}
-                  placeHolder={searchBarPlaceHolder}
-                />
+              <div className={classes.subheadingRow}>
+                <div className={classes.searchBar}>
+                  <SearchBar
+                    onSearch={handleSearch}
+                    placeHolder={searchBarPlaceHolder}
+                  />
+                </div>
+                <div className={classes.rewardList}>
+                <Autocomplete
+                  id="rewards"
+                  options={favourRewards}
+                  getOptionLabel={(option) => option.Name}
+                  onInputChange={(event, newInputValue) => {
+                    
+                  }}
+                  renderInput={(params) => <TextField {...params} label="View Rewards on Offer" variant="outlined" />
+                  }/>              
+                </div>
+                {
+                  userData.user?
+                  "" : 
+                  <div className={classes.anonymousButtonGroup}>
+                    <div className={classes.homeButton}>
+                      <Button variant="contained" href={"/home"}> Back to Home</Button>
+                    </div>
+                    <div className={classes.leaderboardButton}>
+                      <Button variant="contained" href={"/leaderboard"}>View Leaderboard</Button>
+                    </div>
+                  </div>
+                }
               </div>
               <div className="cards_container">
                 <Fragment>
