@@ -1,28 +1,19 @@
 import React, { useState, Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import AllIOUList from "./views/AllIOUList/index";
-import DebitIOUList from "./views/DebitIOUList/index";
-import CreditIOUList from "./views/CreditIOUList/index";
+import ManageFavours from "./views/ManageFavours/index";
 import Profile from "./views/Profile/index";
 import PublicRequest from "./views/PublicRequest/index";
 import Leaderboard from "./views/Leaderboard/index";
 import Signup from "./views/Signup/index";
 import Login from "./views/Login/index";
-import HomePage from "./views/Home/homePage";
-import Testing from "./components/navMenu/index";
+import HomePage from "./views/Home/index";
 import UserContext from "./context/UserContext";
 import Settings from "./views/Settings/index";
 import Cookies from "js-cookie";
 import JWTDecode from "jwt-decode";
 import ProtectedRoute from "./components/protectedRoute/index";
-import RecordFavour from "./views/RecordFavour/RecordFavour";
-import RepayFavour from "./views/RepayFavour/RepayFavour";
-import RepaySelectedFavour from "./views/RepayFavour/RepaySelectedFavours";
-
-// const PublicRequest = () => import("./App");
-// const NavMenu = () => import("./components/NavMenu/index");
-// const CreditIOUList = () => import("./views/CreditIOUList/index");
-// const Profile = () => import("./views/Profile/index");
+import MultiRepay from "./views/MultiRepay/MultiRepay";
+import RepaySelectedFavour from "./views/MultiRepay/RepaySelectedFavours";
 
 const Routes = () => {
   const [userData, setUserData] = useState({
@@ -36,8 +27,9 @@ const Routes = () => {
       // console.log(authToken);
       if (authToken === undefined || authToken === '') {
         Cookies.remove('auth-token');
-      } else {
+      } else {      
         const userAttributes = JWTDecode(authToken);
+        console.log(userAttributes);
         setUserData({
           token: authToken,
           user: {
@@ -55,17 +47,25 @@ const Routes = () => {
   }, []);
 
   return (
-    // <Suspense fallback={<div>loading</div>}>
     <BrowserRouter>
       <UserContext.Provider value={{ userData, setUserData }}>
         <Switch>
-          {/* //Unauthenticated Routes */}
+          {/* Unauthenticated Routes */}
           <Route exact path="/" component={PublicRequest}>
             <Redirect to={"/home"} />
           </Route>
-          <Route path="/home" component={HomePage}></Route>
-          <Route path="/signup" component={Signup}></Route>
-          <Route path="/login" component={Login}></Route>
+          <Route 
+            path="/home"
+            component={HomePage}
+          />
+          <Route 
+            path="/signup"
+            component={Signup}
+          />
+          <Route 
+            path="/login" 
+            component={Login}
+          />
           <Route
             path="/public_request"
             render={props => {
@@ -73,12 +73,16 @@ const Routes = () => {
               return <PublicRequest {...props}></PublicRequest>;
             }}
           />
-          <Route path="/record_favour" component={RecordFavour} />
+          <Route 
+            path="/leaderboard"
+            component={Leaderboard}
+          />
+          {/* Authenticated Routes */}
           <ProtectedRoute 
             exact
             path="/repay_favour" 
             user={userData} 
-            component={RepayFavour} 
+            component={MultiRepay} 
           />
           <ProtectedRoute 
             exact
@@ -97,43 +101,12 @@ const Routes = () => {
             exact
             path="/all_list"
             user={userData}
-            component={AllIOUList}
+            component={ManageFavours}
           ></ProtectedRoute>
-          <ProtectedRoute
-            exact
-            path="/recordfavour"
-            user={userData}
-            component={RecordFavour}
-          ></ProtectedRoute>
-          <ProtectedRoute
-            exact
-            path="/payfavour"
-            user={userData}
-            component={RepayFavour}
-          ></ProtectedRoute>
-          <Route
-            exact
-            path="/all_list/debit_list"
-            user={userData}
-            component={DebitIOUList}
-          ></Route>
-          <Route
-            exact
-            path="/all_list/credit_list"
-            user={userData}
-            component={CreditIOUList}
-          ></Route>
-          <Route path="/leaderboard" component={Leaderboard}></Route>
           <ProtectedRoute
             path="/settings"
             user={userData}
             component={Settings}
-          ></ProtectedRoute>
-          {/* //Testing Routes */}
-          <ProtectedRoute
-            path="/testing"
-            user={userData}
-            component={Testing}
           ></ProtectedRoute>
         </Switch>
       </UserContext.Provider>

@@ -18,8 +18,7 @@ import AppBar from "@material-ui/core/AppBar";
 import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
-import Toast from "../toast/index";
-import RecordFavour from "../../views/RecordFavour/RecordFavour";
+import RecordFavour from "../../components/favours/RecordFavour";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -119,7 +118,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NewFavourForm({ TriggerNewFavour }) {
+export default function NewFavourForm({ TriggerResetFavourList }) {
   const classes = useStyles();
 
   // User information from JWT
@@ -132,19 +131,6 @@ export default function NewFavourForm({ TriggerNewFavour }) {
   const [requestTitle, setRequestTitle] = useState("");
   const [requestedBy] = useState(userData.user.email);
   const [requestTaskDescription, setRequestTaskDescription] = useState("");
-
-  // Toast details
-  const [isSuccessful, setIsSuccessful] = useState(null);
-  const [toastMessage, setToastMessage] = useState("");
-
-  // Toastify
-  const recordNotification = () => {
-    if ( isSuccessful !== null && isSuccessful === true){
-      toast.success(toastMessage);
-    } else if (isSuccessful !== null && isSuccessful === false) {
-      toast.error(toastMessage);
-    }
-  }
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -194,9 +180,7 @@ export default function NewFavourForm({ TriggerNewFavour }) {
   const createPublicRequest = async data => {
     const response = await APIServices.createPublicRequest(data);
     if (response) {
-      // Set toast details
-      setIsSuccessful(true);
-      setToastMessage('Successfully created the Public Request! the window will close automatically');
+      // Set toast success details
       toast.success("Successfully created the Public Request");
       
       // Reset the rewards state variable
@@ -206,23 +190,12 @@ export default function NewFavourForm({ TriggerNewFavour }) {
       await delay(3000);
       handleClose();
     } else {
-      // Set toast details
-      setIsSuccessful(false);
-      setToastMessage("There was an issue creating the Public Request!");
-      toast.success("Successfully created the Public Request");
+      // Set error toast details
+      toast.success("Error creating the Public Request");
       
       await delay(3000);
       handleClose();
-      TriggerNewFavour();
-    }
-  };
-
-  const showToast = () => {
-    if (
-      (isSuccessful === true && isSuccessful !== null) ||
-      (isSuccessful === true && isSuccessful !== null)
-    ) {
-      return <Toast IsSuccessful={isSuccessful} Message={toastMessage} />;
+      TriggerResetFavourList();
     }
   };
 
@@ -277,7 +250,7 @@ export default function NewFavourForm({ TriggerNewFavour }) {
                 </IconButton>
               </div>
             </Grid>
-            <RecordFavour TriggerNewFavour={TriggerNewFavour} userData={userData} handleClose={handleClose}/>            
+            <RecordFavour TriggerResetFavourList={TriggerResetFavourList} userData={userData} handleClose={handleClose}/>            
           </Grid> 
         </Fade>
       </Modal>

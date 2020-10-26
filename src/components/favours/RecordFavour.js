@@ -15,12 +15,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import HeroImage from "../../assets/images/uts-hero-image.png";
 import * as APIServices from "../../api/TestAPI";
 import Cookie from "js-cookie";
-import NavMenu from "../../components/navMenu/index";
+import NavMenu from "../navMenu/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
 import UserContext from "../../context/UserContext";
-import "./RecordFavour.css";
 import SaveIcon from "@material-ui/icons/Save";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
@@ -29,7 +28,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as FavourAPI from "../../api/FavourAPI";
 import { useLocation } from "react-router-dom";
-import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
+import ImageDragAndDrop from "../uploadImage/imageDragAndDrop";
 import axios from "axios";
 import * as ImageAPI from "../../api/ImageAPI";
 
@@ -135,9 +134,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const setFavourIdHelper = (object, value) => {
-    // console.log("Helper is being called...");
-    // console.log("Object array", object);
-    // console.log("Value", value);
 
     const favourTypesArray = Object.values(object);
     for (let i = 0; i < favourTypesArray.length; i++) {
@@ -147,8 +143,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
         setFavourTypeId(favourTypesArray[i]._id.toString());
       }
     }
-    // console.log(rewardIdKey);
-    // console.log(rewardId);
   };
 
   const enableSubmitButton = () => {
@@ -203,10 +197,7 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     return [true, "Success"];
   };
 
-  console.log(debtor);
-
   const handleSubmit = async () => {
-    // console.log(favourValidation());
     let favourValidationResult = favourValidation();
     
     if (favourValidationResult[0] === false) {
@@ -242,7 +233,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
   const uploadToMongoDB = async (response, favourValidationResult, type) => {
     let newFavour = {};
     if (favourValidationResult[0] === true) {
-      // console.log(favourTypeId);
       const newFavourData = {
         requestUser: getUserIdFromEmail(creditor),
         owingUser: getUserIdFromEmail(debtor),
@@ -277,8 +267,7 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
           createNewFavour.success === true &&
           createNewFavour.success !== null
         ) {
-          toast.success(createNewFavour.message); 
-          TriggerResetFavourList();          
+          toast.success(createNewFavour.message);                   
           
         } else if (
           createNewFavour.success === true &&
@@ -296,7 +285,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
 
     if (type === "debtor") {
       let imageArray = [];
-      console.log("new Favour", newFavour);
       if (response) {
           for (let i = 0; i < response.data.locationArray.length; i++) {
               imageArray.push({ _id: newFavour._id, imageUrl: response.data.locationArray[i] });
@@ -307,16 +295,18 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     
       const storeImageData = await ImageAPI.storeImageData(imageArray);
       if (storeImageData) {        
-          handleClose();
-          TriggerResetFavourList();
+        console.log("image upload is being called");
+        toast.success("Successfully created Favour");
+
+        await delay(3000);  
+        TriggerResetFavourList();
+        handleClose();
       } 
     } else if (type === "creditor") {
-      toast.success("Successfully created Favour");
 
       await delay(3000);
-
-      handleClose();
       TriggerResetFavourList();
+      handleClose();
     }
 
 
@@ -333,7 +323,7 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <div className={classes.formContent}>
-        {/* <ToastContainer
+        <ToastContainer
                 position="top-center"
                 autoClose={4000}
                 hideProgressBar={false}
@@ -343,7 +333,7 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-              /> */}
+              />
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Autocomplete
@@ -354,7 +344,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
                 options={favourType}
                 getOptionLabel={option => option.Name}
                 placeholder="Select your Favour Type"
-                // onChange={e => setFavourType(e.target.value)}
                 onInputChange={(event, newInputValue) => {
                   setFavourName(newInputValue);
                   setFavourIdHelper(favourType, newInputValue);
@@ -373,7 +362,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
                 name="Creditor"
                 options={userList ? userList : []}
                 getOptionLabel={option => option.email}
-                // onChange={e => setCreditor(e.target.value)}
                 onInputChange={(event, newInputValue) => {
                   setCreditor(newInputValue);
                 }}
@@ -383,7 +371,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <div className={classes.secondRow}> */}
               <Autocomplete
                 id="debtor-name"
                 required
@@ -410,7 +397,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
                 onChange={e => setFavourDate(e.target.value)}
               />
             </Grid>
-            {/* </div> */}
             <TextareaAutosize
               required
               id="outlined-textarea"
@@ -450,7 +436,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
                 Record
               </Button>
             </div>
-            {/* </form> */}
           </Grid>
         </div>
       </Paper>

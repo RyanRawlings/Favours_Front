@@ -20,7 +20,7 @@ import FavoursListButtonGroup from "../../components/favoursListButtonGroup/inde
 import * as APIServices from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
-import Pagination from "../AllIOUList/Pagination";
+import Pagination from "../ManageFavours/Pagination";
 import FavourModal from "../../components/favourModal/index";
 import { useLocation } from "react-router-dom";
 import SearchBar from "../../components/searchBar/index";

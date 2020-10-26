@@ -18,7 +18,6 @@ import AppBar from "@material-ui/core/AppBar";
 import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
-import Toast from "../toast/index";
 import SaveIcon from '@material-ui/icons/Save';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -143,10 +142,6 @@ export default function NewPublicRequestForm() {
   const [requestedBy] = useState(userData? userData.user.email: null);
   const [requestTaskDescription, setRequestTaskDescription] = useState(null);
 
-  // Toast details
-  const [isSuccessful, setIsSuccessful] = useState(null);
-  const [toastMessage, setToastMessage] = useState("");
-
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const [open, setOpen] = useState(false);
@@ -204,33 +199,20 @@ export default function NewPublicRequestForm() {
       const newUserActivity = await UserAPI.createUserActivity(newActivityData);
 
       // Set toast details
-      setIsSuccessful(true);
-      setToastMessage('Successfully created the Public Request!');
-
       toast.success("Successfully created the Public Request");
+      
       // Reset the rewards state variable
       setRewards([]);
 
       // Hold execution for 3s then close the modal
       await delay(3000);      
-      handleClose(); 
-
-      
+      handleClose();       
     } else {
-      // Set toast details
-      setIsSuccessful(false);
-      setToastMessage('Error creating the Public Request');
-      toast.error(toastMessage);
-      // handleClose();
-    }
-  };
+      // Set toast details      
+      toast.error("Error creating the Public Request");
 
-  const showToast = () => {
-    if (
-      (isSuccessful === true && isSuccessful !== null) ||
-      (isSuccessful === true && isSuccessful !== null)
-    ) {
-      return <Toast IsSuccessful={isSuccessful} Message={toastMessage} />;
+      await delay(3000);      
+      handleClose();
     }
   };
 
@@ -390,7 +372,6 @@ export default function NewPublicRequestForm() {
                 Record
               </Button>
             </div>
-            {/* {isSuccessful !== null ? showToast() : showToast()} */}
           </Grid>
         </Fade>
       </Modal>

@@ -26,7 +26,6 @@ import Reward from "../rewards/index";
 import * as APIServices from "../../api/TestAPI";
 import UploadImage from "../uploadImage/index";
 import UserContext from "../../context/UserContext";
-import DeleteFavour from "../../components/deleteFavour/index";
 import ClaimModal from "../claimModal/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
@@ -431,7 +430,7 @@ export default function FavourModal({
     // Evaluate reward user id against data retrieved from db, and return relevant email
     if (publicRequestUserDetails) {
       for (let i = 0; i < publicRequestUserDetails.length; i++) {
-        if (userId === publicRequestUserDetails[i]._id) {
+        if (userId === publicRequestUserDetails[i]._id && value !== true) {
           // Return relevant user email
           if (Location === "/public_request" && value !== true) {
             return (
@@ -531,7 +530,7 @@ export default function FavourModal({
   };
 
   const showDeleteFavour = () => {
-    if (userData.user._id === owingUser || FavourImageKey) {
+    if (userData.user._id === OwingUser) {
       return true;
     } else {
       return false;
@@ -814,9 +813,10 @@ export default function FavourModal({
               ) : (
                 ""
               )}
+              {console.log(userData.user._id, OwingUser)}
               {Location === "/public_request" ? (
                 ""
-              ) : Location === "/all_list" && showDeleteFavour() === true ? (
+              ) : Location === "/all_list" && showDeleteFavour() === true? (
                 <>
                   <div className={classes.deleteFavour}>
                     <Button

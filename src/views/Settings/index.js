@@ -11,7 +11,7 @@ import NavMenu from "../../components/navMenu/index";
 import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as testAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
-import Pagination from "../AllIOUList/Pagination";
+import Pagination from "../ManageFavours/Pagination";
 import FavourModal from "../../components/favourModal/index";
 import LaunchIcon from "@material-ui/icons/Launch";
 import SearchBar from "../../components/searchBar/index";

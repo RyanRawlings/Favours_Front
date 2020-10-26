@@ -75,20 +75,9 @@ const columns = [
     { field: 'favourStatus', headerName: 'Favour Status', width: 130 },
     { field: 'favourDate', type:'date', headerName: 'Paid On', width: 110 },  
   ];
-//   const rows = [
-//     { id: 1, favourType: 'Coffee', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '18/10/2020' },
-//     { id: 2, favourType: 'Cupcake', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '19/10/2020' },
-//     { id: 3, favourType: 'Chocolate', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '20/10/2020' },
-//     { id: 4, favourType: 'Coffee', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '21/10/2020' },
-//     { id: 5, favourType: 'Tea', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '22/10/2020' },
-//     { id: 6, favourType: 'Chocolate', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '23/10/2020' },
-//     { id: 7, favourType: 'Cupcake', favourDebtor: 'John Doe', favourCreditor: 'Jane Doe', favourStatus: 'Unpaid', favourDate: '24/10/2020' },
-// ];
   
 function CustomNoRowsOverlay(loading) {
   const classes = useStyles();
-
-  // console.log(loading)
 
   return (
     <GridOverlay className={classes.root}>
@@ -140,23 +129,15 @@ function CustomNoRowsOverlay(loading) {
   );
 }
 
-const RepayFavour = (props) => {
+const MultiRepay = (props) => {
   const [loading, setLoading] = useState(true);
   const [favoursSelected, setFavoursSelected] = useState([]);
   const { userData } = useContext(UserContext);
 
-  // console.log(props);
-  // console.log(props.location.state.userData.user._id);
-
   const [rows, setRows] = useState([]);
 
-  const proofImageInput = () => {
-    return (<input type="file" />);
-  }
-
   useEffect(() => {
-    async function fetchAllIOUList() {
-      // const fetchFavours = await APIServices.allIOUList();
+    async function fetchFavours() {
       const userId = userData.user._id? userData.user._id : props.location.state.userData.user._id? props.location.state.userData.user._id : "";                
 
       try {        
@@ -214,21 +195,16 @@ const RepayFavour = (props) => {
             
           }
         } 
-        // console.log("new rowset: ", rows);
         setRows(rows);
 
       } catch (err) {
         console.log(err);
       }
-      
-        // console.log(fetchFavours[0].credits);
-        // setCreditFavours(fetchFavours[0].credits);      
-
-      // setFavours(fetchFavours[0].credits);
+    
       setLoading(false);
     }    
 
-    fetchAllIOUList();
+    fetchFavours();
   }, []);
 
     const extractColumn = (arr, column) => {
@@ -242,12 +218,6 @@ const RepayFavour = (props) => {
     const classes = useStyles();   
 
     const handleSubmit = () => {
-      // return <Redirect  
-      //   to={{ 
-      //     pathname: "/repay_selected_favours", 
-      //     state: { setOpen: false, favoursSelectedToRepay: favoursSelected } 
-      //       }} 
-      //     />
       props.history.push({
             pathname: "/repay_selected_favours",
             state: {setOpen: false,
@@ -300,4 +270,4 @@ const RepayFavour = (props) => {
 }
 
 
-export default RepayFavour;
+export default MultiRepay;
