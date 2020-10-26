@@ -130,7 +130,7 @@ const RepaySelectedFavours = (props) => {
         toast.success("Completed image update process... Taking you back to the Repay favours screen");
         
         await delay(5000)
-        props.history.push("/repay_favour");
+        props.history.push("/multi_repay");
     }
   }   
 

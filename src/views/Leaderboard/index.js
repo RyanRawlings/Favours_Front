@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Leaderboard(props) {
+const Leaderboard = (props) => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
 
@@ -74,3 +74,5 @@ export default function Leaderboard(props) {
     </div>
   );
 }
+
+export default Leaderboard;

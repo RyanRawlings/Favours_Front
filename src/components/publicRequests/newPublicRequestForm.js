@@ -126,7 +126,7 @@ rewardTitle: {
 }
 }));
 
-export default function NewPublicRequestForm() {
+const NewPublicRequestForm = () => {
   const classes = useStyles();
 
   // User information from JWT
@@ -145,6 +145,7 @@ export default function NewPublicRequestForm() {
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const [open, setOpen] = useState(false);
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -153,19 +154,27 @@ export default function NewPublicRequestForm() {
     setOpen(false);
   };
 
+/*****************************************************************************************
+* Summary: Add new reward to reward state array variable
+******************************************************************************************/
   const addReward = (reward) => {
-    // const newRewardItem = reward.reward;
     const newReward = [...rewards, reward];
-    console.log(newReward);
     setRewards(newReward);
   };
 
+/*****************************************************************************************
+* Summary: Remove reward from reward state array variable
+******************************************************************************************/
   const removeReward = index => {
     const newReward = [...rewards];
     newReward.splice(index, 1);
     setRewards(newReward);
   };
 
+/*************************************************************************************************
+* Summary: On submit pass the state data into new object array and call createPublicRequestHelper
+* to call the API
+**************************************************************************************************/  
   const handleSubmitRequest = () => {
     // Create mutable version of rewards state variable
     let newRewards = rewards;
@@ -185,9 +194,12 @@ export default function NewPublicRequestForm() {
     createPublicRequestHelper(newRequestData);
   };
 
+/*******************************************************************************************
+* Summary: Calls the api to create new public request, if response is not null or undefined
+* a new UserActivity record is written to MongoDB
+********************************************************************************************/    
   const createPublicRequestHelper = async data => {
     const response = await APIServices.createPublicRequest(data);
-    console.log(response);
     if (response) {
       let userId = userData.user._id;
       let action = "Created new public request";
@@ -216,10 +228,11 @@ export default function NewPublicRequestForm() {
     }
   };
 
+/*****************************************************************************************
+* Summary: Extra validation to ensure the required data has some value before the create
+* process begins
+******************************************************************************************/  
   const enableSubmitButton = () => {
-    // If the required details are entered return true
-    // Else return false
-    // If error return false
     try {
       if (requestTitle !== null && requestTaskDescription !== null && rewards.length > 0) {
         return false;
@@ -229,9 +242,11 @@ export default function NewPublicRequestForm() {
     } catch (err) {
       return true;
     }
-
   }
 
+/*****************************************************************************************
+* Summary: Checks whether UserContext data is still available, client side
+******************************************************************************************/  
   const userDataAvailable = () => {
     try {
       if(userData.user.email) {
@@ -344,7 +359,6 @@ export default function NewPublicRequestForm() {
               userData={userData}
             />
           </div> : ""}
-        {/* <div className={classes.rewardTitle}>Reward details</div> */}
         <Fragment>
             <div className={classes.rewardContent}>
             <List className={classes.rewardList}>                
@@ -378,3 +392,5 @@ export default function NewPublicRequestForm() {
     </div>
   );
 }
+
+export default NewPublicRequestForm;

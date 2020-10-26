@@ -37,22 +37,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Rewards({
+const Rewards = ({
   reward,
   index,
   removeReward,
   users,
   location,
   userData
-}) {
-  // console.log(reward)
+}) => {
   const classes = useStyles();
 
-  // console.log("user data: ", userData);
-
+/*****************************************************************************************
+* Summary: An array of user information is passed as a parameter to the Rewards component
+* this array is used to determine what the email is of the user that has added a reward to
+* an existing Public Request
+******************************************************************************************/    
   const getUserEmail = (userId, type) => {
-    // Evaluate reward user id against data retrieved from db, and return relevant email
-    // console.log("Users: ", users, "UserId: ", userId);
     if (users) {
       for (let i = 0; i < users.length; i++) {
         if (userId === users[i]._id && type === "column") {
@@ -65,7 +65,6 @@ export default function Rewards({
       }
     } else if (userData) {
       if (type === "column") {
-        // return (<span className={classes.listItemColumn}>{userData.user.email}</span>);
         return (
           <span className={classes.listItemColumn}>{userData.user.email}</span>
         );
@@ -77,9 +76,9 @@ export default function Rewards({
     }
   };
 
-  // console.log("userdata",userData);
-  // console.log("users",users);
-
+/*****************************************************************************************
+* Summary: Checks that the user context data is still valid and avialable for use
+******************************************************************************************/  
   const userDataAvailable = () => {
     try {
       if (userData.user.email) {
@@ -91,7 +90,6 @@ export default function Rewards({
       return false;
     }
   };
-  // console.log(location.pathname);
 
   return (
     <Fragment>
@@ -125,17 +123,12 @@ export default function Rewards({
                 ? getUserEmail(reward.providedBy, "column")
                 : getUserEmail(reward.offeredBy, "column")}
             </Grid>
-            {/* {console.log("User comparison: ", getUserEmail(reward.providedBy, "value"), userData.user.email, getUserEmail(reward.providedBy, "value") === userData.user.email)} */}
-            {/* {console.log("Data is available: ", userDataAvailable())} */}
             {userDataAvailable() === true ? (
               (getUserEmail(reward.providedBy, "value") ===
                 userData.user.email) ===
               true ? (
                 <Grid item xs={12} sm={1} className={classes.trashGrid}>
                   <center>
-                    {/* <Button className={classes.removeButton}
-                variant="contained"                
-              > */}
                     <FontAwesomeIcon
                       icon={faTimesCircle}
                       className={classes.removeIcon}
@@ -144,17 +137,13 @@ export default function Rewards({
                     {/* </Button> */}
                   </center>
                 </Grid>
-              ) : location === "/all_list" ? (
+              ) : location === "/manage_favours" ? (
                 <Grid item xs={12} sm={1} className={classes.trashGrid}>
-                  {/* <Button className={classes.removeButton}
-                variant="contained"                
-              > */}
                   <FontAwesomeIcon
                     icon={faTimesCircle}
                     className={classes.removeIcon}
                     onClick={() => removeReward(index)}
                   />
-                  {/* </Button> */}
                 </Grid>
               ) : (
                 ""
@@ -168,3 +157,5 @@ export default function Rewards({
     </Fragment>
   );
 }
+
+export default Rewards;

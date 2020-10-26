@@ -12,27 +12,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles((theme) => ({
-//   rewardQuantity: {
-//     marginRight: "10%"
-//   },
-//   addButton: {
-//     marginLeft: "5%"
-//   },
-//   offeredBy: {
-//     marginLeft: "14%"
-//   },
   listHeading: {
       border: "1px grey"
   }
 
 }));
 
-export default function RewardForm({ addReward, userData }) {
+const NewRewardForm = ({ addReward, userData }) => {
     const classes = useStyles();
     const [value, setValue] = useState("");
-    // const { userData } = useContext(UserContext);
-
-
     const [favourRewards, setFavourRewards] = useState([]);
     const [clearOptionText, setClearOptionText] = useState(false);
     const [userList, setUserList] = useState([]);
@@ -48,8 +36,7 @@ export default function RewardForm({ addReward, userData }) {
 
       getFavourType();
     }, []);
-
-    // console.log(favourRewards);    
+   
     const [rewardName, setRewardName] = useState(null);
     const [rewardQuantity, setRewardQuantity] = useState(1);
     // Show the user email on screen
@@ -67,19 +54,10 @@ export default function RewardForm({ addReward, userData }) {
       setRewardName(null);
     };
 
-    const enableAddButton = () => {
-        return rewardName !== null && rewardQuantity !== null && providedBy !== null? false: true;
-    }
-
     const setRewardIdHelper = (object, value) => {
-      // console.log("Helper is being called...");
-      // console.log("Object array", object);
-      // console.log("Value", value);
       const rewardsObject = Object.values(object);
       for (let i = 0; i < rewardsObject.length; i++) {
-        // console.log(rewardsObject[i].Name);
         if (rewardsObject[i].Name === value) {
-          // console.log(rewardsObject[i]._id.toString());
           setRewardId(rewardsObject[i]._id.toString());
         }
       }
@@ -87,8 +65,6 @@ export default function RewardForm({ addReward, userData }) {
 
     const handleRewardIncrement = () => {
       setRewardQuantity( rewardQuantity + 1 );      
-      // counter += 1;
-      console.log(rewardQuantity)
       return returnRewardQuantity();
     };
 
@@ -100,8 +76,6 @@ export default function RewardForm({ addReward, userData }) {
       if (rewardQuantity === 1) {
           
       } else {
-          // counter -= 1;
-          // setCounter( counter - 1 );
           setRewardQuantity( rewardQuantity - 1 );
           return returnRewardQuantity();
       }
@@ -123,15 +97,6 @@ export default function RewardForm({ addReward, userData }) {
               />
          <Grid className={classes.listHeading} container spacing={1}>
             <Grid item xs={'auto'} xl={'auto'} sm={4}>
-              {/* <TextField
-                id="outlined-rewardName"
-                label="Reward Name"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={e => {setRewardName(e.target.value)}}
-              /> */}
               <Autocomplete
                 id="combo-box-demo"
                 options={favourRewards}
@@ -148,17 +113,7 @@ export default function RewardForm({ addReward, userData }) {
               />
             </Grid>
             <Grid item xs={'auto'} xl={'auto'} sm={2}>
-              <CounterButtonGroup handleRewardIncrement={handleRewardIncrement} handleRewardDecrement={handleRewardDecrement}/>
-              {/* <TextField className={classes.rewardQuantity}
-                id="outlined-rewardQuantity"
-                label="Reward Quantity"
-                variant="outlined"
-                defaultValue={1}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={e => {setRewardQuantity(e.target.value)}}
-              /> */}
+              <CounterButtonGroup handleRewardIncrement={handleRewardIncrement} handleRewardDecrement={handleRewardDecrement}/>  
             </Grid>
             <Grid item xs={'auto'} xl={'auto'} sm={4}>
               <TextField className={classes.offeredBy}
@@ -169,7 +124,6 @@ export default function RewardForm({ addReward, userData }) {
                   }}
                   disabled={true}
                   defaultValue={providedBy}
-                  // placeholder={userData.email}
                 />
             </Grid>
             <Grid className={classes.addButton} item xs={12} sm={1}>
@@ -184,3 +138,5 @@ export default function RewardForm({ addReward, userData }) {
         </form>
     );
   }
+
+  export default NewRewardForm;

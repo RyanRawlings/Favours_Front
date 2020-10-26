@@ -45,10 +45,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function LoginSignupButtonGroup({
+const LoginSignupButtonGroup = ({
   ButtonPrimaryColor,
   ButtonPrimaryFontColor
-}) {
+}) => {
   const classes = useStyles();
   const [buttonColor] = useState(ButtonPrimaryColor);
   const [buttonFontColor] = useState(ButtonPrimaryFontColor);
@@ -72,3 +72,5 @@ export default function LoginSignupButtonGroup({
     </div>
   );
 }
+
+export default LoginSignupButtonGroup;

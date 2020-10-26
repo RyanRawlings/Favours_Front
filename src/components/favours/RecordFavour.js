@@ -31,6 +31,7 @@ import { useLocation } from "react-router-dom";
 import ImageDragAndDrop from "../uploadImage/imageDragAndDrop";
 import axios from "axios";
 import * as ImageAPI from "../../api/ImageAPI";
+import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -103,6 +104,9 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
 
   const location = useLocation();
 
+/**************************************************************************************************
+* Summary: Returns the Types of Favours that can be selected in an Array, on page load
+***************************************************************************************************/  
   useEffect(() => {
     async function getFavourType() {
       const getFavourTypes = await APIServices.getFavourTypes();
@@ -115,6 +119,9 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     getFavourType();
   }, []);
 
+/**************************************************************************************************
+* Summary: Returns all Users in an Array, on page load
+***************************************************************************************************/    
   useEffect(() => {
     async function getUserList() {
       const getUsers = await UserAPI.getUsers();
@@ -131,24 +138,24 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     getUserList();
   }, []);
 
-  const delay = ms => new Promise(res => setTimeout(res, ms));
-
+/**************************************************************************************************
+* Summary: On Input Change to the Favour dropdown list, update the FavourId state variable with
+* the corressponding object id.
+***************************************************************************************************/    
   const setFavourIdHelper = (object, value) => {
-
     const favourTypesArray = Object.values(object);
     for (let i = 0; i < favourTypesArray.length; i++) {
-      // console.log(rewardsObject[i].Name);
       if (favourTypesArray[i].Name === value) {
-        // console.log(rewardsObject[i]._id.toString());
         setFavourTypeId(favourTypesArray[i]._id.toString());
       }
     }
   };
 
+/**************************************************************************************************
+* Summary: Additional layer of validation, will return a boolean as to whether the Record button
+* should be enabled/disabled
+***************************************************************************************************/      
   const enableSubmitButton = () => {
-    // If the required details are entered return true
-    // Else return false
-    // If error return false
     try {
       if (
         favourName !== null &&
@@ -165,6 +172,11 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     }
   };
 
+/**************************************************************************************************
+* Summary: Get the user id from the an email value, selected from the drop down list
+*
+* @param email -> email of the user selected
+***************************************************************************************************/        
   const getUserIdFromEmail = email => {
     for (let i = 0; i < userList.length; i++) {
       if (email === userList[i].email) {
@@ -173,30 +185,31 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     }
   };
 
+/**************************************************************************************************
+* Summary: Favour validation to ensure the integrity of the data, before it is passed to the Mongo
+* database
+***************************************************************************************************/          
   const favourValidation = () => {
-    // let validationResult = true;
     if (creditor === debtor) {
-      // toast.error("You have set the creditor and debtor to the same value");
-      // validationResult = false;
       return [false, "You have set the creditor and debtor to the same value"];
     }
     if (debtor === userData.user.email && fileList.length === 0) {
-      // toast.error("You have to provide proof to create favours other people owe you");
-      // validationResult = false;
       return [
         false,
         "You have to provide proof to create favours other people owe you"
       ];
     }
     if (favourName === null) {
-      // toast.error("You haven't choosen a Favour type");
-      // validationResult = false;
       return [false, "You haven't choosen a Favour type"];
     }
 
     return [true, "Success"];
   };
 
+/**************************************************************************************************
+* Summary: Handles the image upload to s3, on success Favour is created in Mongo db. On success of
+* the creation of the Favour, a new UserActivity record is also created in Mongo db
+***************************************************************************************************/            
   const handleSubmit = async () => {
     let favourValidationResult = favourValidation();
     
@@ -295,7 +308,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
     
       const storeImageData = await ImageAPI.storeImageData(imageArray);
       if (storeImageData) {        
-        console.log("image upload is being called");
         toast.success("Successfully created Favour");
 
         await delay(3000);  
@@ -308,10 +320,11 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
       TriggerResetFavourList();
       handleClose();
     }
-
-
   };
 
+/**************************************************************************************************
+* Summary: Handles adding a new file to the fileList state variable Array
+***************************************************************************************************/              
   const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);

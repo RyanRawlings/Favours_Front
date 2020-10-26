@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -180,7 +180,7 @@ const getTitle = location => {
       return "Public Requests";
     case "/public_request":
       return "> Public Requests";
-    case "/all_list":
+    case "/manage_favours":
       return "> Manage Favours";
     case "/repay_selected_favours":
       return "> Multi Repay > Repay Selected Favours"
@@ -194,14 +194,20 @@ const getTitle = location => {
       return "> Sign up";
     case "/settings":
       return "> User Settings";
-    case "/repay_favour":
+    case "/multi_repay":
       return "> Multi Repay";      
     case "/home":
       return "";
   }
 };
 
-export default function NavMenu(props) {
+/**********************************************************************************************
+* Summary: NavMenu takes props to track the drawerOpen status while navigating between pages
+* if the drawer is open as a new page link is clicked, the drawer will remain open on the new
+* page load.
+***********************************************************************************************/
+
+const NavMenu = (props) => {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -211,18 +217,17 @@ export default function NavMenu(props) {
   const isDrawerUndefined = () => {
     try {
       return props.props.location.state.setOpen;
+      
     } catch (err) {
       if (err) {
         return false;
       }
     }
-  };
+  };  
+
   const [open, setOpen] = useState(isDrawerUndefined);
   const location = useLocation();
-
-  // console.log(props);
-  // console.log(props.props.location.state.setOpen);
-
+  
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -267,14 +272,7 @@ export default function NavMenu(props) {
               Favours
             </Link>{" "}
             {getTitle(location.pathname)}
-          </Typography>
-          
-          {/* <div className={classes.groupDropDown}>
-            {
-              userData.user? <GroupDropDown props={props} /> : ""
-            }
-            
-          </div> */}
+          </Typography>      
           <div>
             {userData.user ? (
               <div className={classes.userName}>
@@ -377,15 +375,15 @@ export default function NavMenu(props) {
         )}
         {userData.user === undefined ? (
           ""
-        ) : location.pathname === "/all_list" ? (
+        ) : location.pathname === "/manage_favours" ? (
           <ListItem
             className={classes.menuItem}
             button
             key="Manage Favours"
             style={{ color: "#292F36", backgroundColor: "white" }}
-            onClick={() => history.push("/all_list")}
+            onClick={() => history.push("/manage_favours")}
           >
-            <Link to={{ pathname: "/all_list", state: { setOpen: open } }}>
+            <Link to={{ pathname: "/manage_favours", state: { setOpen: open } }}>
               <ListItemIcon>
                 <ListAltIcon
                   className={classes.icons}
@@ -398,13 +396,13 @@ export default function NavMenu(props) {
           </ListItem>
         ) : (
           <Link
-            to={{ pathname: "/all_list", state: { setOpen: open } }}
+            to={{ pathname: "/manage_favours", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}            
           >
             <ListItem className={classes.menuItem}
                       button 
                       key="Manage Favours"
-                      onClick={() => history.push("/all_list")}
+                      onClick={() => history.push("/manage_favours")}
              >
               <ListItemIcon>
                 <ListAltIcon
@@ -419,15 +417,15 @@ export default function NavMenu(props) {
 
       {userData.user === undefined ? (
           ""
-        ) : location.pathname === "/repay_favour" ? (
+        ) : location.pathname === "/multi_repay" ? (
           <ListItem
             className={classes.menuItem}
             button
             key="Multi Repay"
             style={{ color: "#292F36", backgroundColor: "white" }}
-            onClick={() => history.push("/repay_favour")}
+            onClick={() => history.push("/multi_repay")}
           >
-            <Link to={{ pathname: "/repay_favour", state: { setOpen: open, userData: userData }}}>
+            <Link to={{ pathname: "/multi_repay", state: { setOpen: open, userData: userData }}}>
               <ListItemIcon>
                 <PaymentIcon
                   className={classes.icons}
@@ -440,13 +438,13 @@ export default function NavMenu(props) {
           </ListItem>
         ) : (
           <Link
-            to={{ pathname: "/repay_favour", state: { setOpen: open, userData: userData } }} 
+            to={{ pathname: "/multi_repay", state: { setOpen: open, userData: userData } }} 
             style={{ textDecoration: "none", color: "white" }}  
           >
             <ListItem className={classes.menuItem}
                       button 
                       key="Multi Repay"
-                      onClick={() => history.push("/repay_favour")}
+                      onClick={() => history.push("/multi_repay")}
              >
               <ListItemIcon>
                 <PaymentIcon
@@ -458,8 +456,6 @@ export default function NavMenu(props) {
             </ListItem>
           </Link>
         )}
-
-
         {userData.user === undefined ? (
           ""
         ) : location.pathname === "/profile" ? (
@@ -587,3 +583,5 @@ export default function NavMenu(props) {
     </div>
   );
 }
+
+export default NavMenu;

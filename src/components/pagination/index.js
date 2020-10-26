@@ -11,6 +11,14 @@ const useStyles = makeStyles({
     },
   });
 
+/*****************************************************************************************
+ * Code Attribution:
+ * Author: Traversy Media
+ * Title: Simple Frontend Pagination
+ * URL: https://www.youtube.com/watch?v=IYCa1F-OWmk
+ * Comment: Updated to use Material UI pagination
+******************************************************************************************/
+
 const FavoursPagination = ({ favoursPerPage, totalFavours, paginate }) => {    
     const classes = useStyles();
     const [page, setPage] = useState(1);

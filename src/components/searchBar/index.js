@@ -36,13 +36,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function SearchBar(props) {
+const SearchBar = (props) => {
   const { onSearch, placeHolder, className, ...rest } = props;
   const [inputVal, setInputVal] = useState("");
   const classes = useStyles();
   const handleKeyUp = e => {
     if (e.keyCode === 13) {
-      //is enter pressed
+      //Is enter pressed
       onSearch(inputVal);
     }
   };
@@ -70,3 +70,5 @@ export default function SearchBar(props) {
     </div>
   );
 }
+
+export default SearchBar;

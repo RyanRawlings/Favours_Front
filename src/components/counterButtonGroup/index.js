@@ -21,18 +21,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function CounterButtonGroup({ handleRewardIncrement, handleRewardDecrement}) {
+/**************************************************************************************************************
+* Code Attribution:
+* Author: Anton Novik
+* Url: https://stackoverflow.com/questions/59305603/increment-and-decrement-button-via-material-ui-buttongroup
+* Comment: Updated solution to use react hook syntax
+***************************************************************************************************************/
+
+const CounterButtonGroup = ({ handleRewardIncrement, handleRewardDecrement}) => {
     const classes = useStyles();
     const [counter, setCounter] = useState(1);
 
     const handleIncrement = () => {
-        console.log("Increment Clicked!");        
         const countIncrement = handleRewardIncrement();
         setCounter(countIncrement + 1);
     };
 
     const handleDecrement = () => {
-        console.log("Decrement Clicked!");
         if ((counter) === 1 ) {
 
         } else {
@@ -51,8 +56,7 @@ export default function CounterButtonGroup({ handleRewardIncrement, handleReward
             <ButtonGroup 
                 size="small" 
                 aria-label="small outlined button group"
-                // orientation="vertical"
-                >
+            >
                 <Button onClick={handleIncrement}>+</Button>        
                 <Button onClick={handleDecrement}>-</Button>
             </ButtonGroup>
@@ -60,3 +64,5 @@ export default function CounterButtonGroup({ handleRewardIncrement, handleReward
         </div>
     );
   }
+  
+export default CounterButtonGroup; 

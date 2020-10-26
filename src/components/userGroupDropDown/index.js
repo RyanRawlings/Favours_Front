@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const GroupDropDown = ({ props }) => {
+const UserGroupDropDown = ({ props }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [groups, setGroups] = useState([]);
   const [activeGroup, setActiveGroup] = useState([]);
@@ -105,4 +105,4 @@ const GroupDropDown = ({ props }) => {
   );
 }
 
-export default GroupDropDown;
+export default UserGroupDropDown;

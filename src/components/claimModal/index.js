@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import UserContext from "../../context/UserContext";
@@ -35,7 +34,6 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    // border: '2px solid #000',
     boxShadow: theme.shadows[5],
     outline: "none"
   },
@@ -44,7 +42,6 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     maxWidth: "100%",
     color: "white",
-    // display: "flex",
     dislay: "inline-block",
     fontSize: "20px",
     minWidth: "50%"
@@ -65,15 +62,13 @@ const useStyles = makeStyles(theme => ({
   },
   actionButtons: {
     display: "flex",
-    // marginLeft: "auto",
-    // marginRight: "auto",
-    // marginBottom: "2%",
     margin: "4% auto 2% auto"
   },
   uploadImage: {
     marginBottom: "5%"
   }
 }));
+
 const ClaimModal = ({
   favourId,
   requester,
@@ -89,15 +84,24 @@ const ClaimModal = ({
   // todo upload successfully or not
   const [fileList, setFileList] = useState([]);
   const [snippet, setSnippet] = useState("Thank you");
+
+/**************************************************************************************************
+* Summary: Handles open and close actions for Claim modal
+***************************************************************************************************/         
   const handleOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
+
+/**************************************************************************************************
+* Summary: Handles the submission of the image proof, uses similar logic to the SingleImageUpload
+* component, but exists separately to control the creation of new Favours records
+***************************************************************************************************/
   const handleSubmit = async () => {
     //post imagekey, completed true
-    console.log("filelist:,", fileList);
 
     if (fileList.length > 1) {
       toast.error("You have tried to upload more than one image...");
@@ -110,9 +114,9 @@ const ClaimModal = ({
     let imageForm = new FormData();
 
     for (let i = 0; i < fileList.length; i++) {
-      // console.log(fileList[i][0]);
       imageForm.append("image", fileList[i][0]);
     }
+
     const uploadToS3 = await axios
       .post("http://localhost:4000/api/image/upload", imageForm)
       .then(function(response) {
@@ -121,14 +125,10 @@ const ClaimModal = ({
         );
         uploadToMongoDB(response);
         transferToFavour(response);
-        console.log("uploads3 response:", response.data.locationArray);
       })
       .catch(function(error) {
         toast.error(error);
       });
-    console.log("uploadToS3 is:", uploadToS3);
-
-    //const transferToFavour = await axios.post("http://localhost:4000/api/publicRequest/claim",query)
 
     let userId = userData.user._id;
     let action = "Claimed a public request";
@@ -140,6 +140,9 @@ const ClaimModal = ({
     const newUserActivity = await UserAPI.createUserActivity(newActivityData);
   };
 
+/**************************************************************************************************
+* Summary: Handles the creation of Favours based on the rewards stored on the Public Request
+***************************************************************************************************/  
   const transferToFavour = async imageFile => {
     imageFile = imageFile.data.locationArray;
     let query = [];
@@ -159,11 +162,12 @@ const ClaimModal = ({
         }
       });
     });
-    console.log("queryfor favour data is:", query);
     let msg = await APIServices.claimPublicRequest(query);
-    console.log("msg  data is:", msg);
   };
 
+/**************************************************************************************************
+* Summary: Handles the post s3 image upload, updating the Image URL for the new Favours
+***************************************************************************************************/  
   const uploadToMongoDB = async response => {
     let imageArray = [];
     if (response) {
@@ -191,6 +195,10 @@ const ClaimModal = ({
     }
   };
 
+/**************************************************************************************************
+* Summary: Handles adding new images to the fileList array, based on the file passed to the 
+* ImageDragAndDrop function
+***************************************************************************************************/    
   const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);
@@ -198,6 +206,9 @@ const ClaimModal = ({
     setFileList(tempFileList);
   };
 
+/**************************************************************************************************
+* Summary: Handles the delete of Public Requests, users can only delete public requests they create
+***************************************************************************************************/    
   const handleDelete = async () => {
     console.log("favourid", favourId);
 

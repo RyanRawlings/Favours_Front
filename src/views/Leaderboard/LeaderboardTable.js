@@ -92,7 +92,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function LeaderboardTable() {
+const LeaderboardTable = () => {
 
   const [rows, setRows] = useState([]);
   const classes = useStyles();
@@ -137,3 +137,5 @@ export default function LeaderboardTable() {
     </div>
   );
 }
+
+export default LeaderboardTable;

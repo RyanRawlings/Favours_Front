@@ -9,10 +9,9 @@ import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPrayingHands, faUser,faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
-import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as APIServices from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
-import Pagination from "./Pagination";
+import Pagination from "../../components/pagination/index";
 import FavourModal from "../../components/favourModal/index";
 import LaunchIcon from "@material-ui/icons/Launch";
 import SearchBar from "../../components/searchBar/index";
@@ -133,7 +132,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function ManageFavours(props) {
+const ManageFavours = (props) => {
   const [favours, setFavours] = useState([]);
   const [allFavours, setAllFavours] = useState([]);
   const [creditFavours, setCreditFavours] = useState([]);
@@ -309,7 +308,6 @@ const updateActiveFavours = async sliceType => {
                 </div>
                 </div>
                 <div className={classes.btnBox}>
-                  {/* <FavoursListButtonGroup /> */}
                   <div className={classes.listlinks}>
                       <ButtonGroup className={classes.buttons}>
                         <Button 
@@ -422,3 +420,5 @@ const updateActiveFavours = async sliceType => {
     </div>
   );
 }
+
+export default ManageFavours; 

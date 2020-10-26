@@ -32,8 +32,6 @@ const useStyles = makeStyles(theme => ({
     height: "100%"
   },
   infoText: {
-    // marginLeft: "auto",
-    // marginRight: "auto",
     padding: "10px 5px 10px 5px",
     margin: "0% 0 4% 0",
     border: "dotted 1px"
@@ -47,7 +45,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Previews({ props, addFile }) {
+/*************************************************************
+* Summary: Code utilised from react-dropzone library
+* Code Attribution:
+*   Author: react-dropzone
+*   Comment: Solution taken from documentation and updated to
+*   conditionally configure input display based on location
+**************************************************************/
+
+const ImageDragAndDrop = ({ props, addFile }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   const location = useLocation();
@@ -71,8 +77,6 @@ export default function Previews({ props, addFile }) {
       );
     }
   });
-
-  // console.log("Props", props)
   
   const thumbs = 
   files.map((file, index) => (
@@ -80,7 +84,7 @@ export default function Previews({ props, addFile }) {
       <div style={{ marginBottom: "1%", marginLeft: "10%"}} key={index}>
          Filename: {file.name}
       </div> : 
-    location.pathname ==="/all_list"?      
+    location.pathname ==="/manage_favours"?      
       <div style={{ marginTop: "15%", width: "100%"}}key={index}>
           <span style={{color: "black"}}>Filename: {file.name}</span>
       </div> :     
@@ -131,3 +135,5 @@ export default function Previews({ props, addFile }) {
     </section>
   );
 }
+
+export default ImageDragAndDrop;

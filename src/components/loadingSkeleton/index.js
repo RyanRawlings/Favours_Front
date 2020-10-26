@@ -8,7 +8,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function LoadingSkeletion() {
+const LoadingSkeletion = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -18,3 +18,5 @@ export default function LoadingSkeletion() {
     </div>
   );
 }
+
+export default LoadingSkeletion;

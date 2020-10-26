@@ -4,17 +4,7 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import LaunchIcon from "@material-ui/icons/Launch";
-import { useLocation } from "react-router-dom";
-import Link from "@material-ui/core/Link";
-import LoginSignupButtonGroup from "../loginSignupButtonGroup/index";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
 import TextField from "@material-ui/core/TextField";
@@ -24,18 +14,15 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import NewRewardForm from "../rewards/NewRewardForm";
 import Reward from "../rewards/index";
 import * as APIServices from "../../api/TestAPI";
-import UploadImage from "../uploadImage/index";
 import UserContext from "../../context/UserContext";
 import ClaimModal from "../claimModal/index";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
-import axios from "axios";
-import * as ImageAPI from "../../api/ImageAPI";
-import * as UserAPI from "../../api/UserAPI";
-import * as FavourAPI from "../../api/FavourAPI";
+import SingleImageUpload from "../uploadImage/singleImageUpload";
+import { ForgiveFavour } from "../favours/ForgiveFavour";
+import { DeleteFavour } from "../favours/DeleteFavour";
+import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -207,7 +194,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function FavourModal({
+const FavourModal = ({
   FavourId,
   FavourTitle,
   Requester,
@@ -223,12 +210,10 @@ export default function FavourModal({
   Complete,
   OwingUser,
   TriggerResetFavourList
-}) {
+}) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { userData, setUserData } = useContext(UserContext ? UserContext : {});
-  // console.log("favourmodal props:", userData);
-  // Rewards created for the Public Request
   const [rewards, setRewards] = useState(Rewards);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -237,31 +222,15 @@ export default function FavourModal({
   const [requester, setRequester] = useState(Requester);
   const [owingUser, setOwingUser] = useState(OwingUser);
   const [favourDescription, setFavourDescription] = useState(FavourDescription);
-
-  // const [favourDate ,setFavourDate] = useState(FavourDate);
-  // const [location, setLocation] = useState(Location);
   const [favourImageKey, setFavourImageKey] = useState(FavourImageKey);
-
   const [publicRequestUserDetails, setPublicRequestUserDetails] = useState([]);
-
-  const [isDeleted, setIsDeleted] = useState(null);
-  const [toastMessage, setToastMessage] = useState(null);
-
   const [fileList, setFileList] = useState([]);
   const [changeReward, setChangeReward] = useState(false);
-
-  const delay = ms => new Promise(res => setTimeout(res, ms));
-
-  const userDataAvailable = () => {
-    try {
-      if (userData.user.email) {
-        return true;
-      }
-    } catch (err) {
-      return false;
-    }
-  };
-  // auto delete 0 reward request
+  
+  /**************************************************************************************************
+  * Summary: React useEffect hook bound to the FavourId and reward state variables to re-render on
+  * change of Favour/Request and to check if request and reward count is 0 then execute auto delete
+  ***************************************************************************************************/ 
   useEffect(() => {
     if (rewards) {
       if (Location === "/public_request" && rewards.length === 0) {
@@ -277,7 +246,7 @@ export default function FavourModal({
               "No reward left. Automatically delete the request..."
             );
 
-            await delay(5000);
+            await delay(4000);
             window.location.reload();
           } else {
             toast.error("There was an error deleting the public request");
@@ -288,18 +257,15 @@ export default function FavourModal({
     }
   }, [favourId, rewards]);
 
-  // Controls how the Favour or Public Request component is opened to show more details
+/**************************************************************************************************
+* Summary: Controls how the Favour or Public Request component is opened and to show more details
+***************************************************************************************************/ 
   const handleOpen = () => {
-    console.log("Open Clicked!!!!");
     // Open modal on click
     setOpen(true);
-
-    // Need to reset the state variables based on the props newly passed to the modal component
-    setFavourId(FavourId);
-    setFavourTitle(FavourTitle);
-    setFavourDescription(FavourDescription);
-    setRequester(Requester);
-    //
+    
+    // If there is a change in the rewards update the reward state variable, this will trigger a
+    // re-render
     if (changeReward) {
       setRewards(rewards);
     } else {
@@ -307,43 +273,40 @@ export default function FavourModal({
       setChangeReward(false);
     }
 
-    // If it is an existing public request get the user details
+    // Fetching the user details to be displayed through the modal
     const getUserDetails = async () => {
-      // Create a new array for the Users
       let userArray = [];
+
+      // If opened on Public Request page
       if (Location === "/public_request") {
-        // Push the userIds stored on the rewards into the userArray
+        // Get all of the unique user ids stored with each reward
         for (let i = 0; i < rewards.length; i++) {
           if (!userArray.includes(rewards[i].providedBy)) {
-            // console.log("iterative print", rewards[i].providedBy)
             userArray.push(rewards[i].providedBy);
           }
         }
-
-        // Push the requesterUserId into the userArray
+        // Add the original requester to the array
         if (!userArray.includes(requester._id)) userArray.push(requester._id);
-        // Push the current into the userArray, in case they want to add a reward to the public request
+        // Add the current user to the array
         if (userDataAvailable === true) {
           if (!userArray.includes(userData.user._id))
             userArray.push(userData.user._id);
         }
-      } else if (Location === "/all_list") {
+      }
+      // If opened on Manage Favours page 
+      else if (Location === "/manage_favours") {
         userArray.push(Requester);
         userArray.push(OwingUser);
       }
 
-      // Get user details for the relevant userIds stored in the array
+      // Returns an array of user objects
       const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(
         userArray
       );
-
+      
       if (getPublicRequestsUserDetails) {
         // Return array and set the request user details state
         setPublicRequestUserDetails(getPublicRequestsUserDetails);
-        console.log(
-          "getPublicRequestsUserDetails is:",
-          getPublicRequestsUserDetails
-        );
       } else {
         console.log("There was an issue with getting the data");
       }
@@ -352,10 +315,25 @@ export default function FavourModal({
     getUserDetails();
   };
 
+/**************************************************************************************************
+* Summary: Controls how the Favour or Public Request component is closed
+***************************************************************************************************/ 
   const handleClose = () => {
     setOpen(false);
   };
 
+/**************************************************************************************************
+* Summary: Controls how the Favour or Public Request component is closed, from a child component
+***************************************************************************************************/   
+  const handleParentModalClose = () => {
+    handleClose();
+  };
+
+/**************************************************************************************************
+* Summary: Controls how rewards are added to existing Public Requests
+* Users can only add rewards on behalf of their own account, on add their details stored in the
+* UserContext is added to Public Request frontend and backend 
+***************************************************************************************************/ 
   const addReward = async reward => {
     setChangeReward(true);
     // add new user
@@ -369,7 +347,8 @@ export default function FavourModal({
     ];
 
     setPublicRequestUserDetails(newPublicRequestUserDetails);
-    // add new reward
+
+    // New reward data appeneded to existing reward state data
     const newReward = [
       ...rewards,
       {
@@ -379,19 +358,21 @@ export default function FavourModal({
         providedBy: reward.providedBy
       }
     ];
-    // console.log("newrewards:", newReward);
 
     const response = await APIServices.addReward(
       favourId,
       newReward,
       newPublicRequestUserDetails
     );
-    setToastMessage(response.message);
     setRewards(response.data.rewards);
     setChangeReward(true);
-    console.log("resultadd:", response.data.rewards);
   };
 
+/**************************************************************************************************
+* Summary: Controls how rewards are removed from existing Public Requests
+* Users can only remove rewards that they have added through their account, on delete the reward
+* is removed from the Public Request frontend and backend 
+***************************************************************************************************/ 
   const removeReward = async index => {
     setChangeReward(true);
     //slice reward
@@ -408,25 +389,28 @@ export default function FavourModal({
       }
     ];
     setPublicRequestUserDetails(newPublicRequestUserDetails);
-    // fetch new reward
-
+    
+    // Fetch new reward
     const response = await APIServices.addReward(
       favourId,
       newReward,
       newPublicRequestUserDetails
     );
-    setToastMessage(response.message);
     // setRewards(response.data.rewards);
     setRewards(newReward);
-    console.log("result removez:", response.data.rewards);
     setChangeReward(true);
     toast.success("Successfully removed reward from request");
   };
 
+/**************************************************************************************************
+* Summary: Returns Material UI TextField or single email, based on the parameters passed,
+*
+* @param value If true the value return will be an email based on the userId passed
+* @param nameId The value to be assigned as the name and id values for the TextField element returned
+* @param label The value of the label to be assigned to the TextField element returned
+* @param disabled Determines whether the TextField element returned, can be interacted with
+***************************************************************************************************/ 
   const getUserEmail = (userId, nameId, label, disabled, value) => {
-    // console.log(userId)
-    console.log("get user email: ", userId, nameId, label, disabled, value);
-    // console.log(publicRequestUserDetails);
     // Evaluate reward user id against data retrieved from db, and return relevant email
     if (publicRequestUserDetails) {
       for (let i = 0; i < publicRequestUserDetails.length; i++) {
@@ -468,84 +452,37 @@ export default function FavourModal({
     }
   };
 
+/**************************************************************************************************
+* Summary: Deletes a Favour from the Database, based on the FavourId parameter passed
+*
+* @param FavourId the object id value for the Favour that is to be deleted
+***************************************************************************************************/ 
   const deleteFavour = async FavourId => {
-    const response = await APIServices.deleteOneFavour({ _id: FavourId });
-
-    if (response.ok === true) {
-        let userId = userData.user._id;
-        let requesterEmail = getUserEmail(Requester, "", "", false, true);
-        let action = `Deleted Favour ${FavourTitle} - Paid By user ${requesterEmail}`;
-        let newActivityData = {
-          userId: userId,
-          action: action
-        }
-
-        const newUserActivity = await UserAPI.createUserActivity(newActivityData);
-
-        if (newUserActivity) {
-          console.log("new user action log: 200");
-        }
-
-        // setIsDeleted(true);
-        // setToastMessage(response.message);
-        toast.success("Successfully deleted Favour");
-
-        await delay(3000);
-        setOpen(false);
-        TriggerResetFavourList();
-
-    } else {
-      toast.error("Error deleting the Favour, execution has halted");
-
-      await delay(3000);
-      setOpen(false);
-      TriggerResetFavourList();
-    }
+    DeleteFavour(userData, Requester, FavourTitle, FavourId, handleClose, TriggerResetFavourList, getUserEmail);  
   };
 
+/**************************************************************************************************
+* Summary: Sets the debt_forgiven field for a Favour to true in the Database, based on the 
+* FavourId parameter passed
+*
+* @param FavourId the object id value for the Favour that is to be forgiven
+***************************************************************************************************/   
   const forgiveFavour = async FavourId => {
-    const response = await FavourAPI.forgiveFavour({ _id: FavourId });
-    if (response) {
-      toast.success(
-        "Successfully forgave favour debt... page will update"
-      );
-
-      await delay(3000);
-      setOpen(false);
-      TriggerResetFavourList();
-
-    } else {
-      toast.error(
-        "Error forgiving the favour debt..."
-      );
-
-      await delay(3000);
-      setOpen(false);
-      TriggerResetFavourList();
-    }
+    ForgiveFavour(userData, Requester, FavourTitle, FavourId, handleClose, TriggerResetFavourList, getUserEmail);    
   };
 
-  const refreshPage = () => {
-    window.location.reload();
-  };
-
-  const showDeleteFavour = () => {
-    if (userData.user._id === OwingUser) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
+/**************************************************************************************************
+* Summary: Handles adding a new image to a Public Request and Favour
+*
+* @param data refers to the File array that is being handled by the ImageDragAndDrop component
+***************************************************************************************************/     
   const addFile = async data => {
     try {
       // If there is more than one file, show user error and reload the page
       if (data[1]) {
-        toast.error("You can only upload one image... Window will refresh");
-
+        toast.error("You can only upload one image...");
         setFileList([]);
       }
-
       // Else update file list
       let tempFileList = fileList;
 
@@ -561,71 +498,39 @@ export default function FavourModal({
     }
   };
 
-  const handleSubmit = async () => {
-
-    if (fileList.length > 1) {
-      toast.error("You have tried to upload more than one image...");
-      return console.log("More than one file added...");
-
-    } else if (fileList.length === 0) {
-      toast.error("You haven't uploaded an image.");
-      return console.log("No file added...");
-
-    }
-
-    let imageForm = new FormData();
-
-    for (let i = 0; i < fileList.length; i++) {
-      // console.log(fileList[i][0]);
-      imageForm.append("image", fileList[i][0]);
-    }
-
-    //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
-    const uploadToS3 = await axios
-      .post("http://localhost:4000/api/image/upload", imageForm)
-      .then(function(response) {
-        // toast.success(
-        //   "Successfully stored images on AWS... Now starting database processing"
-        // );
-        uploadToMongoDB(response);
-      })
-      .catch(function(error) {
-        toast.error(error);
-      });
+/**************************************************************************************************
+* Summary: Handles adding a new image to a Public Request and Favour
+*
+* @param data refers to the File array that is being handled by the ImageDragAndDrop component
+***************************************************************************************************/       
+  const handleRepayFavour = async () => {
+    return <SingleImageUpload fileList={fileList} handleClose={handleClose}/>;
   };
 
-  const uploadToMongoDB = async response => {
-    let imageArray = [];
-
-    if (response) {
-      for (let i = 0; i < response.data.locationArray.length; i++) {
-        imageArray.push({
-          _id: FavourId,
-          imageUrl: response.data.locationArray[i]
-        });
-      }
-    }
-
-    imageArray.push({ type: "Repay" });
-
-    const storeImageData = await ImageAPI.storeImageData(imageArray);
-    if (storeImageData) {
-      toast.success("Successfully uploaded image...");
-      
-      await delay(3000);
-      handleClose();
-      TriggerResetFavourList();
+/**************************************************************************************************
+* Summary: Returns a boolean value to determine whether a Favour should show the delete button
+***************************************************************************************************/  
+  const showDeleteFavour = () => {
+    if (userData.user._id === OwingUser) {
+      return true;
     } else {
-      await delay(3000);
-      handleClose();
-      TriggerResetFavourList();
+      return false;
     }
-
   };
 
-  const handleParentModalClose = () => {
-    handleClose();
-  }
+/**************************************************************************************************
+* Summary: Returns a boolean value to determine whether the userData stored in the UserContext
+* is still valid.
+***************************************************************************************************/    
+  const userDataAvailable = () => {
+    try {
+      if (userData.user.email) {
+        return true;
+      }
+    } catch (err) {
+      return false;
+    }
+  };
 
   return (
     <div>
@@ -705,7 +610,6 @@ export default function FavourModal({
                     shrink: true
                   }}
                   value={favourTitle}
-                  // onChange={e => setRequestTitle(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -726,14 +630,14 @@ export default function FavourModal({
                         : ""
                     }
                   />
-                ) : Location === "/all_list" ? (
+                ) : Location === "/manage_favours" ? (
                   getUserEmail(Requester, "paidBy", "Paid By", true)
                 ) : (
                   ""
                 )}
               </Grid>
               <Grid item xs={12} sm={6}>
-                {Location === "/all_list"
+                {Location === "/manage_favours"
                   ? getUserEmail(OwingUser, "owingBy", "Owing By", true)
                   : ""}
               </Grid>
@@ -752,12 +656,9 @@ export default function FavourModal({
                     resize: "none"
                   }}
                   value={favourDescription}
-                  // onChange={e => setRequestTaskDescription(e.target.value)}
                 />
               </Grid>
               <div className={classes.centeredDiv}>
-                {/*If the userData is available and if the Location is public request, then show the New Reward Form
-                   Else return nothing*/}
                 {userDataAvailable() === true ? (
                   Location === "/public_request" ? (
                     <NewRewardForm addReward={addReward} userData={userData} />
@@ -771,7 +672,6 @@ export default function FavourModal({
 
               {Location === "/public_request" ? (
                 <>
-                  {/* <div className={classes.rewardHeading}>Reward Details</div> */}
                   <Grid item xs={12} sm={12}>
                     <Fragment>
                       <div className={classes.rewardContent}>
@@ -813,10 +713,9 @@ export default function FavourModal({
               ) : (
                 ""
               )}
-              {console.log(userData.user._id, OwingUser)}
               {Location === "/public_request" ? (
                 ""
-              ) : Location === "/all_list" && showDeleteFavour() === true? (
+              ) : Location === "/manage_favours" && showDeleteFavour() === true? (
                 <>
                   <div className={classes.deleteFavour}>
                     <Button
@@ -856,7 +755,7 @@ export default function FavourModal({
                     <Button
                       color="primary"
                       variant="contained"
-                      onClick={handleSubmit}
+                      onClick={handleRepayFavour}
                       disabled={Complete === false ? false : true}
                     >
                       Repay
@@ -891,3 +790,5 @@ export default function FavourModal({
     </div>
   );
 }
+
+export default FavourModal;

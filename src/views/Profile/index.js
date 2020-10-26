@@ -87,7 +87,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Profile(props) {
+const Profile = (props) => {
   const uploadedImage = React.useRef(null);
   const imageUploader = React.useRef(null);
   const classes = useStyles();
@@ -337,3 +337,5 @@ export default function Profile(props) {
     </div>
   );
 }
+
+export default Profile;

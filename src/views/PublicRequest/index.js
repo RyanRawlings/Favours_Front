@@ -16,11 +16,10 @@ import {
   faSprayCan
 } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
-import FavoursListButtonGroup from "../../components/favoursListButtonGroup/index";
 import * as APIServices from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
-import Pagination from "../ManageFavours/Pagination";
+import Pagination from "../../components/pagination/index";
 import FavourModal from "../../components/favourModal/index";
 import { useLocation } from "react-router-dom";
 import SearchBar from "../../components/searchBar/index";
@@ -96,7 +95,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PublicRequest(props) {
+const PublicRequest = (props) => {
   const [publicRequests, setPublicRequests] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -314,3 +313,5 @@ export default function PublicRequest(props) {
     </div>
   );
 }
+
+export default PublicRequest;

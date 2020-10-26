@@ -21,6 +21,7 @@ import * as APIServices from "../../api/TestAPI";
 import RecordFavour from "../../components/favours/RecordFavour";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -118,21 +119,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NewFavourForm({ TriggerResetFavourList }) {
+const NewFavourForm = ({ TriggerResetFavourList }) => {
   const classes = useStyles();
 
   // User information from JWT
   const { userData, setUserData } = useContext(UserContext);
-
-  // Rewards created for the Public Request
-  const [rewards, setRewards] = useState([]);
-
-  // Public Request Form Fields
-  const [requestTitle, setRequestTitle] = useState("");
-  const [requestedBy] = useState(userData.user.email);
-  const [requestTaskDescription, setRequestTaskDescription] = useState("");
-
-  const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -141,62 +132,6 @@ export default function NewFavourForm({ TriggerResetFavourList }) {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const addReward = reward => {
-    // const newRewardItem = reward.reward;
-    const newReward = [...rewards, reward];
-    // console.log(newReward);
-    setRewards(newReward);
-  };
-
-  const removeReward = index => {
-    const newReward = [...rewards];
-    newReward.splice(index, 1);
-    setRewards(newReward);
-  };
-
-  // Todo: update for Favour object
-  const handleSubmitRequest = () => {
-    // Create mutable version of rewards state variable
-    let newRewards = rewards;
-
-    // Add the UserId from the Context to each of the reward objects
-    newRewards.forEach(element => (element["offeredById"] = userData.user._id));
-
-    // Create the new Public Request object
-    const newRequestData = {
-      requestTitle: requestTitle,
-      requestedBy: requestedBy,
-      requestTaskDescription: requestTaskDescription,
-      rewards: newRewards
-    };
-
-    // Pass the new object to the helper function to call the API
-    createPublicRequest(newRequestData);
-  };
-
-  // Todo: update to the Favour function
-  const createPublicRequest = async data => {
-    const response = await APIServices.createPublicRequest(data);
-    if (response) {
-      // Set toast success details
-      toast.success("Successfully created the Public Request");
-      
-      // Reset the rewards state variable
-      setRewards([]);
-
-      // Hold execution for 3s then close the modal
-      await delay(3000);
-      handleClose();
-    } else {
-      // Set error toast details
-      toast.success("Error creating the Public Request");
-      
-      await delay(3000);
-      handleClose();
-      TriggerResetFavourList();
-    }
   };
 
   return (
@@ -224,17 +159,6 @@ export default function NewFavourForm({ TriggerResetFavourList }) {
       >
         <Fade in={open}>
           <Grid container className={classes.modalContent} spacing={3}>
-          {/* <ToastContainer
-              position="top-center"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            /> */}
             <Grid className={classes.headingDiv} item xs={12}>
               <div className={classes.modalHeading}>Create New Favour</div>
               <div className={classes.closeButtonDiv}>
@@ -257,3 +181,5 @@ export default function NewFavourForm({ TriggerResetFavourList }) {
     </div>
   );
 }
+
+export default NewFavourForm;

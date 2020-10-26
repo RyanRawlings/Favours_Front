@@ -75,7 +75,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const HomePage = () => {
+const UnauthorisedAccess = () => {
   const classes = useStyles();
 
   return (
@@ -93,7 +93,7 @@ const HomePage = () => {
               style={{ color: "white" }}
               gutterBottom
             >
-              Favours
+              Unauthorised Access
             </Typography>
             <Typography
               variant="h5"
@@ -101,9 +101,7 @@ const HomePage = () => {
               style={{ color: "black" }}
               paragraph
             >
-              Need a favour? Or want to recieve rewards for completing favours
-              for others? Start creating and sharing IOUs with your friends,
-              social clubs and company
+            Oops looks like your trying to access a restricted page, please try login or sign up if you want to gain access to this page
             </Typography>
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
@@ -127,9 +125,6 @@ const HomePage = () => {
                 </Grid>
               </Grid>
             </div>
-            <center>
-              <img src={BackgroundImage} height="60%" width="90%" />
-            </center>
           </Container>
         </div>
       </main>
@@ -153,4 +148,4 @@ const HomePage = () => {
   );
 }
 
-export default HomePage;
+export default UnauthorisedAccess;

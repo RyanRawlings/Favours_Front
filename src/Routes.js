@@ -80,7 +80,7 @@ const Routes = () => {
           {/* Authenticated Routes */}
           <ProtectedRoute 
             exact
-            path="/repay_favour" 
+            path="/multi_repay" 
             user={userData} 
             component={MultiRepay} 
           />
@@ -99,7 +99,7 @@ const Routes = () => {
           ></ProtectedRoute>
           <ProtectedRoute
             exact
-            path="/all_list"
+            path="/manage_favours"
             user={userData}
             component={ManageFavours}
           ></ProtectedRoute>
