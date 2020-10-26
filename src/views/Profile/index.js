@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
     height: "80vh"
   },
   profileCardContent: {
-    height: "100%"
+    height: "80vh"
   },
   personalDetailsCard: {
     margin: "3% 2% 2% 2%",
@@ -99,59 +99,76 @@ export default function Profile(props) {
   const [partyDetectionEmails,setPartyDetectionEmails] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [userActivityPerPage, setUserActivityPerPage] = useState(8);
+  const [userActivityPerPage, setUserActivityPerPage] = useState(5);
+  const [imageUploaded, setImageUploaded] = useState(null);
+  const [imageUploadComponent, setImageUploadComponent] = useState(null);
 
+  // Returns information about the current logged in users account
   useEffect(() => {
     async function getUserData() {
       const user = await UserAPI.getUser({ _id: userData.user._id});
-      
+
       if (user) {
         console.log(user);
-        setUser(user)
+        setUser(user);
+        setImageUploaded(false);
+        setImageUploadComponent((<ImageDragAndDrop addFile={addFile}/>));
       }
-      // setPersonalDetails(userDetailData.result[0]);
     }
 
     getUserData();
-  }, []);
+  }, [imageUploaded] );
 
   useEffect(() => {
     async function getUserActions() {
       const userActions = await UserAPI.getUserActivity({ _id: userData.user._id});
-      
+
       for (let i = 0; i < userActions.length; i++) {
-        let diff = new DateDiff();
-        let recency = Date.diff(new Date(),new Date(userActions[i].time)).minutes()
-        let minutes = Math.floor(recency); 
-        userActions[i]["recency"] = minutes;
+        let delta = Date.diff(new Date(),new Date(userActions[i].time)).seconds()
+        userActions[i]['delta'] = delta;
+        console.log(delta)
+
+        let days = Math.floor(delta / 86400);
+        delta -= days * 86400
+
+        let hours = Math.floor(delta / 3600) % 24;
+        delta -= hours * 3600;
+
+        let minutes = Math.floor(delta / 60) % 60;
+        delta -= minutes * 60;
+
+        if (days && hours && minutes) {
+          // console.log(`Days: ${days} Hours: ${hours} Minutes: ${minutes}`);
+          userActions[i]["recency"] = `${days} days, ${hours} hours and ${minutes} minutes ago`;
+
+        } else if (!days && hours && minutes) {
+          // console.log(`Hours: ${hours} minutes: ${minutes}`, delta);
+          userActions[i]["recency"] = `${hours} hours and ${minutes} minutes ago`;
+
+        } else if (!days && !hours && minutes) {
+          // console.log(`minutes: ${minutes}`, delta);
+          userActions[i]["recency"] = `${minutes} minutes ago`;
+        }
       }
-      let sortedUserActions = SortObjectsArray(userActions, "recency", "asc")
-      setUserActivity(sortedUserActions);
+
+      if (userActions.length > 0) {
+        let sortedUserActions = SortObjectsArray(userActions, "delta", "asc");
+        setUserActivity(sortedUserActions);
+      } else {
+        userActions.push({action: "No activity to show"});
+        setUserActivity(userActions);
+      }    
     }
 
     getUserActions();
   }, []);
-
-  // useEffect(() => {
-  //   async function partyDetectionData() {
-  //     const partyDetection = await UserAPI.partyDetection({ _id: userData.user._id });
-  //     if (partyDetection) {
-  //       console.log(partyDetection)
-  //     }
-  //     setPartyDetectionEmails(partyDetection);
-  //   }
-
-  //   partyDetectionData();
-  // }, []);
-
-  // console.log("personalDetails:", personalDetails);
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
     //Get current activity
     const indexOfLastUserActivity = currentPage * userActivityPerPage;
     const indexOfFirstUserActivity = indexOfLastUserActivity - userActivityPerPage;
-  
+
     const paginate = pageNumber => setCurrentPage(pageNumber);
 
   const handleSubmit = async () => {
@@ -169,29 +186,28 @@ export default function Profile(props) {
 
     const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
             .then( function(response) {
-                toast.success("Successfully stored image on AWS...");
-                uploadToMongoDB(response);
+                uploadToMongoDB(response);                
             })
             .catch( function (error) {
                 toast.error(error);
             });
-  }
+        
+  } 
 
   const uploadToMongoDB = async (response) => {
     let newProfileImageData = {
       _id: userData.user._id,
       imageUrl: response.data.locationArray[0],
     }
-    console.log(newProfileImageData)
 
     const storeProfileImageData = await ImageAPI.storeProfileImageData(newProfileImageData);
     if (storeProfileImageData) {
-      toast.success("Completed image update process...refreshing the page");
-      
-      await delay(5000)
-      window.location.reload();
-  } 
-  } 
+      toast.success("Successfully uploaded image");   
+      await delay(3000);
+      setImageUploaded(true);
+      setImageUploadComponent(null);
+  }
+  }
 
   const addFile = data => {
     let tempFileList = fileList;
@@ -203,20 +219,22 @@ export default function Profile(props) {
   const handlePartyDetection = async () => {
     // toast.success("Party detection generation started");
     const partyDetection = await UserAPI.partyDetection({ _id: userData.user._id })
-    // .then(result => {
-    //   toast.success("You should form a party with " + result);
-    // })
-    // .catch(error=> {
-    //   toast.error(`An error occurred ${error}`);
-    // })
-    if (partyDetection !== null && partyDetection !== undefined) {
+
+    if (partyDetection !== null && partyDetection !== undefined && partyDetection > 0) {
       let partyString = "";
-      for (let i = 0; i < partyDetection.length; i++) {
-        partyString += partyDetection[i] + " ";
+      for (let i = 0; i < 4; i++) {
+        if (i === 3 || i === partyDetection.length-1) {
+          partyString += partyDetection[i];
+        } else {
+          partyString += partyDetection[i] + ", ";
+        }
+
       }
-      toast.success("You should create a party with " + partyString);
+      toast.success("You should create a \nparty with " + partyString);
+    } else {
+      toast.error("No party members to suggest. Start creating some Favours");
     }
-    
+
   }
 
   return (
@@ -227,7 +245,7 @@ export default function Profile(props) {
           <Paper className={classes.container}>
           <ToastContainer
             position="top-center"
-            autoClose={5000}
+            autoClose={3000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
@@ -239,17 +257,17 @@ export default function Profile(props) {
             <div className="container_right_bottom">
               <Card className={classes.profileCard}>
                 <CardContent className={classes.profileCardContent}>
-                  <center>                    
+                  <center>
                       <Avatar className={classes.avatar}>
                       {
-                        user? 
-                          <img src={user.profileImageUrl} width="230px" height="230px" alt="profile image" /> 
+                        user?
+                          <img src={user.profileImageUrl} width="230px" height="230px" alt="profile image" />
                           : ""
                       }
-                      </Avatar>       
-                    <div className={classes.actionButtons}>                  
-                    <ImageDragAndDrop addFile={addFile}/>
-                    <Button 
+                      </Avatar>
+                    <div className={classes.actionButtons}>
+                    {imageUploadComponent}{/* <ImageDragAndDrop addFile={addFile}/> */}
+                    <Button
                         variant="contained"
                         color="primary"
                         className={classes.saveButton}
@@ -269,33 +287,33 @@ export default function Profile(props) {
                         <td>Email: {user.email}</td>
                       </tr>
                       <tr>
-                        <td>Created Date: {new Date(user.last_update).getDate() + "/" + new Date(user.last_update).getMonth() + "/" + new Date(user.last_update).getFullYear()}</td>
+                        <td>Created Date: {user.create_time? new Date(user.create_time).getDate() + "/" + new Date(user.create_time).getMonth() + "/" + new Date(user.create_time).getFullYear(): ""}</td>
                       </tr>
                       <tr>
-                        <td>Last Update: {new Date(user.last_update).getDate() + "/" + new Date(user.last_update).getMonth() + "/" + new Date(user.last_update).getFullYear()}</td>
+                        <td>Last Update: {user.last_update? new Date(user.last_update).getDate() + "/" + new Date(user.last_update).getMonth() + "/" + new Date(user.last_update).getFullYear(): ""}</td>
                       </tr>
                     </tbody>
                   </table>
                   <center>
-                    <Button 
+                    <Button
                       color="primary"
                       variant="contained"
                       className={classes.partyDetection}
                       onClick={() => handlePartyDetection()}
                       >Party Detection</Button>
                   </center>
-                </CardContent>                
+                </CardContent>
               </Card>
               <Card className={classes.personalDetailsCard}>
                   <CardContent className={classes.personalDetailsCardContent}>Recent Activity
-              <Fragment>                    
+              <Fragment>
               {userActivity?
                 userActivity
                 .slice(indexOfFirstUserActivity, indexOfLastUserActivity)
                 .map((item, index) => {
-                  return (                    
+                  return (
                     <Card className={classes.cardItems}key={index + "card"}>
-                    <CardContent key={index + "cardContent"}>{item.action} <span style={{fontSize: "10px"}}>{item.recency} minutes ago</span></CardContent>
+                    <CardContent key={index + "cardContent"}>{item.action} <span style={{fontSize: "10px"}}>{item.recency}</span></CardContent>
                   </Card>
                 )}) : ""}
                 </Fragment>
@@ -306,7 +324,7 @@ export default function Profile(props) {
                   totalFavours={
                     userActivity ? userActivity.length : 0
                   }
-                  paginate={paginate}  
+                  paginate={paginate}
                 />
               ) : (
                 ""

@@ -222,7 +222,8 @@ export default function FavourModal({
   User,
   CurrentPage,
   Complete,
-  OwingUser
+  OwingUser,
+  TriggerResetFavourList
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -333,8 +334,6 @@ export default function FavourModal({
       }
 
       // Get user details for the relevant userIds stored in the array
-      // console.log("userArray:", userArray);
-      // console.log("getUserdetial:", rewards);
       const getPublicRequestsUserDetails = await APIServices.getPublicRequestUserDetails(
         userArray
       );
@@ -425,16 +424,16 @@ export default function FavourModal({
     toast.success("Successfully removed reward from request");
   };
 
-  const getUserEmail = (userId, nameId, label, disabled) => {
+  const getUserEmail = (userId, nameId, label, disabled, value) => {
     // console.log(userId)
-    console.log("get user email: ", userId, nameId, label, disabled);
+    console.log("get user email: ", userId, nameId, label, disabled, value);
     // console.log(publicRequestUserDetails);
     // Evaluate reward user id against data retrieved from db, and return relevant email
     if (publicRequestUserDetails) {
       for (let i = 0; i < publicRequestUserDetails.length; i++) {
         if (userId === publicRequestUserDetails[i]._id) {
           // Return relevant user email
-          if (Location === "/public_request") {
+          if (Location === "/public_request" && value !== true) {
             return (
               <TextField
                 id={nameId}
@@ -447,6 +446,8 @@ export default function FavourModal({
                 value={publicRequestUserDetails[i].requestUser.email}
               />
             );
+          } else if (value === true) {
+            return publicRequestUserDetails[i].email;
           } else {
             return (
               <TextField
@@ -470,20 +471,36 @@ export default function FavourModal({
 
   const deleteFavour = async FavourId => {
     const response = await APIServices.deleteOneFavour({ _id: FavourId });
-    if (response.ok === true) {
-      setIsDeleted(true);
-      setToastMessage(response.message);
-      toast.success("Successfully deleted Favour");
 
-      await delay(5000);
-      setOpen(false);
-      refreshPage();
+    if (response.ok === true) {
+        let userId = userData.user._id;
+        let requesterEmail = getUserEmail(Requester, "", "", false, true);
+        let action = `Deleted Favour ${FavourTitle} - Paid By user ${requesterEmail}`;
+        let newActivityData = {
+          userId: userId,
+          action: action
+        }
+
+        const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+
+        if (newUserActivity) {
+          console.log("new user action log: 200");
+        }
+
+        // setIsDeleted(true);
+        // setToastMessage(response.message);
+        toast.success("Successfully deleted Favour");
+
+        await delay(3000);
+        setOpen(false);
+        TriggerResetFavourList();
+
     } else {
       toast.error("Error deleting the Favour, execution has halted");
 
-      await delay(5000);
+      await delay(3000);
       setOpen(false);
-      refreshPage();
+      TriggerResetFavourList();
     }
   };
 
@@ -491,20 +508,21 @@ export default function FavourModal({
     const response = await FavourAPI.forgiveFavour({ _id: FavourId });
     if (response) {
       toast.success(
-        "Successfully forgave favour debt... page will refresh to update"
+        "Successfully forgave favour debt... page will update"
       );
 
-      await delay(5000);
+      await delay(3000);
       setOpen(false);
-      refreshPage();
+      TriggerResetFavourList();
+
     } else {
       toast.error(
-        "Error forgiving the favour debt... page will refresh to update"
+        "Error forgiving the favour debt..."
       );
 
-      await delay(5000);
+      await delay(3000);
       setOpen(false);
-      refreshPage();
+      TriggerResetFavourList();
     }
   };
 
@@ -526,8 +544,7 @@ export default function FavourModal({
       if (data[1]) {
         toast.error("You can only upload one image... Window will refresh");
 
-        await delay(5000);
-        window.location.reload();
+        setFileList([]);
       }
 
       // Else update file list
@@ -539,18 +556,22 @@ export default function FavourModal({
       // If error occurs show user error and close modal
       toast.error("An error occurred in upload...  Window will refresh");
 
-      await delay(5000);
+      await delay(3000);
       handleClose();
+      TriggerResetFavourList();
     }
   };
 
   const handleSubmit = async () => {
+
     if (fileList.length > 1) {
       toast.error("You have tried to upload more than one image...");
       return console.log("More than one file added...");
+
     } else if (fileList.length === 0) {
       toast.error("You haven't uploaded an image.");
       return console.log("No file added...");
+
     }
 
     let imageForm = new FormData();
@@ -564,9 +585,9 @@ export default function FavourModal({
     const uploadToS3 = await axios
       .post("http://localhost:4000/api/image/upload", imageForm)
       .then(function(response) {
-        toast.success(
-          "Successfully stored images on AWS... Now starting database processing"
-        );
+        // toast.success(
+        //   "Successfully stored images on AWS... Now starting database processing"
+        // );
         uploadToMongoDB(response);
       })
       .catch(function(error) {
@@ -576,6 +597,7 @@ export default function FavourModal({
 
   const uploadToMongoDB = async response => {
     let imageArray = [];
+
     if (response) {
       for (let i = 0; i < response.data.locationArray.length; i++) {
         imageArray.push({
@@ -589,14 +611,22 @@ export default function FavourModal({
 
     const storeImageData = await ImageAPI.storeImageData(imageArray);
     if (storeImageData) {
-      toast.success("Completed image update process...");
-
-      await delay(5000);
-      window.location.reload();
+      toast.success("Successfully uploaded image...");
+      
+      await delay(3000);
+      handleClose();
+      TriggerResetFavourList();
+    } else {
+      await delay(3000);
+      handleClose();
+      TriggerResetFavourList();
     }
+
   };
 
-  // console.log(fileList, fileCount);
+  const handleParentModalClose = () => {
+    handleClose();
+  }
 
   return (
     <div>
@@ -628,7 +658,7 @@ export default function FavourModal({
             <Grid container className={classes.modalContent} spacing={3}>
               <ToastContainer
                 position="top-center"
-                autoClose={5000}
+                autoClose={4000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -778,6 +808,7 @@ export default function FavourModal({
                     claimUser={userData}
                     description={FavourDescription}
                     favourOwed={rewards}
+                    handleParentModalClose={handleParentModalClose}
                   />
                 </div>
               ) : (

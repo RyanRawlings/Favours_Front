@@ -61,13 +61,6 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1)
     }
   },
-  // paidBy: {
-  //     display: "inline-block",
-  //     marginBottom: "4%",
-  // },
-  // favourType: {
-  //     display: "inline-block"
-  // },
   formContent: {
     marginLeft: "auto",
     marginRight: "auto"
@@ -81,10 +74,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: "4%",
     marginBottom: "4%"
   },
-  // secondRow: {
-  //   display: "flex",
-  //   width: "auto"
-  // },
   imageBox: {
     marginLeft: "10%",
     marginTop: "5%",
@@ -100,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const RecordFavourForm = ({ userData }) => {
+const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => {
   const classes = useStyles();
   const [favourType, setFavourType] = useState([]);
   const [debtor, setDebtor] = useState(null);
@@ -241,15 +230,8 @@ const RecordFavourForm = ({ userData }) => {
     let imageForm = new FormData();
     imageForm.append('image', fileList[0][0]);
 
-    // for (let i = 0; i < fileList.length; i++) {
-    //     // console.log(fileList[i][0]);
-    //     imageForm.append("image", fileList[i][0]);
-    // }
-
-    //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
     const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
             .then( function(response) {
-                toast.success("Successfully stored images on AWS... Now starting database processing");
                 uploadToMongoDB(response, favourValidationResult, "debtor");
             })
             .catch( function (error) {
@@ -275,8 +257,6 @@ const RecordFavourForm = ({ userData }) => {
         }
       };
   
-      // console.log(newFavourData);
-  
       const createNewFavour = await FavourAPI.createFavour(newFavourData);
   
       if (createNewFavour) {
@@ -290,14 +270,15 @@ const RecordFavourForm = ({ userData }) => {
         const newUserActivity = await UserAPI.createUserActivity(newActivityData);
 
         if (newUserActivity) {
-          console.log("new user action log: 200")
+          console.log("new user action log: 200");
         }
 
         if (
           createNewFavour.success === true &&
           createNewFavour.success !== null
         ) {
-          toast.success(createNewFavour.message);           
+          toast.success(createNewFavour.message); 
+          TriggerResetFavourList();          
           
         } else if (
           createNewFavour.success === true &&
@@ -306,9 +287,8 @@ const RecordFavourForm = ({ userData }) => {
           toast.error(createNewFavour.message);
         }
       }
+      
       newFavour = createNewFavour;
-      await delay(5000);
-      window.location.reload();
       
     } else {
       toast.error(favourValidationResult[1]);
@@ -324,17 +304,21 @@ const RecordFavourForm = ({ userData }) => {
       }
     
       imageArray.push({type: "Record"});
-      console.log("Sending off the data to the server now");
     
       const storeImageData = await ImageAPI.storeImageData(imageArray);
-      if (storeImageData) {
-          toast.success("Completed image update process... Taking you back to the Repay favours screen");
-          
-          await delay(5000)
-          window.location.reload();
+      if (storeImageData) {        
+          handleClose();
+          TriggerResetFavourList();
       } 
+    } else if (type === "creditor") {
+      toast.success("Successfully created Favour");
+
+      await delay(3000);
+
+      handleClose();
+      TriggerResetFavourList();
     }
-    
+
 
   };
 
@@ -345,32 +329,22 @@ const RecordFavourForm = ({ userData }) => {
     setFileList(tempFileList);
   };
 
-  console.log(fileList);
-
   return (
     <div className={classes.root}>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <Paper className={classes.paper}>
         <div className={classes.formContent}>
+        {/* <ToastContainer
+                position="top-center"
+                autoClose={4000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              /> */}
           <Grid container spacing={3}>
-            {/* <form className={classes.form} > */}
-            {/* <TextField id='favour-type'
-                                        label="Favour Type"
-                                        name="FavourType"
-                                        value={favourtype}
-                                        placeholder="Select your Favour Type"
-                                        onChange={e => setFavourType(e.target.value)}
-                            /> */}
             <Grid item xs={12} sm={6}>
               <Autocomplete
                 className={classes.favourType}

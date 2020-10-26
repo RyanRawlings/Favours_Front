@@ -22,12 +22,8 @@ const columns = [
   { field: 'favourCredits',headerName: 'Favours Credits',width: 180 },
 ];
 
-
-
 function CustomNoRowsOverlay(loading) {
   const classes = useStyles();
-
-  // console.log(loading)
 
   return (
     <GridOverlay className={classes.root}>

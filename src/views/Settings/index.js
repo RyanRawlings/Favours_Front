@@ -163,14 +163,34 @@ const Settings = (props) => {
         // console.log(userGroups);      
         
         const groupUserEmails = await UserAPI.getGroupUserEmails({ groups: userGroups });
-        // console.log("response from backend", groupUserEmails);
-        try {
-          if (groupUserEmails[0]['users']) {
+        console.log("response from backend", groupUserEmails);
+        
+        if(groupUserEmails.length > 0) {
             setGroupUserDetails(groupUserEmails);
             setGroupUsers(groupUserEmails[0]['users']);
-          }        
-        } catch (error ) {
-          console.log(error);
+        } else {
+            let defaultGroup = [{
+                create_time: "",
+                department: "",
+                group_name: "",
+                image_url: "",
+                location: {
+                  country: "",
+                  state: "",
+                  suburb: "",
+                  postcode: ""
+                },
+                parentGroupId: "",
+                _id: ""
+
+            }]
+
+            let defaultUsers = [{
+              emails: "",
+            }];
+
+            setGroups(defaultGroup)
+            setGroupUsers(defaultUsers);
         }
         
       }
@@ -207,20 +227,20 @@ const Settings = (props) => {
             <div className={classes.container_right_bottom}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
-                  <div className={classes.heading}>User Settings</div>
-                          
+                  <div className={classes.heading}>User Settings</div>                          
                   <div className={classes.subHeading}><Typography>Your Groups</Typography></div>                
-                  <List component="nav" className={classes.listComponent} aria-label="contacts">
-                    {groups && groupUsers? 
+                  <List component="nav" className={classes.listComponent} aria-label="contacts">    
+                  {console.log(activeGroup)}
+                  {console.log("groups: ", groups)}              
+                    {groups?
                       groups.map((item, index) => (
                           <ListItem style={{backgroundColor: activeGroup._id === item._id? "#f6f6f6": "white"}} key={index} button>
                             <ListItemText onClick={() => handleGroupUpdate(item._id)} primary={item.group_name} key={index}/>
                           </ListItem>                
-                    )) : ""                
-                    }   
+                    )) : ""}   
                     </List>    
-                </Grid>  
-                {groups? 
+                </Grid>                  
+                {groups.group_name !== undefined && groups.length === 1? "":
                 <Grid item xs={12} sm={6}>
                 <Paper className={classes.groupForm}>                
                   <Grid container spacing={3}>
@@ -228,10 +248,10 @@ const Settings = (props) => {
                         <Typography variant="h6">Group Details</Typography>
                       </Grid>                      
                       <Grid item xs={6}>
-                        <TextField value={activeGroup? activeGroup.group_name : ""} variant="outlined" label="Group name" InputLabelProps={{shrink:true}}/>
+                        <TextField value={groups.group_name !== undefined && groups.length === 1? "" : activeGroup? activeGroup.group_name : ""} variant="outlined" label="Group name" InputLabelProps={{shrink:true}}/>
                       </Grid>
                       <Grid item xs={6}> 
-                        <TextField value={activeGroup? activeGroup.department : ""} variant="outlined" label="Department" InputLabelProps={{shrink:true}}/>
+                        <TextField value={groups.group_name !== undefined && groups.length === 1? "" : activeGroup? activeGroup.department: ""} variant="outlined" label="Department" InputLabelProps={{shrink:true}}/>
                       </Grid>
                     </Grid>   
                     <Grid container spacing={3}>
@@ -239,16 +259,16 @@ const Settings = (props) => {
                         <Typography variant="h6">Address Details</Typography>                  
                       </Grid>
                       <Grid item xs={3}>
-                          <TextField value={activeGroup.location? activeGroup.location.suburb : ""} variant="outlined" label="Suburb" InputLabelProps={{shrink:true}}/>
+                          <TextField value={groups.group_name !== undefined && groups.length === 1? "": activeGroup.location? activeGroup.location.suburb: ""} variant="outlined" label="Suburb" InputLabelProps={{shrink:true}}/>
                         </Grid>
                         <Grid item xs={3}>
-                        <TextField value={activeGroup.location? activeGroup.location.state : ""} variant="outlined" label="State" InputLabelProps={{shrink:true}}/>
+                        <TextField value={groups.group_name !== undefined && groups.length === 1? "": activeGroup.location? activeGroup.location.state: ""} variant="outlined" label="State" InputLabelProps={{shrink:true}}/>
                         </Grid>
                         <Grid item xs={3}>
-                        <TextField value={activeGroup.location? activeGroup.location.country : ""} variant="outlined" label="Country" InputLabelProps={{shrink:true}}/>
+                        <TextField value={groups.group_name !== undefined && groups.length === 1? "": activeGroup.location? activeGroup.location.country: ""} variant="outlined" label="Country" InputLabelProps={{shrink:true}}/>
                         </Grid>
                         <Grid item xs={3}>
-                        <TextField value={activeGroup.location? activeGroup.location.postcode : ""} variant="outlined" label="Postcode" InputLabelProps={{shrink:true}}/>
+                        <TextField value={groups.group_name !== undefined && groups.length === 1? "": activeGroup.location? activeGroup.location.postcode: ""} variant="outlined" label="Postcode" InputLabelProps={{shrink:true}}/>
                         </Grid>                        
                         </Grid>
                         <Grid container spacing={3}>
@@ -267,7 +287,7 @@ const Settings = (props) => {
                         </Grid>
                       </Paper>                      
                       </Grid>
-                      :""}
+                      }
                 </Grid>  
                                                                        
               </div>

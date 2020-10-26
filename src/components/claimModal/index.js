@@ -79,7 +79,8 @@ const ClaimModal = ({
   requester,
   claimUser,
   description,
-  favourOwed
+  favourOwed,
+  handleParentModalClose
 }) => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
@@ -185,7 +186,8 @@ const ClaimModal = ({
       toast.success("Completed image update process...");
 
       await delay(5000);
-      window.location.reload();
+      handleClose();
+      handleParentModalClose();
     }
   };
 
@@ -207,7 +209,8 @@ const ClaimModal = ({
       toast.success("successfully deleted public request");
 
       await delay(3000);
-      window.location.reload();
+      handleClose();
+      handleParentModalClose();
     } else {
       toast.error("There was an error deleting the public request");
     }

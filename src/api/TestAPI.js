@@ -3,25 +3,50 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import { toast } from "react-toastify";
 
+/*************************************************************************************************
+ * Returns jwt token and user details to be updated in UserContext and stored in Cookies client side
+ * 
+ * @param {array} req contains email and password string of user trying to log in
+ * @param {array} res response 
+ * @return {array} response -> contains array containing user details and jwt token. 
+ * 
+ *************************************************************************************************/
+
 export function login(data) {
-  console.log("logindata:", data);
+  // console.log("logindata:", data);
   return new Promise((resolve, reject) => {
-    console.log("login");
+    // console.log("login");
     axios
       .post("http://localhost:4000/api/user/login", data)
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
-          resolve(response.data);
-          window.location.href = "/public_request";
+          resolve(response.data)
+          if ( response.data.token !== undefined) {
+            window.location.href = "/public_request";
+          } else {
+            toast.error(response.data.message);
+          }          
         } else {
+          // console.log(response)
           reject(response.data);
         }
       })
       .catch(reject => {
+        // console.log(reject.response)
         toast.error(reject.response.data);
       });
   });
 }
+
+/*************************************************************************************************
+ * Returns jwt token and user details to be updated in UserContext and stored in Cookies client side
+ * 
+ * @param {array} req contains email and password string of user trying to log in
+ * @param {array} res response 
+ * @return {array} response -> contains array containing user details and jwt token. 
+ * 
+ *************************************************************************************************/
+
 export function register(data) {
   console.log("registerdata:", data);
   return new Promise((resolve, reject) => {

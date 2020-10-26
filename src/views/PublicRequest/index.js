@@ -99,7 +99,7 @@ const useStyles = makeStyles(theme => ({
 export default function PublicRequest(props) {
   const [publicRequests, setPublicRequests] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage, setRequestsPerPage] = useState(4);
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
@@ -240,7 +240,18 @@ export default function PublicRequest(props) {
               </div>
               <div className="cards_container">
                 <Fragment>
-                  {searchResult ? (
+                  {loading? 
+                   (
+                    <center>
+                      <img
+                        src={LoadingGif}
+                        width="100px"
+                        height="100px"
+                        alt="Loading..."
+                      />
+                    </center>
+                   ) :
+                   (
                     searchResult
                       .slice(indexOfFirstRequest, indexOfLastRequest)
                       .map((data, key) => {
@@ -284,15 +295,6 @@ export default function PublicRequest(props) {
                           </Card>
                         );
                       })
-                  ) : (
-                    <center>
-                      <img
-                        src={LoadingGif}
-                        width="100px"
-                        height="100px"
-                        alt="Loading..."
-                      />
-                    </center>
                   )}
                 </Fragment>
               </div>

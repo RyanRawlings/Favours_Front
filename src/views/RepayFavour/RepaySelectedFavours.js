@@ -24,12 +24,10 @@ import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        overflow: "auto",
-        overflowX: "hidden"
     },
     paper: {
         padding: theme.spacing(5),
-        height: "100vh",
+        height: "100%",
         backgroundColor: "#fcfcfc"        
     },
     heading: {
@@ -148,6 +146,7 @@ return (
                             className={classes.heading}
                     >Favours Selected to be Repayed
                     </Typography>
+                    {console.log(props.location.state.favoursToBeRepayed.length === fileList.length)}
                     <Button
                         onClick={handleSubmit}
                         color="primary"

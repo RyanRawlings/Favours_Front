@@ -182,10 +182,8 @@ const getTitle = location => {
       return "> Public Requests";
     case "/all_list":
       return "> Manage Favours";
-    case "/all_list/debit_list":
-      return "> IOU List > Debit List";
-    case "/all_list/credit_list":
-      return "IOU List > Credit List";
+    case "/repay_selected_favours":
+      return "> Multi Repay > Repay Selected Favours"
     case "/profile":
       return "> My Profile";
     case "/leaderboard":

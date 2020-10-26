@@ -212,8 +212,9 @@ export default function NewPublicRequestForm() {
       setRewards([]);
 
       // Hold execution for 3s then close the modal
-      await delay(5000);
-      handleClose();      
+      await delay(3000);      
+      handleClose(); 
+
       
     } else {
       // Set toast details

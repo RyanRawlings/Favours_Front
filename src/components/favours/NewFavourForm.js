@@ -119,7 +119,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NewFavourForm() {
+export default function NewFavourForm({ TriggerNewFavour }) {
   const classes = useStyles();
 
   // User information from JWT
@@ -203,7 +203,7 @@ export default function NewFavourForm() {
       setRewards([]);
 
       // Hold execution for 3s then close the modal
-      await delay(5000);
+      await delay(3000);
       handleClose();
     } else {
       // Set toast details
@@ -211,8 +211,9 @@ export default function NewFavourForm() {
       setToastMessage("There was an issue creating the Public Request!");
       toast.success("Successfully created the Public Request");
       
-      await delay(5000);
+      await delay(3000);
       handleClose();
+      TriggerNewFavour();
     }
   };
 
@@ -250,9 +251,9 @@ export default function NewFavourForm() {
       >
         <Fade in={open}>
           <Grid container className={classes.modalContent} spacing={3}>
-          <ToastContainer
+          {/* <ToastContainer
               position="top-center"
-              autoClose={5000}
+              autoClose={3000}
               hideProgressBar={false}
               newestOnTop={false}
               closeOnClick
@@ -260,7 +261,7 @@ export default function NewFavourForm() {
               pauseOnFocusLoss
               draggable
               pauseOnHover
-            />
+            /> */}
             <Grid className={classes.headingDiv} item xs={12}>
               <div className={classes.modalHeading}>Create New Favour</div>
               <div className={classes.closeButtonDiv}>
@@ -276,7 +277,7 @@ export default function NewFavourForm() {
                 </IconButton>
               </div>
             </Grid>
-            <RecordFavour userData={userData}/>            
+            <RecordFavour TriggerNewFavour={TriggerNewFavour} userData={userData} handleClose={handleClose}/>            
           </Grid> 
         </Fade>
       </Modal>

@@ -99,7 +99,8 @@ export default function Login() {
 
     try {
       const response = await APIServices.login(user);
-      if (response) {
+
+      if (!response.message) {
         Cookie.set("auth-token", response.token);
       }
     } catch (error) {

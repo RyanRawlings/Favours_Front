@@ -33,14 +33,11 @@ const Routes = () => {
   useEffect(() => {
     const checkLoggedIn = async () => {
       let authToken = Cookies.get("auth-token");
-      if (authToken === null) {
-        Cookies.setItem("auth-token", "");
-      }
-      // const response = await APIServices.awsCognitoGetUser(token);
-      // console.log(response);
-      if (authToken) {
+      // console.log(authToken);
+      if (authToken === undefined || authToken === '') {
+        Cookies.remove('auth-token');
+      } else {
         const userAttributes = JWTDecode(authToken);
-        console.log("user attributes: ",userAttributes);
         setUserData({
           token: authToken,
           user: {
@@ -50,9 +47,10 @@ const Routes = () => {
             email: userAttributes.email,
             // activeGroupId: userAttributes.group[0]
           }
-        });
+        })              
       }
-    };
+    }
+    
     checkLoggedIn();
   }, []);
 
