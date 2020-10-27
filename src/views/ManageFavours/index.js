@@ -152,8 +152,10 @@ const ManageFavours = (props) => {
   const [open, setOpen] = useState(false);
 
 /****************************************************************************************************
- * Summary: Initalises the state variables for the different categories of favours i.e. credit, debit
- * as well as updating the active Favours and search result state arrays
+ * Summary: State is rendered then re-rendered when the resetFavoursList value is updated or as the 
+ * user clicks through the different pages. The component will maintain the list that was active 
+ * before the re-render, so to make it appear as if the only thing that has changed is what the user
+ * has done.
  ****************************************************************************************************/
   useEffect(() => {
     async function fetchFavours() {
@@ -165,14 +167,27 @@ const ManageFavours = (props) => {
         setCreditFavours(fetchFavours[0].credits);
         setDebitFavours(fetchFavours[1].debits);
         setForgivenFavours(fetchFavours[2].forgivenFavours);
-        setFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
-        setSearchResult(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
+             
+        if (activeButton !== null && activeButton !== undefined && activeButton === "all") {
+          setFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
+          setSearchResult(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
+        } else if (activeButton !== null && activeButton !== undefined && activeButton === "credit") {
+          setFavours(fetchFavours[0].credits);
+          setSearchResult(fetchFavours[0].credits);
+        } else if (activeButton !== null && activeButton !== undefined && activeButton === "debit") {
+          setFavours(fetchFavours[1].debits);
+          setSearchResult(fetchFavours[1].debits);
+        }  else if (activeButton !== null && activeButton !== undefined && activeButton === "forgiven") {
+          setFavours(fetchFavours[2].forgivenFavours);
+          setSearchResult(fetchFavours[2].forgivenFavours);
+        }
+
         setLoading(false);
       }
     }
 
     fetchFavours();
-  }, [resetFavourList]);
+  }, [resetFavourList,currentPage]);
 
   const classes = useStyles();
 
@@ -190,7 +205,6 @@ const handleSearch = input => {
   let tempData = [];
 
   favours.map(item => {
-    console.log("item:", item);
     tempData = Object.entries(item);
 
     // Check favours array

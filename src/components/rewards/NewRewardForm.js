@@ -84,17 +84,6 @@ const NewRewardForm = ({ addReward, userData }) => {
     return (
 
       <form onSubmit={handleSubmit}>
-                <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-              />
          <Grid className={classes.listHeading} container spacing={1}>
             <Grid item xs={'auto'} xl={'auto'} sm={4}>
               <Autocomplete

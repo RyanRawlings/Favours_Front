@@ -19,7 +19,7 @@ import ClaimModal from "../claimModal/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
-import SingleImageUpload from "../uploadImage/singleImageUpload";
+import { SingleImageUpload } from "../uploadImage/singleImageUpload";
 import { ForgiveFavour } from "../favours/ForgiveFavour";
 import { DeleteFavour } from "../favours/DeleteFavour";
 import { delay } from "q";
@@ -209,7 +209,8 @@ const FavourModal = ({
   CurrentPage,
   Complete,
   OwingUser,
-  TriggerResetFavourList
+  TriggerResetFavourList,
+  TriggerResetPublicRequestList
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -240,14 +241,12 @@ const FavourModal = ({
           let response = await APIServices.deletePublicRequest(favourId);
 
           if (response) {
-            console.log("delete response:", response.message);
-
             toast.success(
               "No reward left. Automatically delete the request..."
             );
 
             await delay(4000);
-            window.location.reload();
+            TriggerResetFavourList();
           } else {
             toast.error("There was an error deleting the public request");
           }
@@ -264,6 +263,11 @@ const FavourModal = ({
     // Open modal on click
     setOpen(true);
     
+    setRequester(Requester);
+    setFavourTitle(FavourTitle);
+    setFavourId(FavourId);
+    setFavourDescription(FavourDescription);
+
     // If there is a change in the rewards update the reward state variable, this will trigger a
     // re-render
     if (changeReward) {
@@ -504,7 +508,7 @@ const FavourModal = ({
 * @param data refers to the File array that is being handled by the ImageDragAndDrop component
 ***************************************************************************************************/       
   const handleRepayFavour = async () => {
-    return <SingleImageUpload fileList={fileList} handleClose={handleClose}/>;
+    SingleImageUpload(FavourId, TriggerResetFavourList, fileList, handleClose);
   };
 
 /**************************************************************************************************
@@ -532,6 +536,9 @@ const FavourModal = ({
     }
   };
 
+// const helperTriggerResetPublicRequestList = () => {
+//   TriggerResetPublicRequestList();
+// };
   return (
     <div>
       <Button
@@ -562,7 +569,7 @@ const FavourModal = ({
             <Grid container className={classes.modalContent} spacing={3}>
               <ToastContainer
                 position="top-center"
-                autoClose={4000}
+                autoClose={2000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -707,7 +714,9 @@ const FavourModal = ({
                     claimUser={userData}
                     description={FavourDescription}
                     favourOwed={rewards}
+                    favourTitle={favourTitle}
                     handleParentModalClose={handleParentModalClose}
+                    TriggerResetPublicRequestList={TriggerResetPublicRequestList}
                   />
                 </div>
               ) : (

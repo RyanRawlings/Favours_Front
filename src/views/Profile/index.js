@@ -129,24 +129,18 @@ const Profile = (props) => {
         console.log(delta)
 
         let days = Math.floor(delta / 86400);
-        delta -= days * 86400
 
         let hours = Math.floor(delta / 3600) % 24;
-        delta -= hours * 3600;
 
         let minutes = Math.floor(delta / 60) % 60;
-        delta -= minutes * 60;
 
         if (days && hours && minutes) {
-          // console.log(`Days: ${days} Hours: ${hours} Minutes: ${minutes}`);
           userActions[i]["recency"] = `${days} days, ${hours} hours and ${minutes} minutes ago`;
 
         } else if (!days && hours && minutes) {
-          // console.log(`Hours: ${hours} minutes: ${minutes}`, delta);
           userActions[i]["recency"] = `${hours} hours and ${minutes} minutes ago`;
 
         } else if (!days && !hours && minutes) {
-          // console.log(`minutes: ${minutes}`, delta);
           userActions[i]["recency"] = `${minutes} minutes ago`;
         }
       }
@@ -161,7 +155,7 @@ const Profile = (props) => {
     }
 
     getUserActions();
-  }, []);
+  }, [currentPage]);
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
 

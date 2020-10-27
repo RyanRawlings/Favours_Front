@@ -23,6 +23,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLocation } from "react-router-dom";
 import * as UserAPI from "../../api/UserAPI";
+import { Title } from "material-ui-icons";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -201,8 +202,9 @@ const NewPublicRequestForm = () => {
   const createPublicRequestHelper = async data => {
     const response = await APIServices.createPublicRequest(data);
     if (response) {
+      // console.log(response)
       let userId = userData.user._id;
-      let action = "Created new public request";
+      let action = `Created new Public Request ${response.newPublicRequest.title} - ${response.newPublicRequest.rewards.length} Reward(s)`;
       let newActivityData = {
         userId: userId,
         action: action
@@ -210,7 +212,7 @@ const NewPublicRequestForm = () => {
 
       const newUserActivity = await UserAPI.createUserActivity(newActivityData);
 
-      // Set toast details
+      // // Set toast details
       toast.success("Successfully created the Public Request");
       
       // Reset the rewards state variable
@@ -284,7 +286,7 @@ const NewPublicRequestForm = () => {
           <Grid container className={classes.modalContent} spacing={3}>
             <ToastContainer
               position="top-center"
-              autoClose={5000}
+              autoClose={2000}
               hideProgressBar={false}
               newestOnTop={false}
               closeOnClick

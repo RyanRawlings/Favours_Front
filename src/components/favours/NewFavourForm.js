@@ -174,7 +174,7 @@ const NewFavourForm = ({ TriggerResetFavourList }) => {
                 </IconButton>
               </div>
             </Grid>
-            <RecordFavour TriggerResetFavourList={TriggerResetFavourList} userData={userData} handleClose={handleClose}/>            
+            <RecordFavour TriggerResetFavourList={TriggerResetFavourList} handleClose={handleClose}/>            
           </Grid> 
         </Fade>
       </Modal>

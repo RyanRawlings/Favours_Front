@@ -32,6 +32,7 @@ import ImageDragAndDrop from "../uploadImage/imageDragAndDrop";
 import axios from "axios";
 import * as ImageAPI from "../../api/ImageAPI";
 import { delay } from "q";
+import { SingleImageUpload } from "../uploadImage/singleImageUpload";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -89,7 +90,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => {
+const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
   const classes = useStyles();
   const [favourType, setFavourType] = useState([]);
   const [debtor, setDebtor] = useState(null);
@@ -103,6 +104,8 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
   const [fileList, setFileList] = useState([]);
 
   const location = useLocation();
+
+  const { userData } = useContext(UserContext);
 
 /**************************************************************************************************
 * Summary: Returns the Types of Favours that can be selected in an Array, on page load
@@ -125,7 +128,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
   useEffect(() => {
     async function getUserList() {
       const getUsers = await UserAPI.getUsers();
-
       // Return array of users
       if (getUsers) {
         setUserList(getUsers);
@@ -134,7 +136,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
         console.log("Error occurred fetching the user data... Please refresh");
       }
     }
-
     getUserList();
   }, []);
 
@@ -173,21 +174,8 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
   };
 
 /**************************************************************************************************
-* Summary: Get the user id from the an email value, selected from the drop down list
-*
-* @param email -> email of the user selected
-***************************************************************************************************/        
-  const getUserIdFromEmail = email => {
-    for (let i = 0; i < userList.length; i++) {
-      if (email === userList[i].email) {
-        return userList[i]._id;
-      }
-    }
-  };
-
-/**************************************************************************************************
-* Summary: Favour validation to ensure the integrity of the data, before it is passed to the Mongo
-* database
+* Summary: Favour validation to ensure the integrity of the data, before the image upload function
+* is called
 ***************************************************************************************************/          
   const favourValidation = () => {
     if (creditor === debtor) {
@@ -210,116 +198,20 @@ const RecordFavourForm = ({ TriggerResetFavourList, userData, handleClose }) => 
 * Summary: Handles the image upload to s3, on success Favour is created in Mongo db. On success of
 * the creation of the Favour, a new UserActivity record is also created in Mongo db
 ***************************************************************************************************/            
-  const handleSubmit = async () => {
-    let favourValidationResult = favourValidation();
-    
-    if (favourValidationResult[0] === false) {
-      toast.error(favourValidationResult[1])
-      return console.log(favourValidationResult[1])
-    } 
-
-    if (debtor === userData.user.email) {
-      if (fileList.length > 1) {
-        toast.error("You have tried to upload more than one image...");
-        return console.log("More than one file added...");
-      } else if (fileList.length === 0) {
-        toast.error("You haven't uploaded an image.");
-        return console.log("No file added...");
-      }
-    } else if (debtor !== userData.user.email) {
-      uploadToMongoDB(null, favourValidationResult, "creditor");
-      return console.log("No file upload required.");
-    }
-  
-    let imageForm = new FormData();
-    imageForm.append('image', fileList[0][0]);
-
-    const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
-            .then( function(response) {
-                uploadToMongoDB(response, favourValidationResult, "debtor");
-            })
-            .catch( function (error) {
-                toast.error(error);
-            })
-    }
-
-  const uploadToMongoDB = async (response, favourValidationResult, type) => {
-    let newFavour = {};
-    if (favourValidationResult[0] === true) {
-      const newFavourData = {
-        requestUser: getUserIdFromEmail(creditor),
-        owingUser: getUserIdFromEmail(debtor),
-        description: favourDescription,
-        favourOwed: favourName,
-        is_completed: false,
-        debt_forgiven: false,
-        proofs: {
-          is_uploaded: false,
-          uploadImageUrl: null,
-          snippet: ""
-        }
-      };
-  
-      const createNewFavour = await FavourAPI.createFavour(newFavourData);
-  
-      if (createNewFavour) {
-        let userId = userData.user._id;
-        let action = "Created new favour " + createNewFavour.favourOwed.toString();
-        let newActivityData = {
-          userId: userId,
-          action: action
-        }
-
-        const newUserActivity = await UserAPI.createUserActivity(newActivityData);
-
-        if (newUserActivity) {
-          console.log("new user action log: 200");
-        }
-
-        if (
-          createNewFavour.success === true &&
-          createNewFavour.success !== null
-        ) {
-          toast.success(createNewFavour.message);                   
-          
-        } else if (
-          createNewFavour.success === true &&
-          createNewFavour.success !== null
-        ) {
-          toast.error(createNewFavour.message);
-        }
-      }
-      
-      newFavour = createNewFavour;
-      
-    } else {
-      toast.error(favourValidationResult[1]);
-    }
-
-    if (type === "debtor") {
-      let imageArray = [];
-      if (response) {
-          for (let i = 0; i < response.data.locationArray.length; i++) {
-              imageArray.push({ _id: newFavour._id, imageUrl: response.data.locationArray[i] });
-          }        
-      }
-    
-      imageArray.push({type: "Record"});
-    
-      const storeImageData = await ImageAPI.storeImageData(imageArray);
-      if (storeImageData) {        
-        toast.success("Successfully created Favour");
-
-        await delay(3000);  
-        TriggerResetFavourList();
-        handleClose();
-      } 
-    } else if (type === "creditor") {
-
-      await delay(3000);
-      TriggerResetFavourList();
-      handleClose();
-    }
+  const handleSubmit = async () => {    
+    SingleImageUpload(
+      "", 
+      TriggerResetFavourList, 
+      fileList, 
+      handleClose, 
+      "Record", 
+      favourValidation, 
+      userData,
+      debtor,
+      creditor,
+      favourName,
+      favourDescription,
+      userList);
   };
 
 /**************************************************************************************************

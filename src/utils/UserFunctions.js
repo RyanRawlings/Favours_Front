@@ -89,5 +89,13 @@ const GetUserDetails = async (userDataAvailable, setPublicRequestUserDetails, re
     }
   };  
 
-export { GetUserDetails, GetUserEmail };
+  const GetUserIdFromEmail = async (email, userList) => {
+    for (let i = 0; i < userList.length; i++) {
+      if (email === userList[i].email) {
+        return userList[i]._id;
+      }
+    }
+  };
+
+export { GetUserDetails, GetUserEmail, GetUserIdFromEmail };
 

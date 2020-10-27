@@ -74,8 +74,10 @@ const ClaimModal = ({
   requester,
   claimUser,
   description,
+  favourTitle,
   favourOwed,
-  handleParentModalClose
+  handleParentModalClose,
+  TriggerResetPublicRequestList  
 }) => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
@@ -189,9 +191,10 @@ const ClaimModal = ({
     if (storeImageData) {
       toast.success("Completed image update process...");
 
-      await delay(5000);
+      await delay(3000);
       handleClose();
       handleParentModalClose();
+      TriggerResetPublicRequestList();
     }
   };
 
@@ -215,15 +218,26 @@ const ClaimModal = ({
     let response = await APIServices.deletePublicRequest(favourId);
 
     if (response) {
+      let userId = userData.user._id;
+      let action = `Deleted Public Request ${favourTitle} - ${favourOwed.length} Reward(s)`;
+      let newActivityData = {
+        userId: userId,
+        action: action
+      }
+
+      const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+
       console.log("delete response:", response.message);
 
-      toast.success("successfully deleted public request");
+      toast.success("Successfully deleted public request");
 
       await delay(3000);
       handleClose();
       handleParentModalClose();
+      TriggerResetPublicRequestList();
     } else {
       toast.error("There was an error deleting the public request");
+      TriggerResetPublicRequestList();
     }
   };
 
@@ -284,17 +298,6 @@ const ClaimModal = ({
               className={classes.modalContent}
               spacing={3}
             >
-              <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-              />
               <Grid item xs={12} className={classes.header}>
                 Please upload proof
               </Grid>

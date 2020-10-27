@@ -104,31 +104,25 @@ const PublicRequest = (props) => {
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
   const [favourRewards, setFavourRewards] = useState([]);
   const { userData } = useContext(UserContext);
-
-  // console.log("props:", props.user.token);
+  const [resetPublicRequestList, setResetPublicRequestList] = useState();
 
   const classes = useStyles();
-  // // const [tag, setTag] = useState(0);
   const location = useLocation();
 
   useEffect(() => {
     async function getPublicRequestList() {
       const getPublicRequests = await APIServices.getPublicRequests();
-      // Return array and set the Favours state
-      // console.log("getPublicRequests:", getPublicRequests);
       let result = getPublicRequests.filter(item => {
         return item.completed === false;
       });
 
-      // setPublicRequests(getPublicRequests);
-      // setSearchResult(getPublicRequests);
       setPublicRequests(result);
       setSearchResult(result);
       setLoading(false);
     }
 
     getPublicRequestList();
-  }, []);
+  }, [resetPublicRequestList,currentPage]);
 
   useEffect(() => {
     async function getFavourType() {
@@ -142,7 +136,7 @@ const PublicRequest = (props) => {
     getFavourType();
   }, []);
 
-  //Get current posts
+  // Get current Public Requests
   const indexOfLastRequest = currentPage * requestsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
 
@@ -152,16 +146,13 @@ const PublicRequest = (props) => {
     return location.pathname;
   };
 
-  //search keywords or reward item
+  // Search keywords or reward item
   const handleSearch = input => {
-    // console.log("input:", input);
-    // console.log(publicRequests);
     setSearchBarPlaceHolder(input);
     let newData = [];
     publicRequests.map(item => {
-      // console.log("item:", item);
 
-      //check reward array
+      // Check reward array
       let checkReward;
       item.rewards.map(i => {
         if (i.item.toLowerCase().match(input.toLowerCase())) {
@@ -181,9 +172,22 @@ const PublicRequest = (props) => {
     });
     setLoading(false);
     setSearchResult(newData);
-
-    // console.log("searchResult", searchResult);
   };
+
+/*************************************************************************************************
+ * Summary: Triggers a re-render on the public request data, to account for any additions, 
+ * updates, deletions made. resetPublicRequestList is tied to the useEffect hook.
+ *************************************************************************************************/
+const TriggerResetPublicRequestList = () => {
+  if ( resetPublicRequestList === true ) {
+    setResetPublicRequestList(false);
+  } else if (resetPublicRequestList === false) {
+    setResetPublicRequestList(true);
+  } else {
+    // If undefined or other cases
+    setResetPublicRequestList(true)
+  }    
+}
 
   return (
     <div className={classes.root}>
@@ -286,6 +290,7 @@ const PublicRequest = (props) => {
                                       Location={getLocation()}
                                       User={props.user}
                                       CurrentPage={currentPage}
+                                      TriggerResetPublicRequestList={TriggerResetPublicRequestList}
                                     />
                                   </div>
                                 </div>
