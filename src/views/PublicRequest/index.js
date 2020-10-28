@@ -27,6 +27,9 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import UserContext from "../../context/UserContext";
 import DateDiff from "date-diff";
+import PartyDetection from "../../components/partyDetection";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,7 +67,8 @@ const useStyles = makeStyles(theme => ({
   },
   headingContainer: {},
   searchBar: {
-    marginLeft: "1%"
+    marginLeft: "1%",
+    display: "inline"
   },
   modal: {
     display: "inline-block",
@@ -195,6 +199,17 @@ const TriggerResetPublicRequestList = () => {
         <NavMenu props={props} />
         <div className="container_right">
           <Paper className={classes.container}>
+          <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className="container_right_bottom">
               <div className={classes.headingContainer}>
                 <h2 className={classes.heading}>
@@ -224,7 +239,7 @@ const TriggerResetPublicRequestList = () => {
                   />
                 </div>
                 {userData.user ? (
-                  ""
+                  <PartyDetection userData={userData}/>
                 ) : (
                   <div className={classes.anonymousButtonGroup}>
                     <div className={classes.homeButton}>

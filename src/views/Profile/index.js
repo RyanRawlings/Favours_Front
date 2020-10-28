@@ -17,6 +17,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as ImageAPI from "../../api/ImageAPI";
 import Button from "@material-ui/core/Button";
+import { delay } from "q";
+import PartyDetection from "../../components/partyDetection/index";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -103,13 +105,16 @@ const Profile = (props) => {
   const [imageUploaded, setImageUploaded] = useState(null);
   const [imageUploadComponent, setImageUploadComponent] = useState(null);
 
-  // Returns information about the current logged in users account
+/*************************************************************************************************
+* Summary: Returns the extended user details for the current logged in user. The data is 
+* re-rendered if the user uploads a new profile image, so that the s3 url can be inserted as the
+* source for the image tag.
+*************************************************************************************************/
   useEffect(() => {
     async function getUserData() {
       const user = await UserAPI.getUser({ _id: userData.user._id});
 
       if (user) {
-        console.log(user);
         setUser(user);
         setImageUploaded(false);
         setImageUploadComponent((<ImageDragAndDrop addFile={addFile}/>));
@@ -119,6 +124,11 @@ const Profile = (props) => {
     getUserData();
   }, [imageUploaded] );
 
+/*************************************************************************************************
+* Summary: Returns the user activity details. Date.diff performed to determine the recency of the
+* activity. Re-render performed as the user paginates through their activity, to recalculate the
+* time value.
+*************************************************************************************************/  
   useEffect(() => {
     async function getUserActions() {
       const userActions = await UserAPI.getUserActivity({ _id: userData.user._id});
@@ -157,13 +167,11 @@ const Profile = (props) => {
     getUserActions();
   }, [currentPage]);
 
-  const delay = ms => new Promise(res => setTimeout(res, ms));
+  //Get current activity
+  const indexOfLastUserActivity = currentPage * userActivityPerPage;
+  const indexOfFirstUserActivity = indexOfLastUserActivity - userActivityPerPage;
 
-    //Get current activity
-    const indexOfLastUserActivity = currentPage * userActivityPerPage;
-    const indexOfFirstUserActivity = indexOfLastUserActivity - userActivityPerPage;
-
-    const paginate = pageNumber => setCurrentPage(pageNumber);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   const handleSubmit = async () => {
 
@@ -209,27 +217,6 @@ const Profile = (props) => {
 
     setFileList(tempFileList);
   };
-
-  const handlePartyDetection = async () => {
-    // toast.success("Party detection generation started");
-    const partyDetection = await UserAPI.partyDetection({ _id: userData.user._id })
-
-    if (partyDetection !== null && partyDetection !== undefined && partyDetection > 0) {
-      let partyString = "";
-      for (let i = 0; i < 4; i++) {
-        if (i === 3 || i === partyDetection.length-1) {
-          partyString += partyDetection[i];
-        } else {
-          partyString += partyDetection[i] + ", ";
-        }
-
-      }
-      toast.success("You should create a \nparty with " + partyString);
-    } else {
-      toast.error("No party members to suggest. Start creating some Favours");
-    }
-
-  }
 
   return (
     <div className={classes.root}>
@@ -289,12 +276,7 @@ const Profile = (props) => {
                     </tbody>
                   </table>
                   <center>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      className={classes.partyDetection}
-                      onClick={() => handlePartyDetection()}
-                      >Party Detection</Button>
+                    <PartyDetection userData={userData}/>
                   </center>
                 </CardContent>
               </Card>

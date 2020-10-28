@@ -27,8 +27,9 @@ import { Link } from "react-router-dom";
 import * as FavourAPI from "../../api/FavourAPI";
 import UserContext from "../../context/UserContext";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faThumbsUp, faThumbsDown} from '@fortawesome/free-solid-svg-icons';
+import PartyDetection from "../../components/partyDetection/index";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -320,6 +321,9 @@ const updateActiveFavours = async sliceType => {
                 <div className={classes.createbutton}>
                   <NewPublicRequest />
                 </div>
+                <div className={classes.createbutton}>
+                  <PartyDetection userData={userData} />
+                </div>                
                 </div>
                 <div className={classes.btnBox}>
                   <div className={classes.listlinks}>

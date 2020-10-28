@@ -30,7 +30,10 @@ import * as UserAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 import { Redirect } from "react-router-dom";
+import PartyDetection from "../../components/partyDetection/index";
 // import UserContext from "../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -144,7 +147,6 @@ const MultiRepay = (props) => {
         const fetchFavours = await FavourAPI.getFavours({userId: userId});
                 
         // Store credit favours into variable
-        // console.log(repayFavours);
         const repayFavours = fetchFavours[0].credits;   
         
         let userArray = []
@@ -157,7 +159,6 @@ const MultiRepay = (props) => {
           }
         })
         
-        // console.log("UserIds: ",userArray) 
         const fetchUsers = await UserAPI.getPublicRequestUserDetails(userArray);
 
         const getUserEmail = (userId) => {
@@ -230,6 +231,17 @@ const MultiRepay = (props) => {
                 <NavMenu props={props} />
                 <div className="container_right">
                   <div className={classes.root}>
+                  <ToastContainer
+                    position="top-center"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    />
                         <Paper className={classes.paper}>
                             <form className={classes.form} >
                                     <div style={{ backgroundColor: "white",
@@ -238,7 +250,6 @@ const MultiRepay = (props) => {
                                                   marginTop: "1%",
                                                   height: "500px",
                                                   width: "1250px"}}>
-                                      {/* {console.log("rows: ", rows)} */}
                                         <DataGrid 
                                           components={{noRowsOverlay: () => CustomNoRowsOverlay(loading)}}                                      
                                           rows={rows? rows: rows} 
@@ -249,16 +260,17 @@ const MultiRepay = (props) => {
                                     </div>
                                 
                                     <Button
-                                                        onClick={handleSubmit}                                                        
-                                                        variant="contained"
-                                                        color="primary"
-                                                        size="large"
-                                                        className={classes.submit}
-                                                        startIcon={<AssignmentTurnedInIcon />}
-                                                        disabled={favoursSelected.length > 0? false: true}
+                                      onClick={handleSubmit}                                                        
+                                      variant="contained"
+                                      color="primary"
+                                      size="large"
+                                      className={classes.submit}
+                                      startIcon={<AssignmentTurnedInIcon />}
+                                      disabled={favoursSelected.length > 0? false: true}
                                     >
                                         Repay Favour
                                     </Button>
+                                    <PartyDetection userData={userData}/>
                             </form>
 
                         </Paper>    

@@ -21,7 +21,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLocation } from "react-router-dom";
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
     },
@@ -81,7 +80,6 @@ const RepaySelectedFavours = (props) => {
   const [favoursToBeRepayed] = useState(props.location.state.favoursToBeRepayed? props.location.state.favoursToBeRepayed : []);
   const [fileList, setFileList] = useState([]);
   const [fileCount, setFileCount] = useState(0);
-  const location = useLocation();
 
   const addFile = (data) => {
     let tempFileList = fileList;
@@ -170,7 +168,6 @@ return (
                 <Fragment>
                     {favoursToBeRepayed?
                         favoursToBeRepayed.map((item, index) => { return (     
-                            // <Container maxWidth="xs">
                             <div className={classes.paperItem}>
                                 <form className={classes.form}>
                                     <Grid className={classes.favourContainer} container spacing={3}>
@@ -211,8 +208,7 @@ return (
                                         </Grid>                                  
                                     </Grid>                                                   
                                 </form>
-                            </div>
-                            // </Container>                                                                    
+                            </div>                                                                    
                         )}): ""}
                 </Fragment>                   
             </Paper>                                               
