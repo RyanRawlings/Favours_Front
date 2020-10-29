@@ -17,10 +17,9 @@ import CancelPresentationIcon from "@material-ui/icons/CancelPresentation";
 import AppBar from "@material-ui/core/AppBar";
 import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import * as APIServices from "../../api/TestAPI";
 import RecordFavour from "../../components/favours/RecordFavour";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
@@ -44,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     overflowY: "auto",
     overflowX: "hidden",
     outline: "none",
-    borderRadius: "6px",
+    borderRadius: "6px"
   },
   createbutton_styling: {
     width: "100%",
@@ -173,12 +172,15 @@ const NewFavourForm = ({ TriggerResetFavourList }) => {
                 </IconButton>
               </div>
             </Grid>
-            <RecordFavour TriggerResetFavourList={TriggerResetFavourList} handleClose={handleClose}/>            
-          </Grid> 
+            <RecordFavour
+              TriggerResetFavourList={TriggerResetFavourList}
+              handleClose={handleClose}
+            />
+          </Grid>
         </Fade>
       </Modal>
     </div>
   );
-}
+};
 
 export default NewFavourForm;

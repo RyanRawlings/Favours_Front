@@ -24,25 +24,25 @@ const Routes = () => {
   useEffect(() => {
     const checkLoggedIn = async () => {
       let authToken = Cookies.get("auth-token");
-      // console.log(authToken);
-      if (authToken === undefined || authToken === '') {
-        Cookies.remove('auth-token');
-      } else {      
+      console.log("1111+", authToken);
+      if (authToken === undefined || authToken === "") {
+        Cookies.remove("auth-token");
+      } else {
         const userAttributes = JWTDecode(authToken);
-        console.log(userAttributes);
+        console.log("userAttributes,", userAttributes);
         setUserData({
           token: authToken,
           user: {
             _id: userAttributes._id,
             firstname: userAttributes.firstname,
             lastname: userAttributes.lastname,
-            email: userAttributes.email,
+            email: userAttributes.email
             // activeGroupId: userAttributes.group[0]
           }
-        })              
+        });
       }
-    }
-    
+    };
+
     checkLoggedIn();
   }, []);
 
@@ -54,18 +54,9 @@ const Routes = () => {
           <Route exact path="/" component={PublicRequest}>
             <Redirect to={"/home"} />
           </Route>
-          <Route 
-            path="/home"
-            component={HomePage}
-          />
-          <Route 
-            path="/signup"
-            component={Signup}
-          />
-          <Route 
-            path="/login" 
-            component={Login}
-          />
+          <Route path="/home" component={HomePage} />
+          <Route path="/signup" component={Signup} />
+          <Route path="/login" component={Login} />
           <Route
             path="/public_request"
             render={props => {
@@ -73,22 +64,19 @@ const Routes = () => {
               return <PublicRequest {...props}></PublicRequest>;
             }}
           />
-          <Route 
-            path="/leaderboard"
-            component={Leaderboard}
-          />
+          <Route path="/leaderboard" component={Leaderboard} />
           {/* Authenticated Routes */}
-          <ProtectedRoute 
+          <ProtectedRoute
             exact
-            path="/multi_repay" 
-            user={userData} 
-            component={MultiRepay} 
+            path="/multi_repay"
+            user={userData}
+            component={MultiRepay}
           />
-          <ProtectedRoute 
+          <ProtectedRoute
             exact
-            path="/repay_selected_favours" 
-            user={userData} 
-            component={RepaySelectedFavour} 
+            path="/repay_selected_favours"
+            user={userData}
+            component={RepaySelectedFavour}
           />
           {/* //Authenticated Routes */}
           <ProtectedRoute

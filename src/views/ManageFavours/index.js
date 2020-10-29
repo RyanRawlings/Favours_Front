@@ -7,9 +7,13 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPrayingHands, faUser,faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPrayingHands,
+  faUser,
+  faThumbsUp,
+  faThumbsDown
+} from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
-import * as APIServices from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import Pagination from "../../components/pagination/index";
 import FavourModal from "../../components/favourModal/index";
@@ -104,36 +108,36 @@ const useStyles = makeStyles(theme => ({
   icons: {
     transform: "translateY(-0.1em)"
   },
-  listlinks: {  
-    textDecoration: "none",
+  listlinks: {
+    textDecoration: "none"
   },
   filterIcon_debit: {
     marginLeft: "10%",
     color: "#32CD32"
-    },
+  },
   filterIcon_credit: {
     marginLeft: "10%",
     color: "red"
-    },
-    actionbutton: {
-      textTransform: "capitalize",
-      width: "100px",
-      backgroundColor: "#1B9AAA",
-      color: "white",
-      borderColor: "white",
-      '&:hover': {
-        color: 'black',
-        backgroundColor: "rgba(0, 0, 0, 0.04)"
-      }
-    },
-
-    filterIcon_forgiven: {
-      marginLeft: "10%",
-      color: "#0D4F8B",
+  },
+  actionbutton: {
+    textTransform: "capitalize",
+    width: "100px",
+    backgroundColor: "#1B9AAA",
+    color: "white",
+    borderColor: "white",
+    "&:hover": {
+      color: "black",
+      backgroundColor: "rgba(0, 0, 0, 0.04)"
     }
+  },
+
+  filterIcon_forgiven: {
+    marginLeft: "10%",
+    color: "#0D4F8B"
+  }
 }));
 
-const ManageFavours = (props) => {
+const ManageFavours = props => {
   const [favours, setFavours] = useState([]);
   const [allFavours, setAllFavours] = useState([]);
   const [creditFavours, setCreditFavours] = useState([]);
@@ -152,33 +156,64 @@ const ManageFavours = (props) => {
 
   const [open, setOpen] = useState(false);
 
-/****************************************************************************************************
- * Summary: State is rendered then re-rendered when the resetFavoursList value is updated or as the 
- * user clicks through the different pages. The component will maintain the list that was active 
- * before the re-render, so to make it appear as if the only thing that has changed is what the user
- * has done.
- ****************************************************************************************************/
+  /****************************************************************************************************
+   * Summary: State is rendered then re-rendered when the resetFavoursList value is updated or as the
+   * user clicks through the different pages. The component will maintain the list that was active
+   * before the re-render, so to make it appear as if the only thing that has changed is what the user
+   * has done.
+   ****************************************************************************************************/
   useEffect(() => {
     async function fetchFavours() {
-      const { _id } = userData.user
-      const fetchFavours = await FavourAPI.getFavours({userId: _id});
+      const { _id } = userData.user;
+      const fetchFavours = await FavourAPI.getFavours({ userId: _id });
 
       if (fetchFavours) {
-        setAllFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
+        setAllFavours(
+          fetchFavours[0].credits.concat(
+            fetchFavours[1].debits,
+            fetchFavours[2].forgivenFavours
+          )
+        );
         setCreditFavours(fetchFavours[0].credits);
         setDebitFavours(fetchFavours[1].debits);
         setForgivenFavours(fetchFavours[2].forgivenFavours);
-             
-        if (activeButton !== null && activeButton !== undefined && activeButton === "all") {
-          setFavours(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
-          setSearchResult(fetchFavours[0].credits.concat(fetchFavours[1].debits,fetchFavours[2].forgivenFavours));
-        } else if (activeButton !== null && activeButton !== undefined && activeButton === "credit") {
+
+        if (
+          activeButton !== null &&
+          activeButton !== undefined &&
+          activeButton === "all"
+        ) {
+          setFavours(
+            fetchFavours[0].credits.concat(
+              fetchFavours[1].debits,
+              fetchFavours[2].forgivenFavours
+            )
+          );
+          setSearchResult(
+            fetchFavours[0].credits.concat(
+              fetchFavours[1].debits,
+              fetchFavours[2].forgivenFavours
+            )
+          );
+        } else if (
+          activeButton !== null &&
+          activeButton !== undefined &&
+          activeButton === "credit"
+        ) {
           setFavours(fetchFavours[0].credits);
           setSearchResult(fetchFavours[0].credits);
-        } else if (activeButton !== null && activeButton !== undefined && activeButton === "debit") {
+        } else if (
+          activeButton !== null &&
+          activeButton !== undefined &&
+          activeButton === "debit"
+        ) {
           setFavours(fetchFavours[1].debits);
           setSearchResult(fetchFavours[1].debits);
-        }  else if (activeButton !== null && activeButton !== undefined && activeButton === "forgiven") {
+        } else if (
+          activeButton !== null &&
+          activeButton !== undefined &&
+          activeButton === "forgiven"
+        ) {
           setFavours(fetchFavours[2].forgivenFavours);
           setSearchResult(fetchFavours[2].forgivenFavours);
         }
@@ -188,49 +223,54 @@ const ManageFavours = (props) => {
     }
 
     fetchFavours();
-  }, [resetFavourList,currentPage]);
+  }, [resetFavourList, currentPage]);
 
   const classes = useStyles();
 
-  
-/*************************************************************************************************
- * Summary: Handles the keyword search for the Favours. Upon start loading state variable set to
- * true to activate the spinner, upon completion the searchResult state variable list is updated
- * with the values that were matched in the filtering process.
- *************************************************************************************************/
-const handleSearch = input => {
-  setLoading(true);
-  setSearchBarPlaceHolder(input);
+  /*************************************************************************************************
+   * Summary: Handles the keyword search for the Favours. Upon start loading state variable set to
+   * true to activate the spinner, upon completion the searchResult state variable list is updated
+   * with the values that were matched in the filtering process.
+   *************************************************************************************************/
+  const handleSearch = input => {
+    setLoading(true);
+    setSearchBarPlaceHolder(input);
 
-  let newData = [];
-  let tempData = [];
+    let newData = [];
+    let tempData = [];
 
-  favours.map(item => {
-    tempData = Object.entries(item);
+    favours.map(item => {
+      tempData = Object.entries(item);
 
-    // Check favours array
-    let checkFavour;
-    let tempVar = null;
-    
-    tempData.map(i => {
-      tempVar = i[1].toString();
-      if (tempVar.toLowerCase().match(input.toLowerCase())) {
-        checkFavour = true;
+      // Check favours array
+      let checkFavour;
+      let tempVar = null;
+
+      tempData.map(i => {
+        tempVar = i[1].toString();
+        if (tempVar.toLowerCase().match(input.toLowerCase())) {
+          checkFavour = true;
+        }
+      });
+      if (
+        item.description
+          .toString()
+          .toLowerCase()
+          .match(input.toLowerCase()) ||
+        item.favourOwed
+          .toString()
+          .toLowerCase()
+          .match(input.toLowerCase()) ||
+        checkFavour
+      ) {
+        newData.push(item);
       }
+      return 0;
     });
-    if (
-      item.description.toString().toLowerCase().match(input.toLowerCase()) ||
-      item.favourOwed.toString().toLowerCase().match(input.toLowerCase()) ||
-      checkFavour
-    ) {
-      newData.push(item);
-    }
-    return 0;
-  });
 
-  setLoading(false);
-  setSearchResult(newData);
-};
+    setLoading(false);
+    setSearchResult(newData);
+  };
 
   // Sets the page parameters to be passed to the pagination component
   const indexOfLastFavour = currentPage * favoursPerPage;
@@ -239,65 +279,65 @@ const handleSearch = input => {
   // As the user clicks through to a new page, update the state pageNumber
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
-/*************************************************************************************************
- * Summary: Handles user interaction with the button group displaying the Favour Categories, onClick 
- * it will update the activeButton and currentPage state variables, but will call a separate function
- * to handle updating the favours list state variable.
- *************************************************************************************************/
-const handleFavourCategoryChange = (pageView) => {
-  if (pageView === "all") {
-    updateActiveFavours("all"); 
-    setActiveButton("all"); 
-    setCurrentPage(1);      
-  } else if (pageView === "debit") {
-    updateActiveFavours("debit"); 
-    setActiveButton("debit"); 
-    setCurrentPage(1);
-  } else if (pageView === "credit") {
-    updateActiveFavours("credit"); 
-    setActiveButton("credit"); 
-    setCurrentPage(1);
-  } else if (pageView === "forgiven") {
-    updateActiveFavours("forgiven"); 
-    setActiveButton("forgiven"); 
-    setCurrentPage(1);
-  }
-}
+  /*************************************************************************************************
+   * Summary: Handles user interaction with the button group displaying the Favour Categories, onClick
+   * it will update the activeButton and currentPage state variables, but will call a separate function
+   * to handle updating the favours list state variable.
+   *************************************************************************************************/
+  const handleFavourCategoryChange = pageView => {
+    if (pageView === "all") {
+      updateActiveFavours("all");
+      setActiveButton("all");
+      setCurrentPage(1);
+    } else if (pageView === "debit") {
+      updateActiveFavours("debit");
+      setActiveButton("debit");
+      setCurrentPage(1);
+    } else if (pageView === "credit") {
+      updateActiveFavours("credit");
+      setActiveButton("credit");
+      setCurrentPage(1);
+    } else if (pageView === "forgiven") {
+      updateActiveFavours("forgiven");
+      setActiveButton("forgiven");
+      setCurrentPage(1);
+    }
+  };
 
-/*************************************************************************************************
- * Summary: Is called by the function above, updates and sets the favours and searchResult state
- * variables to filter the records displayed on screen, and what can be searched by the user
- *************************************************************************************************/
-const updateActiveFavours = async sliceType => {
-  if (sliceType === "all") {
-    setFavours(allFavours);
-    setSearchResult(allFavours);
-  } else if (sliceType === "credit") {
-    setFavours(creditFavours);
-    setSearchResult(creditFavours);
-  } else if (sliceType === "debit") {
-    setFavours(debitFavours);
-    setSearchResult(debitFavours);
-  } else if (sliceType === "forgiven") {
-    setFavours(forgivenFavours);
-    setSearchResult(forgivenFavours);
-  }
-}
+  /*************************************************************************************************
+   * Summary: Is called by the function above, updates and sets the favours and searchResult state
+   * variables to filter the records displayed on screen, and what can be searched by the user
+   *************************************************************************************************/
+  const updateActiveFavours = async sliceType => {
+    if (sliceType === "all") {
+      setFavours(allFavours);
+      setSearchResult(allFavours);
+    } else if (sliceType === "credit") {
+      setFavours(creditFavours);
+      setSearchResult(creditFavours);
+    } else if (sliceType === "debit") {
+      setFavours(debitFavours);
+      setSearchResult(debitFavours);
+    } else if (sliceType === "forgiven") {
+      setFavours(forgivenFavours);
+      setSearchResult(forgivenFavours);
+    }
+  };
 
-/*************************************************************************************************
- * Summary: Triggers a re-render on the favour list data, to account for any additions, 
- * updates, deletions made. resetFavourList is tied to the useEffect hook.
- *************************************************************************************************/
+  /*************************************************************************************************
+   * Summary: Triggers a re-render on the favour list data, to account for any additions,
+   * updates, deletions made. resetFavourList is tied to the useEffect hook.
+   *************************************************************************************************/
   const TriggerResetFavourList = () => {
-    if ( resetFavourList === true ) {
+    if (resetFavourList === true) {
       setResetFavourList(false);
     } else if (resetFavourList === false) {
       setResetFavourList(true);
     } else {
       // If undefined or other cases
-      setResetFavourList(true)
-    }    
-  }
+      setResetFavourList(true);
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -311,73 +351,115 @@ const updateActiveFavours = async sliceType => {
                   Your favours <FontAwesomeIcon icon={faUser} />
                 </h2>
                 <div className={classes.headingButtonsContainer}>
-                <div className={classes.searchBar}>
-                  <SearchBar onSearch={handleSearch}
-                              placeHolder={searchBarPlaceHolder}/>
-                </div>
-                <div className={classes.createbutton}>
-                  <NewFavour TriggerResetFavourList={TriggerResetFavourList}/>
-                </div>
-                <div className={classes.createbutton}>
-                  <NewPublicRequest />
-                </div>
-                <div className={classes.createbutton}>
-                  <PartyDetection userData={userData} />
-                </div>                
+                  <div className={classes.searchBar}>
+                    <SearchBar
+                      onSearch={handleSearch}
+                      placeHolder={searchBarPlaceHolder}
+                    />
+                  </div>
+                  <div className={classes.createbutton}>
+                    <NewFavour
+                      TriggerResetFavourList={TriggerResetFavourList}
+                    />
+                  </div>
+                  <div className={classes.createbutton}>
+                    <NewPublicRequest />
+                  </div>
+                  <div className={classes.createbutton}>
+                    <PartyDetection userData={userData} />
+                  </div>
                 </div>
                 <div className={classes.btnBox}>
                   <div className={classes.listlinks}>
-                      <ButtonGroup className={classes.buttons}>
-                        <Button 
-                          onClick={() => { handleFavourCategoryChange("all") }} 
-                          className={classes.actionbutton} 
-                          style={{backgroundColor: activeButton === "all"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
-                                  color: activeButton === "all"? "black" : "white"}}
-                        >All</Button>
-                        <Button 
-                          onClick={() => { handleFavourCategoryChange("debit") }}
-                          className={classes.actionbutton}
-                          style={{backgroundColor: activeButton === "debit"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
-                                  color: activeButton === "debit"? "black" : "white"}}
-                        >Debit <FontAwesomeIcon 
-                                    className={classes.filterIcon_debit} 
-                                    icon={faThumbsUp} 
-                                />
-                        </Button>
-                        <Button 
-                          onClick={() => { handleFavourCategoryChange("credit") }} 
-                          className={classes.actionbutton}
-                          style={{backgroundColor: activeButton === "credit"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
-                                  color: activeButton === "credit"? "black" : "white"}}
-                        >Credit 
-                          <FontAwesomeIcon 
-                            className={classes.filterIcon_credit} 
-                            icon={faThumbsDown} 
-                          />
-                        </Button>
-                        <Button 
-                          onClick={() => { handleFavourCategoryChange("forgiven") }} 
-                          className={classes.actionbutton}
-                          style={{backgroundColor: activeButton === "forgiven"? "rgba(0, 0, 0, 0.04)" : "#1B9AAA",
-                                  color: activeButton === "forgiven"? "black" : "white"}}
-                        >Forgiven 
-                          <FontAwesomeIcon 
-                            className={classes.filterIcon_forgiven} 
-                            icon={faPrayingHands} 
-                          />
-                        </Button>
-                      </ButtonGroup>
+                    <ButtonGroup className={classes.buttons}>
+                      <Button
+                        onClick={() => {
+                          handleFavourCategoryChange("all");
+                        }}
+                        className={classes.actionbutton}
+                        style={{
+                          backgroundColor:
+                            activeButton === "all"
+                              ? "rgba(0, 0, 0, 0.04)"
+                              : "#1B9AAA",
+                          color: activeButton === "all" ? "black" : "white"
+                        }}
+                      >
+                        All
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleFavourCategoryChange("debit");
+                        }}
+                        className={classes.actionbutton}
+                        style={{
+                          backgroundColor:
+                            activeButton === "debit"
+                              ? "rgba(0, 0, 0, 0.04)"
+                              : "#1B9AAA",
+                          color: activeButton === "debit" ? "black" : "white"
+                        }}
+                      >
+                        Debit{" "}
+                        <FontAwesomeIcon
+                          className={classes.filterIcon_debit}
+                          icon={faThumbsUp}
+                        />
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleFavourCategoryChange("credit");
+                        }}
+                        className={classes.actionbutton}
+                        style={{
+                          backgroundColor:
+                            activeButton === "credit"
+                              ? "rgba(0, 0, 0, 0.04)"
+                              : "#1B9AAA",
+                          color: activeButton === "credit" ? "black" : "white"
+                        }}
+                      >
+                        Credit
+                        <FontAwesomeIcon
+                          className={classes.filterIcon_credit}
+                          icon={faThumbsDown}
+                        />
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleFavourCategoryChange("forgiven");
+                        }}
+                        className={classes.actionbutton}
+                        style={{
+                          backgroundColor:
+                            activeButton === "forgiven"
+                              ? "rgba(0, 0, 0, 0.04)"
+                              : "#1B9AAA",
+                          color: activeButton === "forgiven" ? "black" : "white"
+                        }}
+                      >
+                        Forgiven
+                        <FontAwesomeIcon
+                          className={classes.filterIcon_forgiven}
+                          icon={faPrayingHands}
+                        />
+                      </Button>
+                    </ButtonGroup>
                   </div>
                 </div>
               </div>
-              <div className="cards_container">              
+              <div className="cards_container">
                 <Fragment>
-                  {loading? 
-                  <center>
-                      <img src={LoadingGif} width="100px" height="100px" alt="Loading..."/>
-                  </center>
-                  :
-                  (
+                  {loading ? (
+                    <center>
+                      <img
+                        src={LoadingGif}
+                        width="100px"
+                        height="100px"
+                        alt="Loading..."
+                      />
+                    </center>
+                  ) : (
                     searchResult
                       .slice(indexOfFirstFavour, indexOfLastFavour)
                       .map((data, key) => {
@@ -392,25 +474,46 @@ const updateActiveFavours = async sliceType => {
                                   className="card_left"
                                   key={key + "-cardDescription"}
                                 >
-                                  Favour Type:&nbsp;<strong>{data.favourOwed}</strong>&nbsp;|&nbsp;Status:&nbsp;<strong>{data.is_completed === true? "Paid": "Unpaid"}</strong>&nbsp;|&nbsp;Debt Forgiven:&nbsp;<strong>{data.debt_forgiven === true? "Yes": "No"}</strong>&nbsp;|&nbsp;Debit or Credit:&nbsp;<strong>{userData.user._id === data.owingUser ? "Debit": "Credit"}</strong>&nbsp;
+                                  Favour Type:&nbsp;
+                                  <strong>{data.favourOwed}</strong>
+                                  &nbsp;|&nbsp;Status:&nbsp;
+                                  <strong>
+                                    {data.is_completed === true
+                                      ? "Paid"
+                                      : "Unpaid"}
+                                  </strong>
+                                  &nbsp;|&nbsp;Debt Forgiven:&nbsp;
+                                  <strong>
+                                    {data.debt_forgiven === true ? "Yes" : "No"}
+                                  </strong>
+                                  &nbsp;|&nbsp;Debit or Credit:&nbsp;
+                                  <strong>
+                                    {userData.user._id === data.owingUser
+                                      ? "Debit"
+                                      : "Credit"}
+                                  </strong>
+                                  &nbsp;
                                 </div>
                                 <div className="btn" key={key + "-btnDiv"}>
                                   <div className={classes.modal}>
                                     <FavourModal
                                       FavourId={data._id}
                                       FavourTitle={data.favourOwed}
-                                      Requester={data.requestUser}                                      
+                                      Requester={data.requestUser}
                                       FavourDescription={data.description}
                                       FavourDate={data.create_time}
                                       Location={location.pathname}
-                                      FavourImageKey={data.proofs.uploadImageUrl}
+                                      FavourImageKey={
+                                        data.proofs.uploadImageUrl
+                                      }
                                       Complete={data.is_completed}
-                                      OwingUser={data.owingUser}     
-                                      TriggerResetFavourList={TriggerResetFavourList}                                 
+                                      OwingUser={data.owingUser}
+                                      TriggerResetFavourList={
+                                        TriggerResetFavourList
+                                      }
                                     />
                                   </div>
-                                  <div className={classes.button}>
-                                  </div>
+                                  <div className={classes.button}></div>
                                 </div>
                               </div>
                             </CardContent>
@@ -423,10 +526,8 @@ const updateActiveFavours = async sliceType => {
               {searchResult ? (
                 <Pagination
                   favoursPerPage={favoursPerPage}
-                  totalFavours={
-                    searchResult ? searchResult.length : 0
-                  }
-                  paginate={paginate}  
+                  totalFavours={searchResult ? searchResult.length : 0}
+                  paginate={paginate}
                 />
               ) : (
                 ""
@@ -437,6 +538,6 @@ const updateActiveFavours = async sliceType => {
       </div>
     </div>
   );
-}
+};
 
-export default ManageFavours; 
+export default ManageFavours;

@@ -28,7 +28,7 @@ import GroupDropDown from "../userGroupDropDown/index";
 import { NavLink } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Cookies from "js-cookie";
-import PaymentIcon from '@material-ui/icons/Payment';
+import PaymentIcon from "@material-ui/icons/Payment";
 
 const drawerWidth = 180;
 
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap",
+    whiteSpace: "nowrap"
   },
   drawerOpen: {
     color: "white",
@@ -183,7 +183,7 @@ const getTitle = location => {
     case "/manage_favours":
       return "> Manage Favours";
     case "/repay_selected_favours":
-      return "> Multi Repay > Repay Selected Favours"
+      return "> Multi Repay > Repay Selected Favours";
     case "/profile":
       return "> My Profile";
     case "/leaderboard":
@@ -195,19 +195,19 @@ const getTitle = location => {
     case "/settings":
       return "> User Settings";
     case "/multi_repay":
-      return "> Multi Repay";      
+      return "> Multi Repay";
     case "/home":
       return "";
   }
 };
 
 /**********************************************************************************************
-* Summary: NavMenu takes props to track the drawerOpen status while navigating between pages
-* if the drawer is open as a new page link is clicked, the drawer will remain open on the new
-* page load.
-***********************************************************************************************/
+ * Summary: NavMenu takes props to track the drawerOpen status while navigating between pages
+ * if the drawer is open as a new page link is clicked, the drawer will remain open on the new
+ * page load.
+ ***********************************************************************************************/
 
-const NavMenu = (props) => {
+const NavMenu = props => {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -217,17 +217,16 @@ const NavMenu = (props) => {
   const isDrawerUndefined = () => {
     try {
       return props.props.location.state.setOpen;
-      
     } catch (err) {
       if (err) {
         return false;
       }
     }
-  };  
+  };
 
   const [open, setOpen] = useState(isDrawerUndefined);
   const location = useLocation();
-  
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -272,7 +271,7 @@ const NavMenu = (props) => {
               Favours
             </Link>{" "}
             {getTitle(location.pathname)}
-          </Typography>      
+          </Typography>
           <div>
             {userData.user ? (
               <div className={classes.userName}>
@@ -350,7 +349,11 @@ const NavMenu = (props) => {
                 ></EmojiPeopleIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText className={classes.listItemText} disableTypography={true} primary="Public Request" />
+            <ListItemText
+              className={classes.listItemText}
+              disableTypography={true}
+              primary="Public Request"
+            />
           </ListItem>
         ) : (
           <Link
@@ -369,7 +372,11 @@ const NavMenu = (props) => {
                   color="action"
                 ></EmojiPeopleIcon>
               </ListItemIcon>
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Public Request" />
+              <ListItemText
+                className={classes.listItemText}
+                disableTypography={true}
+                primary="Public Request"
+              />
             </ListItem>
           </Link>
         )}
@@ -383,7 +390,9 @@ const NavMenu = (props) => {
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/manage_favours")}
           >
-            <Link to={{ pathname: "/manage_favours", state: { setOpen: open } }}>
+            <Link
+              to={{ pathname: "/manage_favours", state: { setOpen: open } }}
+            >
               <ListItemIcon>
                 <ListAltIcon
                   className={classes.icons}
@@ -392,30 +401,39 @@ const NavMenu = (props) => {
                 ></ListAltIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText className={classes.listItemText} disableTypography={true} primary="Manage Favours" />
+            <ListItemText
+              className={classes.listItemText}
+              disableTypography={true}
+              primary="Manage Favours"
+            />
           </ListItem>
         ) : (
           <Link
             to={{ pathname: "/manage_favours", state: { setOpen: open } }}
-            style={{ textDecoration: "none", color: "white" }}            
+            style={{ textDecoration: "none", color: "white" }}
           >
-            <ListItem className={classes.menuItem}
-                      button 
-                      key="Manage Favours"
-                      onClick={() => history.push("/manage_favours")}
-             >
+            <ListItem
+              className={classes.menuItem}
+              button
+              key="Manage Favours"
+              onClick={() => history.push("/manage_favours")}
+            >
               <ListItemIcon>
                 <ListAltIcon
                   className={classes.icons}
                   color="action"
                 ></ListAltIcon>
               </ListItemIcon>
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Manage Favours" />
+              <ListItemText
+                className={classes.listItemText}
+                disableTypography={true}
+                primary="Manage Favours"
+              />
             </ListItem>
           </Link>
         )}
 
-      {userData.user === undefined ? (
+        {userData.user === undefined ? (
           ""
         ) : location.pathname === "/multi_repay" ? (
           <ListItem
@@ -425,7 +443,12 @@ const NavMenu = (props) => {
             style={{ color: "#292F36", backgroundColor: "white" }}
             onClick={() => history.push("/multi_repay")}
           >
-            <Link to={{ pathname: "/multi_repay", state: { setOpen: open, userData: userData }}}>
+            <Link
+              to={{
+                pathname: "/multi_repay",
+                state: { setOpen: open, userData: userData }
+              }}
+            >
               <ListItemIcon>
                 <PaymentIcon
                   className={classes.icons}
@@ -434,25 +457,37 @@ const NavMenu = (props) => {
                 ></PaymentIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText className={classes.listItemText} disableTypography={true} primary="Multi Repay" />
+            <ListItemText
+              className={classes.listItemText}
+              disableTypography={true}
+              primary="Multi Repay"
+            />
           </ListItem>
         ) : (
           <Link
-            to={{ pathname: "/multi_repay", state: { setOpen: open, userData: userData } }} 
-            style={{ textDecoration: "none", color: "white" }}  
+            to={{
+              pathname: "/multi_repay",
+              state: { setOpen: open, userData: userData }
+            }}
+            style={{ textDecoration: "none", color: "white" }}
           >
-            <ListItem className={classes.menuItem}
-                      button 
-                      key="Multi Repay"
-                      onClick={() => history.push("/multi_repay")}
-             >
+            <ListItem
+              className={classes.menuItem}
+              button
+              key="Multi Repay"
+              onClick={() => history.push("/multi_repay")}
+            >
               <ListItemIcon>
                 <PaymentIcon
                   className={classes.icons}
                   color="action"
                 ></PaymentIcon>
               </ListItemIcon>
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Multi Repay" />
+              <ListItemText
+                className={classes.listItemText}
+                disableTypography={true}
+                primary="Multi Repay"
+              />
             </ListItem>
           </Link>
         )}
@@ -475,18 +510,22 @@ const NavMenu = (props) => {
                 ></AccountBoxIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText className={classes.listItemText} disableTypography={true} primary="Profile" />
+            <ListItemText
+              className={classes.listItemText}
+              disableTypography={true}
+              primary="Profile"
+            />
           </ListItem>
         ) : (
           <Link
             to={{ pathname: "/profile", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            <ListItem 
-                    className={classes.menuItem}
-                    button 
-                    key="Profile"
-                    onClick={() => history.push("/profile")}
+            <ListItem
+              className={classes.menuItem}
+              button
+              key="Profile"
+              onClick={() => history.push("/profile")}
             >
               <ListItemIcon>
                 <AccountBoxIcon
@@ -494,7 +533,11 @@ const NavMenu = (props) => {
                   color="action"
                 ></AccountBoxIcon>
               </ListItemIcon>
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Profile" />
+              <ListItemText
+                className={classes.listItemText}
+                disableTypography={true}
+                primary="Profile"
+              />
             </ListItem>
           </Link>
         )}
@@ -515,18 +558,22 @@ const NavMenu = (props) => {
                 ></LocalActivityIcon>
               </ListItemIcon>
             </Link>
-            <ListItemText className={classes.listItemText} disableTypography={true} primary="Leaderboard" />
+            <ListItemText
+              className={classes.listItemText}
+              disableTypography={true}
+              primary="Leaderboard"
+            />
           </ListItem>
         ) : (
           <Link
             to={{ pathname: "/leaderboard", state: { setOpen: open } }}
             style={{ textDecoration: "none", color: "white" }}
           >
-            <ListItem 
-                  className={classes.menuItem}
-                  button
-                  key="Leaderboard"
-                  onClick={() => history.push("/leaderboard")}
+            <ListItem
+              className={classes.menuItem}
+              button
+              key="Leaderboard"
+              onClick={() => history.push("/leaderboard")}
             >
               <ListItemIcon>
                 <LocalActivityIcon
@@ -534,7 +581,11 @@ const NavMenu = (props) => {
                   color="action"
                 ></LocalActivityIcon>
               </ListItemIcon>
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="Leaderboard" />
+              <ListItemText
+                className={classes.listItemText}
+                disableTypography={true}
+                primary="Leaderboard"
+              />
             </ListItem>
           </Link>
         )}
@@ -559,7 +610,11 @@ const NavMenu = (props) => {
                 ></SettingsIcon>
               </ListItemIcon>
 
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="User Settings" />
+              <ListItemText
+                className={classes.listItemText}
+                disableTypography={true}
+                primary="User Settings"
+              />
             </ListItem>
           </Link>
         ) : (
@@ -575,13 +630,17 @@ const NavMenu = (props) => {
                 ></SettingsIcon>
               </ListItemIcon>
 
-              <ListItemText className={classes.listItemText} disableTypography={true} primary="User Settings" />
+              <ListItemText
+                className={classes.listItemText}
+                disableTypography={true}
+                primary="User Settings"
+              />
             </ListItem>
           </Link>
         )}
       </Drawer>
     </div>
   );
-}
+};
 
 export default NavMenu;

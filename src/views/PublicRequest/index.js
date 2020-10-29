@@ -16,7 +16,6 @@ import {
   faSprayCan
 } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
-import * as APIServices from "../../api/TestAPI";
 import * as FavourAPI from "../../api/FavourAPI";
 import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 import LoadingGif from "../../assets/images/loading.gif";

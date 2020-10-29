@@ -17,7 +17,6 @@ import CancelPresentationIcon from "@material-ui/icons/CancelPresentation";
 import AppBar from "@material-ui/core/AppBar";
 import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import * as APIServices from "../../api/TestAPI";
 import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 import SaveIcon from "@material-ui/icons/Save";
 import { ToastContainer, toast } from "react-toastify";
@@ -204,7 +203,6 @@ const NewPublicRequestForm = () => {
       // console.log(response)
       let userId = userData.user._id;
       if (response.newPublicRequest) {
-        
       }
       let action = `Created new Public Request ${response.newPublicRequest.title} - ${response.newPublicRequest.rewards.length} Reward(s)`;
       let newActivityData = {

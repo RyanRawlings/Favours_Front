@@ -13,7 +13,6 @@ import AccountBox from "@material-ui/icons/AccountBox";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import HeroImage from "../../assets/images/uts-hero-image.png";
-//import * as APIServices from "../../api/TestAPI";
 import * as UserAPI from "../../api/UserAPI";
 import Cookie from "js-cookie";
 import NavMenu from "../../components/navMenu/index";

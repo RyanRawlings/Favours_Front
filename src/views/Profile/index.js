@@ -11,7 +11,7 @@ import * as UserAPI from "../../api/UserAPI";
 import UserContext from "../../context/UserContext";
 import DateDiff from "date-diff";
 import Pagination from "../../components/pagination/index";
-import SortObjectsArray from 'sort-objects-array';
+import SortObjectsArray from "sort-objects-array";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   personalDetails: {
-    marginTop: "6%",
+    marginTop: "6%"
   },
   saveButton: {
     fontSize: "10px",
@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Profile = (props) => {
+const Profile = props => {
   const uploadedImage = React.useRef(null);
   const imageUploader = React.useRef(null);
   const classes = useStyles();
@@ -98,45 +98,51 @@ const Profile = (props) => {
   const { userData } = useContext(UserContext);
   const [fileList, setFileList] = useState([]);
   const [user, setUser] = useState([]);
-  const [partyDetectionEmails,setPartyDetectionEmails] = useState([]);
+  const [partyDetectionEmails, setPartyDetectionEmails] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [userActivityPerPage, setUserActivityPerPage] = useState(5);
   const [imageUploaded, setImageUploaded] = useState(null);
   const [imageUploadComponent, setImageUploadComponent] = useState(null);
 
-/*************************************************************************************************
-* Summary: Returns the extended user details for the current logged in user. The data is 
-* re-rendered if the user uploads a new profile image, so that the s3 url can be inserted as the
-* source for the image tag.
-*************************************************************************************************/
+  /*************************************************************************************************
+   * Summary: Returns the extended user details for the current logged in user. The data is
+   * re-rendered if the user uploads a new profile image, so that the s3 url can be inserted as the
+   * source for the image tag.
+   *************************************************************************************************/
   useEffect(() => {
     async function getUserData() {
-      const user = await UserAPI.getUser({ _id: userData.user._id});
+      const user = await UserAPI.getUser({ _id: userData.user._id });
 
       if (user) {
         setUser(user);
         setImageUploaded(false);
-        setImageUploadComponent((<ImageDragAndDrop addFile={addFile}/>));
+        setImageUploadComponent(<ImageDragAndDrop addFile={addFile} />);
       }
     }
 
     getUserData();
-  }, [imageUploaded] );
+  }, [imageUploaded]);
 
-/*************************************************************************************************
-* Summary: Returns the user activity details. Date.diff performed to determine the recency of the
-* activity. Re-render performed as the user paginates through their activity, to recalculate the
-* time value.
-*************************************************************************************************/  
+  /*************************************************************************************************
+   * Summary: Returns the user activity details. Date.diff performed to determine the recency of the
+   * activity. Re-render performed as the user paginates through their activity, to recalculate the
+   * time value.
+   *************************************************************************************************/
+
   useEffect(() => {
     async function getUserActions() {
-      const userActions = await UserAPI.getUserActivity({ _id: userData.user._id});
+      const userActions = await UserAPI.getUserActivity({
+        _id: userData.user._id
+      });
 
       for (let i = 0; i < userActions.length; i++) {
-        let delta = Date.diff(new Date(),new Date(userActions[i].time)).seconds()
-        userActions[i]['delta'] = delta;
-        console.log(delta)
+        let delta = Date.diff(
+          new Date(),
+          new Date(userActions[i].time)
+        ).seconds();
+        userActions[i]["delta"] = delta;
+        console.log(delta);
 
         let days = Math.floor(delta / 86400);
 
@@ -145,11 +151,13 @@ const Profile = (props) => {
         let minutes = Math.floor(delta / 60) % 60;
 
         if (days && hours && minutes) {
-          userActions[i]["recency"] = `${days} days, ${hours} hours and ${minutes} minutes ago`;
-
+          userActions[i][
+            "recency"
+          ] = `${days} days, ${hours} hours and ${minutes} minutes ago`;
         } else if (!days && hours && minutes) {
-          userActions[i]["recency"] = `${hours} hours and ${minutes} minutes ago`;
-
+          userActions[i][
+            "recency"
+          ] = `${hours} hours and ${minutes} minutes ago`;
         } else if (!days && !hours && minutes) {
           userActions[i]["recency"] = `${minutes} minutes ago`;
         }
@@ -159,9 +167,9 @@ const Profile = (props) => {
         let sortedUserActions = SortObjectsArray(userActions, "delta", "asc");
         setUserActivity(sortedUserActions);
       } else {
-        userActions.push({action: "No activity to show"});
+        userActions.push({ action: "No activity to show" });
         setUserActivity(userActions);
-      }    
+      }
     }
 
     getUserActions();
@@ -169,12 +177,12 @@ const Profile = (props) => {
 
   //Get current activity
   const indexOfLastUserActivity = currentPage * userActivityPerPage;
-  const indexOfFirstUserActivity = indexOfLastUserActivity - userActivityPerPage;
+  const indexOfFirstUserActivity =
+    indexOfLastUserActivity - userActivityPerPage;
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   const handleSubmit = async () => {
-
     if (fileList.length > 1) {
       toast.error("You have tried to upload more than one image...");
       return console.log("More than one file added...");
@@ -184,32 +192,34 @@ const Profile = (props) => {
     }
 
     let imageForm = new FormData();
-    imageForm.append('image', fileList[0][0]);
+    imageForm.append("image", fileList[0][0]);
 
-    const uploadToS3 = await axios.post("http://localhost:4000/api/image/upload", imageForm)
-            .then( function(response) {
-                uploadToMongoDB(response);                
-            })
-            .catch( function (error) {
-                toast.error(error);
-            });
-        
-  } 
+    const uploadToS3 = await axios
+      .post("/api/image/upload", imageForm)
+      .then(function(response) {
+        uploadToMongoDB(response);
+      })
+      .catch(function(error) {
+        toast.error(error);
+      });
+  };
 
-  const uploadToMongoDB = async (response) => {
+  const uploadToMongoDB = async response => {
     let newProfileImageData = {
       _id: userData.user._id,
-      imageUrl: response.data.locationArray[0],
-    }
+      imageUrl: response.data.locationArray[0]
+    };
 
-    const storeProfileImageData = await ImageAPI.storeProfileImageData(newProfileImageData);
+    const storeProfileImageData = await ImageAPI.storeProfileImageData(
+      newProfileImageData
+    );
     if (storeProfileImageData) {
-      toast.success("Successfully uploaded image");   
+      toast.success("Successfully uploaded image");
       await delay(3000);
       setImageUploaded(true);
       setImageUploadComponent(null);
-  }
-  }
+    }
+  };
 
   const addFile = data => {
     let tempFileList = fileList;
@@ -224,38 +234,46 @@ const Profile = (props) => {
         <NavMenu props={props} />
         <div className="container_right">
           <Paper className={classes.container}>
-          <ToastContainer
-            position="top-center"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
+            <ToastContainer
+              position="top-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
             <div className="container_right_bottom">
               <Card className={classes.profileCard}>
                 <CardContent className={classes.profileCardContent}>
                   <center>
-                      <Avatar className={classes.avatar}>
-                      {
-                        user?
-                          <img src={user.profileImageUrl} width="230px" height="230px" alt="profile image" />
-                          : ""
-                      }
-                      </Avatar>
+                    <Avatar className={classes.avatar}>
+                      {user ? (
+                        <img
+                          src={user.profileImageUrl}
+                          width="230px"
+                          height="230px"
+                          alt="profile image"
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </Avatar>
                     <div className={classes.actionButtons}>
-                    {imageUploadComponent}{/* <ImageDragAndDrop addFile={addFile}/> */}
-                    <Button
+                      {imageUploadComponent}
+                      {/* <ImageDragAndDrop addFile={addFile}/> */}
+                      <Button
                         variant="contained"
                         color="primary"
                         className={classes.saveButton}
                         onClick={() => handleSubmit()}
-                    >Save image to account</Button>
+                      >
+                        Save image to account
+                      </Button>
                     </div>
-                    </center>
+                  </center>
                   <table className={classes.personalDetails}>
                     <tbody>
                       <tr>
@@ -268,50 +286,80 @@ const Profile = (props) => {
                         <td>Email: {user.email}</td>
                       </tr>
                       <tr>
-                        <td>Created Date: {user.create_time? new Date(user.create_time).getDate() + "/" + new Date(user.create_time).getMonth() + "/" + new Date(user.create_time).getFullYear(): ""}</td>
+                        <td>
+                          Created Date:{" "}
+                          {user.create_time
+                            ? new Date(user.create_time).getDate() +
+                              "/" +
+                              new Date(user.create_time).getMonth() +
+                              "/" +
+                              new Date(user.create_time).getFullYear()
+                            : ""}
+                        </td>
                       </tr>
                       <tr>
-                        <td>Last Update: {user.last_update? new Date(user.last_update).getDate() + "/" + new Date(user.last_update).getMonth() + "/" + new Date(user.last_update).getFullYear(): ""}</td>
+                        <td>
+                          Last Update:{" "}
+                          {user.last_update
+                            ? new Date(user.last_update).getDate() +
+                              "/" +
+                              new Date(user.last_update).getMonth() +
+                              "/" +
+                              new Date(user.last_update).getFullYear()
+                            : ""}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                   <center>
-                    <PartyDetection userData={userData}/>
+                    <PartyDetection userData={userData} />
                   </center>
                 </CardContent>
               </Card>
               <Card className={classes.personalDetailsCard}>
-                  <CardContent className={classes.personalDetailsCardContent}>Recent Activity
-              <Fragment>
-              {userActivity?
-                userActivity
-                .slice(indexOfFirstUserActivity, indexOfLastUserActivity)
-                .map((item, index) => {
-                  return (
-                    <Card className={classes.cardItems}key={index + "card"}>
-                    <CardContent key={index + "cardContent"}>{item.action} <span style={{fontSize: "10px"}}>{item.recency}</span></CardContent>
-                  </Card>
-                )}) : ""}
-                </Fragment>
+                <CardContent className={classes.personalDetailsCardContent}>
+                  Recent Activity
+                  <Fragment>
+                    {userActivity
+                      ? userActivity
+                          .slice(
+                            indexOfFirstUserActivity,
+                            indexOfLastUserActivity
+                          )
+                          .map((item, index) => {
+                            return (
+                              <Card
+                                className={classes.cardItems}
+                                key={index + "card"}
+                              >
+                                <CardContent key={index + "cardContent"}>
+                                  {item.action}{" "}
+                                  <span style={{ fontSize: "10px" }}>
+                                    {item.recency}
+                                  </span>
+                                </CardContent>
+                              </Card>
+                            );
+                          })
+                      : ""}
+                  </Fragment>
                 </CardContent>
                 {userActivity ? (
-                <Pagination
-                  favoursPerPage={userActivityPerPage}
-                  totalFavours={
-                    userActivity ? userActivity.length : 0
-                  }
-                  paginate={paginate}
-                />
-              ) : (
-                ""
-              )}
-                </Card>
+                  <Pagination
+                    favoursPerPage={userActivityPerPage}
+                    totalFavours={userActivity ? userActivity.length : 0}
+                    paginate={paginate}
+                  />
+                ) : (
+                  ""
+                )}
+              </Card>
             </div>
           </Paper>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Profile;

@@ -13,7 +13,6 @@ import CancelPresentationIcon from "@material-ui/icons/CancelPresentation";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import NewRewardForm from "../rewards/NewRewardForm";
 import Reward from "../rewards/index";
-import * as APIServices from "../../api/TestAPI";
 import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 import UserContext from "../../context/UserContext";
 import ClaimModal from "../claimModal/index";

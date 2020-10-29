@@ -10,7 +10,6 @@ import { ToastContainer, toast } from "react-toastify";
 import TextField from "@material-ui/core/TextField";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 import axios from "axios";
-import * as APIServices from "../../api/TestAPI";
 import * as ImageAPI from "../../api/ImageAPI";
 import { delay } from "q";
 import * as UserAPI from "../../api/UserAPI";
@@ -122,7 +121,7 @@ const ClaimModal = ({
     }
 
     const uploadToS3 = await axios
-      .post("http://localhost:4000/api/image/upload", imageForm)
+      .post("/api/image/upload", imageForm)
       .then(function(response) {
         toast.success(
           "Successfully stored images on AWS... Now starting database processing"

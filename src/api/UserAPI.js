@@ -16,7 +16,7 @@ export function login(data) {
   return new Promise((resolve, reject) => {
     // console.log("login");
     axios
-      .post("http://localhost:4000/api/user/login", data)
+      .post("/api/user/login", data)
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
@@ -51,7 +51,7 @@ export function register(data) {
   return new Promise((resolve, reject) => {
     console.log("login");
     axios
-      .post("http://localhost:4000/api/user/register", data)
+      .post("/api/user/register", data)
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
@@ -67,24 +67,19 @@ export function register(data) {
   });
 }
 
-export const getUserDetails = () =>
-  callAPI("get", "http://localhost:4000/api/user/profile");
-export const getUsers = () =>
-  callAPI("get", "http://localhost:4000/api/user/get");
-export const getUserGroups = data =>
-  callAPI("post", "http://localhost:4000/api/user/groups", data);
+export const getUserDetails = () => callAPI("get", "/api/user/profile");
+export const getUsers = () => callAPI("get", "/api/user/get");
+export const getUserGroups = data => callAPI("post", "/api/user/groups", data);
 export const getGroupUserEmails = data =>
-  callAPI("post", "http://localhost:4000/api/user/group-users", data);
+  callAPI("post", "/api/user/group-users", data);
 
-export const getUser = data =>
-  callAPI("post", "http://localhost:4000/api/user/get-one", data);
+export const getUser = data => callAPI("post", "/api/user/get-one", data);
 
-export const getLeaderboard = () =>
-  callAPI("get", "http://localhost:4000/api/user/get-leaderboard");
+export const getLeaderboard = () => callAPI("get", "/api/user/get-leaderboard");
 
 export const createUserActivity = data =>
-  callAPI("post", "http://localhost:4000/api/user/create/activity", data);
+  callAPI("post", "/api/user/create/activity", data);
 export const getUserActivity = data =>
-  callAPI("post", "http://localhost:4000/api/user/get/activity", data);
+  callAPI("post", "/api/user/get/activity", data);
 export const partyDetection = data =>
-  callAPI("post", "http://localhost:4000/api/user/party-detection", data);
+  callAPI("post", "/api/user/party-detection", data);
