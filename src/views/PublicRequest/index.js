@@ -17,6 +17,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
 import * as APIServices from "../../api/TestAPI";
+import * as FavourAPI from "../../api/FavourAPI";
+import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
 import Pagination from "../../components/pagination/index";
@@ -99,7 +101,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const PublicRequest = (props) => {
+const PublicRequest = props => {
   const [publicRequests, setPublicRequests] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,7 +117,7 @@ const PublicRequest = (props) => {
 
   useEffect(() => {
     async function getPublicRequestList() {
-      const getPublicRequests = await APIServices.getPublicRequests();
+      const getPublicRequests = await PublicRequestAPI.getPublicRequests();
       let result = getPublicRequests.filter(item => {
         return item.completed === false;
       });
@@ -126,11 +128,11 @@ const PublicRequest = (props) => {
     }
 
     getPublicRequestList();
-  }, [resetPublicRequestList,currentPage]);
+  }, [resetPublicRequestList, currentPage]);
 
   useEffect(() => {
     async function getFavourType() {
-      const getFavourTypes = await APIServices.getFavourTypes();
+      const getFavourTypes = await FavourAPI.getFavourTypes();
       // Return array and set the Favours state
       const { favourTypes } = getFavourTypes;
       const favourTypesArray = Object.values(favourTypes);
@@ -155,7 +157,6 @@ const PublicRequest = (props) => {
     setSearchBarPlaceHolder(input);
     let newData = [];
     publicRequests.map(item => {
-
       // Check reward array
       let checkReward;
       item.rewards.map(i => {
@@ -178,20 +179,20 @@ const PublicRequest = (props) => {
     setSearchResult(newData);
   };
 
-/*************************************************************************************************
- * Summary: Triggers a re-render on the public request data, to account for any additions, 
- * updates, deletions made. resetPublicRequestList is tied to the useEffect hook.
- *************************************************************************************************/
-const TriggerResetPublicRequestList = () => {
-  if ( resetPublicRequestList === true ) {
-    setResetPublicRequestList(false);
-  } else if (resetPublicRequestList === false) {
-    setResetPublicRequestList(true);
-  } else {
-    // If undefined or other cases
-    setResetPublicRequestList(true)
-  }    
-}
+  /*************************************************************************************************
+   * Summary: Triggers a re-render on the public request data, to account for any additions,
+   * updates, deletions made. resetPublicRequestList is tied to the useEffect hook.
+   *************************************************************************************************/
+  const TriggerResetPublicRequestList = () => {
+    if (resetPublicRequestList === true) {
+      setResetPublicRequestList(false);
+    } else if (resetPublicRequestList === false) {
+      setResetPublicRequestList(true);
+    } else {
+      // If undefined or other cases
+      setResetPublicRequestList(true);
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -199,16 +200,16 @@ const TriggerResetPublicRequestList = () => {
         <NavMenu props={props} />
         <div className="container_right">
           <Paper className={classes.container}>
-          <ToastContainer
-                position="top-center"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
+            <ToastContainer
+              position="top-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
             />
             <div className="container_right_bottom">
               <div className={classes.headingContainer}>
@@ -239,7 +240,7 @@ const TriggerResetPublicRequestList = () => {
                   />
                 </div>
                 {userData.user ? (
-                  <PartyDetection userData={userData}/>
+                  <PartyDetection userData={userData} />
                 ) : (
                   <div className={classes.anonymousButtonGroup}>
                     <div className={classes.homeButton}>
@@ -258,8 +259,7 @@ const TriggerResetPublicRequestList = () => {
               </div>
               <div className="cards_container">
                 <Fragment>
-                  {loading? 
-                   (
+                  {loading ? (
                     <center>
                       <img
                         src={LoadingGif}
@@ -268,8 +268,7 @@ const TriggerResetPublicRequestList = () => {
                         alt="Loading..."
                       />
                     </center>
-                   ) :
-                   (
+                  ) : (
                     searchResult
                       .slice(indexOfFirstRequest, indexOfLastRequest)
                       .map((data, key) => {
@@ -305,7 +304,9 @@ const TriggerResetPublicRequestList = () => {
                                       Location={getLocation()}
                                       User={props.user}
                                       CurrentPage={currentPage}
-                                      TriggerResetPublicRequestList={TriggerResetPublicRequestList}
+                                      TriggerResetPublicRequestList={
+                                        TriggerResetPublicRequestList
+                                      }
                                     />
                                   </div>
                                 </div>
@@ -332,6 +333,6 @@ const TriggerResetPublicRequestList = () => {
       </div>
     </div>
   );
-}
+};
 
 export default PublicRequest;

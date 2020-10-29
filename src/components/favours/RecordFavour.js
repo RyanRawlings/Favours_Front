@@ -107,12 +107,13 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
 
   const { userData } = useContext(UserContext);
 
-/**************************************************************************************************
-* Summary: Returns the Types of Favours that can be selected in an Array, on page load
-***************************************************************************************************/  
+  /**************************************************************************************************
+   * Summary: Returns the Types of Favours that can be selected in an Array, on page load
+   ***************************************************************************************************/
+
   useEffect(() => {
     async function getFavourType() {
-      const getFavourTypes = await APIServices.getFavourTypes();
+      const getFavourTypes = await FavourAPI.getFavourTypes();
       // Return array and set the Favours state
       const { favourTypes } = getFavourTypes;
       const favourTypesArray = Object.values(favourTypes);
@@ -122,9 +123,10 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
     getFavourType();
   }, []);
 
-/**************************************************************************************************
-* Summary: Returns all Users in an Array, on page load
-***************************************************************************************************/    
+  /**************************************************************************************************
+   * Summary: Returns all Users in an Array, on page load
+   ***************************************************************************************************/
+
   useEffect(() => {
     async function getUserList() {
       const getUsers = await UserAPI.getUsers();
@@ -139,10 +141,11 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
     getUserList();
   }, []);
 
-/**************************************************************************************************
-* Summary: On Input Change to the Favour dropdown list, update the FavourId state variable with
-* the corressponding object id.
-***************************************************************************************************/    
+  /**************************************************************************************************
+   * Summary: On Input Change to the Favour dropdown list, update the FavourId state variable with
+   * the corressponding object id.
+   ***************************************************************************************************/
+
   const setFavourIdHelper = (object, value) => {
     const favourTypesArray = Object.values(object);
     for (let i = 0; i < favourTypesArray.length; i++) {
@@ -152,10 +155,11 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
     }
   };
 
-/**************************************************************************************************
-* Summary: Additional layer of validation, will return a boolean as to whether the Record button
-* should be enabled/disabled
-***************************************************************************************************/      
+  /**************************************************************************************************
+   * Summary: Additional layer of validation, will return a boolean as to whether the Record button
+   * should be enabled/disabled
+   ***************************************************************************************************/
+
   const enableSubmitButton = () => {
     try {
       if (
@@ -173,10 +177,11 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
     }
   };
 
-/**************************************************************************************************
-* Summary: Favour validation to ensure the integrity of the data, before the image upload function
-* is called
-***************************************************************************************************/          
+  /**************************************************************************************************
+   * Summary: Favour validation to ensure the integrity of the data, before the image upload function
+   * is called
+   ***************************************************************************************************/
+
   const favourValidation = () => {
     if (creditor === debtor) {
       return [false, "You have set the creditor and debtor to the same value"];
@@ -194,29 +199,32 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
     return [true, "Success"];
   };
 
-/**************************************************************************************************
-* Summary: Handles the image upload to s3, on success Favour is created in Mongo db. On success of
-* the creation of the Favour, a new UserActivity record is also created in Mongo db
-***************************************************************************************************/            
-  const handleSubmit = async () => {    
+  /**************************************************************************************************
+   * Summary: Handles the image upload to s3, on success Favour is created in Mongo db. On success of
+   * the creation of the Favour, a new UserActivity record is also created in Mongo db
+   ***************************************************************************************************/
+
+  const handleSubmit = async () => {
     SingleImageUpload(
-      "", 
-      TriggerResetFavourList, 
-      fileList, 
-      handleClose, 
-      "Record", 
-      favourValidation, 
+      "",
+      TriggerResetFavourList,
+      fileList,
+      handleClose,
+      "Record",
+      favourValidation,
       userData,
       debtor,
       creditor,
       favourName,
       favourDescription,
-      userList);
+      userList
+    );
   };
 
-/**************************************************************************************************
-* Summary: Handles adding a new file to the fileList state variable Array
-***************************************************************************************************/              
+  /**************************************************************************************************
+   * Summary: Handles adding a new file to the fileList state variable Array
+   ***************************************************************************************************/
+
   const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);
@@ -228,17 +236,17 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <div className={classes.formContent}>
-        <ToastContainer
-                position="top-center"
-                autoClose={4000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-              />
+          <ToastContainer
+            position="top-center"
+            autoClose={4000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Autocomplete
@@ -318,12 +326,17 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
               }}
               onChange={e => setFavourDescription(e.target.value)}
             />
-            {userData? debtor === userData.user.email?
-            <div className={classes.imageBox}>
-              <ImageDragAndDrop addFile={addFile} />
-            </div>
-            : "" : ""
-            }
+            {userData ? (
+              debtor === userData.user.email ? (
+                <div className={classes.imageBox}>
+                  <ImageDragAndDrop addFile={addFile} />
+                </div>
+              ) : (
+                ""
+              )
+            ) : (
+              ""
+            )}
             <div className={classes.recordButton}>
               <Button
                 variant="contained"

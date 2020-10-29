@@ -13,16 +13,16 @@ import AccountBox from "@material-ui/icons/AccountBox";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import HeroImage from "../../assets/images/uts-hero-image.png";
-import * as APIServices from "../../api/TestAPI";
+//import * as APIServices from "../../api/TestAPI";
+import * as UserAPI from "../../api/UserAPI";
 import Cookie from "js-cookie";
 import NavMenu from "../../components/navMenu/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
 import UserContext from "../../context/UserContext";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Copyright() {
   return (
@@ -98,7 +98,7 @@ const Login = () => {
     let user = { email: email, password: password };
 
     try {
-      const response = await APIServices.login(user);
+      const response = await UserAPI.login(user);
 
       if (!response.message) {
         Cookie.set("auth-token", response.token);
@@ -112,9 +112,9 @@ const Login = () => {
     <div className={classes.root}>
       <div className="container">
         <NavMenu />
-          <div className="container_right">
-            <Paper className={classes.container}>
-              <div className="container_right_bottom">
+        <div className="container_right">
+          <Paper className={classes.container}>
+            <div className="container_right_bottom">
               <div className={classes.headingContainer}></div>
               <div className="cards_container">
                 <Container component="main" maxWidth="xs">
@@ -130,16 +130,16 @@ const Login = () => {
                           icon={faUser}
                         />
                       </div>
-                      <ToastContainer 
-                      position="top-center"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover                      
+                      <ToastContainer
+                        position="top-center"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
                       />
                       {toast.success}
                       <form className={classes.form} onSubmit={handleSubmit}>
@@ -223,5 +223,5 @@ const Login = () => {
       </div>
     </div>
   );
-}
+};
 export default Login;

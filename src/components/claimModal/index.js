@@ -14,6 +14,7 @@ import * as APIServices from "../../api/TestAPI";
 import * as ImageAPI from "../../api/ImageAPI";
 import { delay } from "q";
 import * as UserAPI from "../../api/UserAPI";
+import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -77,7 +78,7 @@ const ClaimModal = ({
   favourTitle,
   favourOwed,
   handleParentModalClose,
-  TriggerResetPublicRequestList  
+  TriggerResetPublicRequestList
 }) => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
@@ -87,9 +88,10 @@ const ClaimModal = ({
   const [fileList, setFileList] = useState([]);
   const [snippet, setSnippet] = useState("Thank you");
 
-/**************************************************************************************************
-* Summary: Handles open and close actions for Claim modal
-***************************************************************************************************/         
+  /**************************************************************************************************
+   * Summary: Handles open and close actions for Claim modal
+   ***************************************************************************************************/
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -98,10 +100,10 @@ const ClaimModal = ({
     setOpen(false);
   };
 
-/**************************************************************************************************
-* Summary: Handles the submission of the image proof, uses similar logic to the SingleImageUpload
-* component, but exists separately to control the creation of new Favours records
-***************************************************************************************************/
+  /**************************************************************************************************
+   * Summary: Handles the submission of the image proof, uses similar logic to the SingleImageUpload
+   * component, but exists separately to control the creation of new Favours records
+   ***************************************************************************************************/
   const handleSubmit = async () => {
     //post imagekey, completed true
 
@@ -137,14 +139,15 @@ const ClaimModal = ({
     let newActivityData = {
       userId: userId,
       action: action
-    }
+    };
 
     const newUserActivity = await UserAPI.createUserActivity(newActivityData);
   };
 
-/**************************************************************************************************
-* Summary: Handles the creation of Favours based on the rewards stored on the Public Request
-***************************************************************************************************/  
+  /**************************************************************************************************
+   * Summary: Handles the creation of Favours based on the rewards stored on the Public Request
+   ***************************************************************************************************/
+
   const transferToFavour = async imageFile => {
     imageFile = imageFile.data.locationArray;
     let query = [];
@@ -164,12 +167,13 @@ const ClaimModal = ({
         }
       });
     });
-    let msg = await APIServices.claimPublicRequest(query);
+    await PublicRequestAPI.claimPublicRequest(query);
   };
 
-/**************************************************************************************************
-* Summary: Handles the post s3 image upload, updating the Image URL for the new Favours
-***************************************************************************************************/  
+  /**************************************************************************************************
+   * Summary: Handles the post s3 image upload, updating the Image URL for the new Favours
+   ***************************************************************************************************/
+
   const uploadToMongoDB = async response => {
     let imageArray = [];
     if (response) {
@@ -198,10 +202,11 @@ const ClaimModal = ({
     }
   };
 
-/**************************************************************************************************
-* Summary: Handles adding new images to the fileList array, based on the file passed to the 
-* ImageDragAndDrop function
-***************************************************************************************************/    
+  /**************************************************************************************************
+   * Summary: Handles adding new images to the fileList array, based on the file passed to the
+   * ImageDragAndDrop function
+   ***************************************************************************************************/
+
   const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);
@@ -209,13 +214,14 @@ const ClaimModal = ({
     setFileList(tempFileList);
   };
 
-/**************************************************************************************************
-* Summary: Handles the delete of Public Requests, users can only delete public requests they create
-***************************************************************************************************/    
+  /**************************************************************************************************
+   * Summary: Handles the delete of Public Requests, users can only delete public requests they create
+   ***************************************************************************************************/
+
   const handleDelete = async () => {
     console.log("favourid", favourId);
 
-    let response = await APIServices.deletePublicRequest(favourId);
+    let response = await PublicRequestAPI.deletePublicRequest(favourId);
 
     if (response) {
       let userId = userData.user._id;
@@ -223,7 +229,7 @@ const ClaimModal = ({
       let newActivityData = {
         userId: userId,
         action: action
-      }
+      };
 
       const newUserActivity = await UserAPI.createUserActivity(newActivityData);
 

@@ -15,10 +15,11 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import * as APIServices from "../../api/TestAPI";
+// import * as APIServices from "../../api/TestAPI";
+import * as UserAPI from "../../api/UserAPI";
 import NavMenu from "../../components/navMenu/index";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Copyright() {
   return (
@@ -98,7 +99,7 @@ const Signup = () => {
       email: email,
       password: password
     };
-    const response = await APIServices.register(user);
+    const response = await UserAPI.register(user);
     console.log(response);
     return false;
   };
@@ -129,17 +130,16 @@ const Signup = () => {
                         Join today, to start creating and sharing IOUs with your
                         friends, teams, and companies
                       </Typography>
-                      <ToastContainer 
-                      position="top-center"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      
+                      <ToastContainer
+                        position="top-center"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
                       />
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <Grid container spacing={1}>
@@ -240,6 +240,6 @@ const Signup = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Signup;

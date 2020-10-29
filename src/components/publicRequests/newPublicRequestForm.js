@@ -18,9 +18,10 @@ import AppBar from "@material-ui/core/AppBar";
 import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as APIServices from "../../api/TestAPI";
-import SaveIcon from '@material-ui/icons/Save';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import * as PublicRequestAPI from "../../api/PublicRequestAPI";
+import SaveIcon from "@material-ui/icons/Save";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import * as UserAPI from "../../api/UserAPI";
 import { Title } from "material-ui-icons";
@@ -71,13 +72,12 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     height: "10%",
     marginLeft: "auto",
-    marginRight: "auto",
+    marginRight: "auto"
   },
   submitButtonDiv: {
     marginLeft: "auto",
     marginRight: "auto",
     marginBottom: "2%"
-
   },
   headingDiv: {
     backgroundColor: "#1B9AAA",
@@ -102,29 +102,27 @@ const useStyles = makeStyles(theme => ({
   margin: {
     marginTop: "0%"
   },
-extendedIcon: {
-    marginRight: theme.spacing(1),
-},
-newRewardFormDiv: {
-  marginLeft: "auto",
-  marginRight: "auto",
-  marginTop: "-5%"
-
-},
-rewardList: {
-  overflow: "scroll",
-  overflowX: "hidden",
-  overflowY: "auto",
-  height: "60px",
-  border: "1px #1B9AAA solid",
-  backgroundColor: "#F6F6F6",
-  padding: "1% 1% 1% 1%"
-
-},
-rewardTitle: {
-  fontSize: "16px",
-  marginLeft: "1%"
-}
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  },
+  newRewardFormDiv: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "-5%"
+  },
+  rewardList: {
+    overflow: "scroll",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "60px",
+    border: "1px #1B9AAA solid",
+    backgroundColor: "#F6F6F6",
+    padding: "1% 1% 1% 1%"
+  },
+  rewardTitle: {
+    fontSize: "16px",
+    marginLeft: "1%"
+  }
 }));
 
 const NewPublicRequestForm = () => {
@@ -140,7 +138,7 @@ const NewPublicRequestForm = () => {
 
   // Public Request Form Fields
   const [requestTitle, setRequestTitle] = useState(null);
-  const [requestedBy] = useState(userData? userData.user.email: null);
+  const [requestedBy] = useState(userData ? userData.user.email : null);
   const [requestTaskDescription, setRequestTaskDescription] = useState(null);
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -155,27 +153,28 @@ const NewPublicRequestForm = () => {
     setOpen(false);
   };
 
-/*****************************************************************************************
-* Summary: Add new reward to reward state array variable
-******************************************************************************************/
-  const addReward = (reward) => {
+  /*****************************************************************************************
+   * Summary: Add new reward to reward state array variable
+   ******************************************************************************************/
+  const addReward = reward => {
     const newReward = [...rewards, reward];
     setRewards(newReward);
   };
 
-/*****************************************************************************************
-* Summary: Remove reward from reward state array variable
-******************************************************************************************/
+  /*****************************************************************************************
+   * Summary: Remove reward from reward state array variable
+   ******************************************************************************************/
   const removeReward = index => {
     const newReward = [...rewards];
     newReward.splice(index, 1);
     setRewards(newReward);
   };
 
-/*************************************************************************************************
-* Summary: On submit pass the state data into new object array and call createPublicRequestHelper
-* to call the API
-**************************************************************************************************/  
+  /*************************************************************************************************
+   * Summary: On submit pass the state data into new object array and call createPublicRequestHelper
+   * to call the API
+   **************************************************************************************************/
+
   const handleSubmitRequest = () => {
     // Create mutable version of rewards state variable
     let newRewards = rewards;
@@ -195,12 +194,13 @@ const NewPublicRequestForm = () => {
     createPublicRequestHelper(newRequestData);
   };
 
-/*******************************************************************************************
-* Summary: Calls the api to create new public request, if response is not null or undefined
-* a new UserActivity record is written to MongoDB
-********************************************************************************************/    
+  /*******************************************************************************************
+   * Summary: Calls the api to create new public request, if response is not null or undefined
+   * a new UserActivity record is written to MongoDB
+   ********************************************************************************************/
+
   const createPublicRequestHelper = async data => {
-    const response = await APIServices.createPublicRequest(data);
+    const response = await PublicRequestAPI.createPublicRequest(data);
     if (response) {
       // console.log(response)
       let userId = userData.user._id;
@@ -208,56 +208,62 @@ const NewPublicRequestForm = () => {
       let newActivityData = {
         userId: userId,
         action: action
-      }
+      };
 
       const newUserActivity = await UserAPI.createUserActivity(newActivityData);
 
       // // Set toast details
       toast.success("Successfully created the Public Request");
-      
+
       // Reset the rewards state variable
       setRewards([]);
 
       // Hold execution for 3s then close the modal
-      await delay(3000);      
-      handleClose();       
+      await delay(3000);
+      handleClose();
     } else {
-      // Set toast details      
+      // Set toast details
       toast.error("Error creating the Public Request");
 
-      await delay(3000);      
+      await delay(3000);
       handleClose();
     }
   };
 
-/*****************************************************************************************
-* Summary: Extra validation to ensure the required data has some value before the create
-* process begins
-******************************************************************************************/  
+  /*****************************************************************************************
+   * Summary: Extra validation to ensure the required data has some value before the create
+   * process begins
+   ******************************************************************************************/
+
   const enableSubmitButton = () => {
     try {
-      if (requestTitle !== null && requestTaskDescription !== null && rewards.length > 0) {
+      if (
+        requestTitle !== null &&
+        requestTaskDescription !== null &&
+        rewards.length > 0
+      ) {
         return false;
       } else {
         return true;
-      } 
+      }
     } catch (err) {
       return true;
     }
-  }
+  };
 
-/*****************************************************************************************
-* Summary: Checks whether UserContext data is still available, client side
-******************************************************************************************/  
+  /*****************************************************************************************
+   * Summary: Checks whether UserContext data is still available, client side
+   ******************************************************************************************/
+
   const userDataAvailable = () => {
     try {
-      if(userData.user.email) {
-        return true
+      if (userData.user.email) {
+        return true;
       }
     } catch (err) {
-      return false
+      return false;
     }
-  }
+  };
 
   return (
     <div>
@@ -294,7 +300,7 @@ const NewPublicRequestForm = () => {
               pauseOnFocusLoss
               draggable
               pauseOnHover
-              />
+            />
             <Grid className={classes.headingDiv} item xs={12}>
               <div className={classes.modalHeading}>
                 Create New Public Request
@@ -354,17 +360,17 @@ const NewPublicRequestForm = () => {
                 onChange={e => setRequestTaskDescription(e.target.value)}
               />
             </Grid>
-        {userDataAvailable? 
-          <div className={classes.newRewardFormDiv}>
-            <RewardForm 
-              addReward={addReward} 
-              userData={userData}
-            />
-          </div> : ""}
-        <Fragment>
-            <div className={classes.rewardContent}>
-            <List className={classes.rewardList}>                
-                {rewards.map((reward, index) => (
+            {userDataAvailable ? (
+              <div className={classes.newRewardFormDiv}>
+                <RewardForm addReward={addReward} userData={userData} />
+              </div>
+            ) : (
+              ""
+            )}
+            <Fragment>
+              <div className={classes.rewardContent}>
+                <List className={classes.rewardList}>
+                  {rewards.map((reward, index) => (
                     <Reward
                       key={index}
                       index={index}
@@ -381,7 +387,11 @@ const NewPublicRequestForm = () => {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={enableSubmitButton() && enableSubmitButton() === true? true : false}
+                disabled={
+                  enableSubmitButton() && enableSubmitButton() === true
+                    ? true
+                    : false
+                }
                 startIcon={<SaveIcon />}
                 onClick={() => handleSubmitRequest()}
               >
@@ -393,6 +403,6 @@ const NewPublicRequestForm = () => {
       </Modal>
     </div>
   );
-}
+};
 
 export default NewPublicRequestForm;

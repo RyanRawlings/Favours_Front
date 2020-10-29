@@ -14,6 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import HeroImage from "../../assets/images/uts-hero-image.png";
 import * as APIServices from "../../api/TestAPI";
+import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 import * as FavourAPI from "../../api/FavourAPI";
 import Cookie from "js-cookie";
 import NavMenu from "../../components/navMenu/index";
@@ -21,11 +22,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
 import UserContext from "../../context/UserContext";
-import './RepayFavour.css';
-import SaveIcon from '@material-ui/icons/Save';
-import { GridOverlay, DataGrid } from '@material-ui/data-grid';
-import { XGrid } from '@material-ui/x-grid';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import "./RepayFavour.css";
+import SaveIcon from "@material-ui/icons/Save";
+import { GridOverlay, DataGrid } from "@material-ui/data-grid";
+import { XGrid } from "@material-ui/x-grid";
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import * as UserAPI from "../../api/TestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
@@ -35,50 +36,49 @@ import PartyDetection from "../../components/partyDetection/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-      },
-    paper: {
-        padding: theme.spacing(1),        
-        width: "100%", 
-    },  
-    form: {
-      '& > *': {
-        margin: theme.spacing(1),
-        width: '25ch',
-    },   
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1
+  },
+  paper: {
+    padding: theme.spacing(1),
+    width: "100%"
+  },
+  form: {
+    "& > *": {
+      margin: theme.spacing(1),
+      width: "25ch"
+    },
     container: {
-        display: 'flex',
-        flexWrap: 'wrap',
+      display: "flex",
+      flexWrap: "wrap"
     },
     textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 200,
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: 200
     },
     submit: {
-        margin: theme.spacing(1),
-      },
-    },
-    label: {
-      fontSize: "25px"
-    },
-    noRowsIcon: {
-      color: "green"
+      margin: theme.spacing(1)
     }
-  }));
+  },
+  label: {
+    fontSize: "25px"
+  },
+  noRowsIcon: {
+    color: "green"
+  }
+}));
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 220 },
-    { field: 'favourType', headerName: 'Favour Type', width: 200 },
-    { field: 'favourDebtor', headerName: 'Owed By', width: 240 },
-    { field: 'favourCreditor', headerName: 'Paid By', width: 240 },
-    { field: 'favourStatus', headerName: 'Favour Status', width: 130 },
-    { field: 'favourDate', type:'date', headerName: 'Paid On', width: 110 },  
-  ];
-  
+  { field: "id", headerName: "ID", width: 220 },
+  { field: "favourType", headerName: "Favour Type", width: 200 },
+  { field: "favourDebtor", headerName: "Owed By", width: 240 },
+  { field: "favourCreditor", headerName: "Paid By", width: 240 },
+  { field: "favourStatus", headerName: "Favour Status", width: 130 },
+  { field: "favourDate", type: "date", headerName: "Paid On", width: 110 }
+];
+
 function CustomNoRowsOverlay(loading) {
   const classes = useStyles();
 
@@ -123,16 +123,24 @@ function CustomNoRowsOverlay(loading) {
           </g>
         </g>
       </svg>
-      {loading === true? (
+      {loading === true ? (
         <center>
-            <img src={LoadingGif} width="100px" height="100px" alt="Loading..."/>
-        </center>) :
-      <div className={classes.label}>No Favours to Repay <FontAwesomeIcon className={classes.noRowsIcon} icon={faCheckCircle}/></div>}
+          <img src={LoadingGif} width="100px" height="100px" alt="Loading..." />
+        </center>
+      ) : (
+        <div className={classes.label}>
+          No Favours to Repay{" "}
+          <FontAwesomeIcon
+            className={classes.noRowsIcon}
+            icon={faCheckCircle}
+          />
+        </div>
+      )}
     </GridOverlay>
   );
 }
 
-const MultiRepay = (props) => {
+const MultiRepay = props => {
   const [loading, setLoading] = useState(true);
   const [favoursSelected, setFavoursSelected] = useState([]);
   const { userData } = useContext(UserContext);
@@ -141,15 +149,19 @@ const MultiRepay = (props) => {
 
   useEffect(() => {
     async function fetchFavours() {
-      const userId = userData.user._id? userData.user._id : props.location.state.userData.user._id? props.location.state.userData.user._id : "";                
+      const userId = userData.user._id
+        ? userData.user._id
+        : props.location.state.userData.user._id
+        ? props.location.state.userData.user._id
+        : "";
 
-      try {        
-        const fetchFavours = await FavourAPI.getFavours({userId: userId});
-                
+      try {
+        const fetchFavours = await FavourAPI.getFavours({ userId: userId });
+
         // Store credit favours into variable
-        const repayFavours = fetchFavours[0].credits;   
-        
-        let userArray = []
+        const repayFavours = fetchFavours[0].credits;
+
+        let userArray = [];
         repayFavours.forEach(element => {
           if (!userArray.includes(element.requestUser)) {
             userArray.push(element.requestUser);
@@ -157,19 +169,21 @@ const MultiRepay = (props) => {
           if (!userArray.includes(element.owingUser)) {
             userArray.push(element.owingUser);
           }
-        })
-        
-        const fetchUsers = await UserAPI.getPublicRequestUserDetails(userArray);
+        });
 
-        const getUserEmail = (userId) => {
+        const fetchUsers = await PublicRequestAPI.getPublicRequestUserDetails(
+          userArray
+        );
+
+        const getUserEmail = userId => {
           if (fetchUsers) {
             for (let i = 0; i < fetchUsers.length; i++) {
               if (fetchUsers[i]._id === userId) {
                 return fetchUsers[i].email;
-              }            
+              }
             }
           }
-        }
+        };
 
         // If there are credit favour records, run through the iteration
         let newRow = {};
@@ -179,107 +193,116 @@ const MultiRepay = (props) => {
         if (repayFavours.length > 0) {
           for (let i = 0; i < fetchFavours[0].credits.length; i++) {
             if (fetchFavours[0].credits[i].is_completed === false) {
-              date = new Date(fetchFavours[0].credits[i].create_time);   
-            
+              date = new Date(fetchFavours[0].credits[i].create_time);
+
               newRow = {
                 // id: i + 1,
                 id: fetchFavours[0].credits[i]._id,
                 favourType: fetchFavours[0].credits[i].favourOwed,
-                favourDebtor: getUserEmail(fetchFavours[0].credits[i].owingUser),
-                favourCreditor: getUserEmail(fetchFavours[0].credits[i].requestUser),
-                favourStatus: fetchFavours[0].credits[i].is_completed === true? "Paid" : "Unpaid",
+                favourDebtor: getUserEmail(
+                  fetchFavours[0].credits[i].owingUser
+                ),
+                favourCreditor: getUserEmail(
+                  fetchFavours[0].credits[i].requestUser
+                ),
+                favourStatus:
+                  fetchFavours[0].credits[i].is_completed === true
+                    ? "Paid"
+                    : "Unpaid",
                 favourDate: date
               };
-  
+
               rows.push(newRow);
             }
-            
           }
-        } 
+        }
         setRows(rows);
-
       } catch (err) {
         console.log(err);
       }
-    
+
       setLoading(false);
-    }    
+    }
 
     fetchFavours();
   }, []);
 
-    const extractColumn = (arr, column) => {
-      return arr.map(x => x[column])
-    }
+  const extractColumn = (arr, column) => {
+    return arr.map(x => x[column]);
+  };
 
-    const handleFavourSelection = (data) => {
-      setFavoursSelected(data);    
-    }
-  
-    const classes = useStyles();   
+  const handleFavourSelection = data => {
+    setFavoursSelected(data);
+  };
 
-    const handleSubmit = () => {
-      props.history.push({
-            pathname: "/repay_selected_favours",
-            state: {setOpen: false,
-                    favoursToBeRepayed: favoursSelected}
-          })
-    }
-          return (
-            <div className={classes.root}>
-              <div className="container">
-                <NavMenu props={props} />
-                <div className="container_right">
-                  <div className={classes.root}>
-                  <ToastContainer
-                    position="top-center"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    />
-                        <Paper className={classes.paper}>
-                            <form className={classes.form} >
-                                    <div style={{ backgroundColor: "white",
-                                                  boxShadow: "0 2px 4px 0 rgba(0,0,0,0.2)",
-                                                  transition: "0.3s",
-                                                  marginTop: "1%",
-                                                  height: "500px",
-                                                  width: "1250px"}}>
-                                        <DataGrid 
-                                          components={{noRowsOverlay: () => CustomNoRowsOverlay(loading)}}                                      
-                                          rows={rows? rows: rows} 
-                                          columns={columns} 
-                                          pageSize={6} 
-                                          checkboxSelection 
-                                          onSelectionChange={e => handleFavourSelection(e.rows)} />
-                                    </div>
-                                
-                                    <Button
-                                      onClick={handleSubmit}                                                        
-                                      variant="contained"
-                                      color="primary"
-                                      size="large"
-                                      className={classes.submit}
-                                      startIcon={<AssignmentTurnedInIcon />}
-                                      disabled={favoursSelected.length > 0? false: true}
-                                    >
-                                        Repay Favour
-                                    </Button>
-                                    <PartyDetection userData={userData}/>
-                            </form>
+  const classes = useStyles();
 
-                        </Paper>    
-                    </div>            
+  const handleSubmit = () => {
+    props.history.push({
+      pathname: "/repay_selected_favours",
+      state: { setOpen: false, favoursToBeRepayed: favoursSelected }
+    });
+  };
+  return (
+    <div className={classes.root}>
+      <div className="container">
+        <NavMenu props={props} />
+        <div className="container_right">
+          <div className={classes.root}>
+            <ToastContainer
+              position="top-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
+            <Paper className={classes.paper}>
+              <form className={classes.form}>
+                <div
+                  style={{
+                    backgroundColor: "white",
+                    boxShadow: "0 2px 4px 0 rgba(0,0,0,0.2)",
+                    transition: "0.3s",
+                    marginTop: "1%",
+                    height: "500px",
+                    width: "1250px"
+                  }}
+                >
+                  <DataGrid
+                    components={{
+                      noRowsOverlay: () => CustomNoRowsOverlay(loading)
+                    }}
+                    rows={rows ? rows : rows}
+                    columns={columns}
+                    pageSize={6}
+                    checkboxSelection
+                    onSelectionChange={e => handleFavourSelection(e.rows)}
+                  />
                 </div>
-              </div>
-            </div>
-    );
-}
 
+                <Button
+                  onClick={handleSubmit}
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  className={classes.submit}
+                  startIcon={<AssignmentTurnedInIcon />}
+                  disabled={favoursSelected.length > 0 ? false : true}
+                >
+                  Repay Favour
+                </Button>
+                <PartyDetection userData={userData} />
+              </form>
+            </Paper>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default MultiRepay;
