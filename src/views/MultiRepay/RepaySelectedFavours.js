@@ -20,6 +20,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLocation } from "react-router-dom";
+import { delay } from "q";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -90,8 +91,6 @@ const RepaySelectedFavours = (props) => {
     setFileList(tempFileList);
     setFileCount(tempFileCount);
   }
-
-  const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const handleSubmit = async () => {
     let imageForm = new FormData();

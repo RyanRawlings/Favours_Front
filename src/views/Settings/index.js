@@ -158,8 +158,7 @@ const Settings = (props) => {
       
       if (userGroups) {        
         setGroups(userGroups);
-        setActiveGroup(userGroups? userGroups[0] : []);
-        // console.log(userGroups);      
+        setActiveGroup(userGroups? userGroups[0] : []);   
         
         const groupUserEmails = await UserAPI.getGroupUserEmails({ groups: userGroups });
         console.log("response from backend", groupUserEmails);
@@ -200,9 +199,6 @@ const Settings = (props) => {
 
   const classes = useStyles();
 
-  // console.log("Active Group: ", activeGroup);
-  // console.log("Group Users: ", groupUsers);
-
   const handleGroupUpdate = (groupId) => {
     for (let i = 0; i < groups.length; i++) {
       if (groupId === groups[i]._id) {
@@ -215,8 +211,6 @@ const Settings = (props) => {
     }
   }
 
-  console.log("active group", activeGroup);
-  console.log("group details", groupUserDetails);
   return (
     <div className={classes.root}>
       <div className="container">

@@ -13,9 +13,6 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     width: 500
-    // "& > * + *": {
-    //   marginTop: theme.spacing(3)
-    // }
   },
   search: {
     flexGrow: 1,

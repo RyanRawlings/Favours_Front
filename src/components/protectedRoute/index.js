@@ -4,7 +4,7 @@ import UnauthorisedAccess from "../../views/UnauthorisedAccess/index";
 
 /*****************************************************************************************
 * Summary: If the user is authenticated, a Component will be returned and rendered, if not
-* nothing will be displayed.
+* unauthorised access page will be shown to the user.
 *
 * Code Attribution: 
 *   Author: Tyler McGinnis

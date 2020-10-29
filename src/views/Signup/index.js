@@ -79,7 +79,6 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center"
   },
   container: {
-    // backgroundImage: "linear-gradient(#d3ecf3, #123456)"
     backgroundImage: "linear-gradient(#d3ecf3, #1B9AAA)"
   }
 }));

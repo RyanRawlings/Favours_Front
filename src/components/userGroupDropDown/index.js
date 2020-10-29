@@ -48,7 +48,6 @@ const UserGroupDropDown = ({ props }) => {
       }
     }
   }  
-  console.log("active group", activeGroup)
 
   useEffect(() => {
     async function getUserGroupList() {

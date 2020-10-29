@@ -68,8 +68,6 @@ const useStyles = makeStyles(theme => ({
   },
   rewardContent: {
     width: "100%",
-    // marginLeft: "auto",
-    // marginRight: "auto",
     overflow: "scroll",
     overflowX: "hidden",
     overflowY: "auto",

@@ -25,6 +25,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import * as UserAPI from "../../api/UserAPI";
 import { Title } from "material-ui-icons";
+import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -141,8 +142,6 @@ const NewPublicRequestForm = () => {
   const [requestedBy] = useState(userData ? userData.user.email : null);
   const [requestTaskDescription, setRequestTaskDescription] = useState(null);
 
-  const delay = ms => new Promise(res => setTimeout(res, ms));
-
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -204,6 +203,9 @@ const NewPublicRequestForm = () => {
     if (response) {
       // console.log(response)
       let userId = userData.user._id;
+      if (response.newPublicRequest) {
+        
+      }
       let action = `Created new Public Request ${response.newPublicRequest.title} - ${response.newPublicRequest.rewards.length} Reward(s)`;
       let newActivityData = {
         userId: userId,
