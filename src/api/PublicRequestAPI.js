@@ -6,6 +6,7 @@ export const getPublicRequestUserDetails = data =>
   callAPI("post", "/api/publicRequest/get-user-emails", data);
 
 export function getPublicRequests() {
+  //check cookies' data
   return new Promise((resolve, reject) => {
     document.cookie.split(";").map(item => {
       console.log("cookies:", item);
@@ -32,6 +33,15 @@ export function getPublicRequests() {
 export const createPublicRequest = data =>
   callAPI("post", "/api/publicRequest/create", data);
 
+/*************************************************************************************************
+ * Add reward into exsiting reward array
+ *
+ * @param {array} req contains favourid, newReward(array) and privided by newUserDetails(object)
+ * @param {array} res response
+ * @return {array} response -> contains the msg from backend "success" or "error"
+ *
+ *************************************************************************************************/
+
 export function addReward(favourId, newReward, newUserDetails) {
   const query = {
     _id: favourId,
@@ -49,11 +59,20 @@ export function addReward(favourId, newReward, newUserDetails) {
         }
       })
       .catch(reject => {
-        console.log(reject.response);
+        // console.log(reject.response);
         toast.error(reject.response.data);
       });
   });
 }
+
+/*************************************************************************************************
+ * Transfer the public request into favours
+ *
+ * @param {array} req contains newFavour(object)
+ * @param {array} res response
+ * @return {array} response -> contains the msg from backend "success" or "error"
+ *
+ *************************************************************************************************/
 
 export function claimPublicRequest(data) {
   return new Promise((resolve, reject) => {
@@ -72,6 +91,15 @@ export function claimPublicRequest(data) {
       });
   });
 }
+
+/*************************************************************************************************
+ * Pass the requestid to backend and set its completed as true
+ *
+ * @param {array} req contains request id (objectid)
+ * @param {array} res response
+ * @return {array} response -> contains the msg from backend "success" or "error"
+ *
+ *************************************************************************************************/
 
 export function deletePublicRequest(id) {
   const query = {

@@ -68,8 +68,11 @@ export function register(data) {
 }
 
 export const getUserDetails = () => callAPI("get", "/api/user/profile");
+
 export const getUsers = () => callAPI("get", "/api/user/get");
+
 export const getUserGroups = data => callAPI("post", "/api/user/groups", data);
+
 export const getGroupUserEmails = data =>
   callAPI("post", "/api/user/group-users", data);
 
@@ -79,7 +82,9 @@ export const getLeaderboard = () => callAPI("get", "/api/user/get-leaderboard");
 
 export const createUserActivity = data =>
   callAPI("post", "/api/user/create/activity", data);
+
 export const getUserActivity = data =>
   callAPI("post", "/api/user/get/activity", data);
+
 export const partyDetection = data =>
   callAPI("post", "/api/user/party-detection", data);
