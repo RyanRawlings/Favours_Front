@@ -8,7 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 import * as ImageAPI from "../../api/ImageAPI";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { delay } from "q";
@@ -86,28 +85,45 @@ const RepaySelectedFavours = props => {
   };
 
   const handleSubmit = async () => {
-    let imageForm = new FormData();
-
-    for (let i = 0; i < fileList.length; i++) {
-      // console.log(fileList[i][0]);
-      imageForm.append("image", fileList[i][0]);
+    try {
+      const response = await ImageAPI.uploadImageToS3(fileList, "multiple");
+      if (response) {
+        if(response[0] === "200") {
+          uploadToMongoDB(response[1]);
+        } else {
+          toast.error(response[1]);
+        }
+      } else {
+        toast.error("There was an error uploading the image(s)")
+      }
+      
+    } catch (err) {
+      toast.error("There was an error in image processing " + err);
     }
 
-    //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
-    const uploadToS3 = await axios
-      .post("/api/image/upload", imageForm)
-      .then(function(response) {
-        toast.success(
-          "Successfully stored images on AWS... Now starting database processing"
-        );
-        uploadToMongoDB(response);
-      })
-      .catch(function(error) {
-        toast.error(error);
-      });
+    // let imageForm = new FormData();
+
+    // for (let i = 0; i < fileList.length; i++) {
+    //   // console.log(fileList[i][0]);
+    //   imageForm.append("image", fileList[i][0]);
+    // }
+
+    // const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
+    // const uploadToS3 = await axios
+    //   .post("/api/image/upload", imageForm)
+    //   .then(function(response) {
+    //     toast.success(
+    //       "Successfully stored images on AWS... Now starting database processing"
+    //     );
+    //     uploadToMongoDB(response);
+    //   })
+    //   .catch(function(error) {
+    //     toast.error(error);
+    //   });
   };
 
   const uploadToMongoDB = async response => {
+    try {    
     let imageArray = [];
     if (response) {
       for (let i = 0; i < response.data.locationArray.length; i++) {
@@ -119,7 +135,6 @@ const RepaySelectedFavours = props => {
     }
 
     imageArray.push({ type: "Repay" });
-    console.log("Sending off the data to the server now");
 
     const storeImageData = await ImageAPI.storeImageData(imageArray);
     if (storeImageData) {
@@ -130,6 +145,10 @@ const RepaySelectedFavours = props => {
       await delay(5000);
       props.history.push("/multi_repay");
     }
+  } catch (err) {
+    toast.error("There was an error in image processing, please refresh the page");
+  }
+
   };
 
   return (

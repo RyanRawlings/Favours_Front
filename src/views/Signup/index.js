@@ -16,7 +16,16 @@ import NavMenu from "../../components/navMenu/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function Copyright() {
+/*************************************************************************************************************
+* Code Attribution: Material UI Sign up template
+* Url: https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/templates/sign-up
+* Author(s): Oliver Tassinari & Eric Semeniuc
+**************************************************************************************************************/
+
+/**************************************************************************************************************
+* Summary: method dynamically updates the year for the copyright value
+***************************************************************************************************************/
+const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
@@ -78,7 +87,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Signup = () => {
+const Signup = (props) => {
   const classes = useStyles();
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
@@ -93,8 +102,20 @@ const Signup = () => {
       email: email,
       password: password
     };
-    const response = await UserAPI.register(user);
-    console.log(response);
+
+    /************************************************************************
+    * The register api route promise will call toast.error() to display
+    * the error message returned by the server. The try catch block handles
+    * any additional errors, and also calls toast.error() to display to the
+    * message to user.
+    *************************************************************************/        
+    try {
+      await UserAPI.register(user);
+    } catch (error) {
+      toast.error(error);
+    }
+    
+    // Stops the details from posting to the browser
     return false;
   };
 
@@ -124,9 +145,13 @@ const Signup = () => {
                         Join today, to start creating and sharing IOUs with your
                         friends, teams, and companies
                       </Typography>
+                      {/*******************************************************************************
+                      * The ToastContainer allows it so that if the toast method is called at anytime,
+                      * a message will be displayed on screen 
+                      *********************************************************************************/}
                       <ToastContainer
                         position="top-center"
-                        autoClose={5000}
+                        autoClose={3000}
                         hideProgressBar={false}
                         newestOnTop={false}
                         closeOnClick

@@ -24,7 +24,6 @@ const Routes = () => {
   useEffect(() => {
     const checkLoggedIn = async () => {
       let authToken = Cookies.get("auth-token");
-      console.log("1111+", authToken);
       if (authToken === undefined || authToken === "") {
         Cookies.remove("auth-token");
       } else {

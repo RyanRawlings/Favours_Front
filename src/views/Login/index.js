@@ -12,7 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import HeroImage from "../../assets/images/uts-hero-image.png";
 import * as UserAPI from "../../api/UserAPI";
-import Cookies from "js-cookie";
+import Cookie from "js-cookie";
 import NavMenu from "../../components/navMenu/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -94,10 +94,8 @@ const Login = () => {
 
     try {
       const response = await UserAPI.login(user);
-
-      if (!response.message) {
-        console.log("111auth,", response);
-        Cookies.set("auth-token", response.token);
+      if (response) {
+        Cookie.set("auth-token", response.token);
       }
     } catch (error) {
       console.log("Error setting cookie");
@@ -128,7 +126,7 @@ const Login = () => {
                       </div>
                       <ToastContainer
                         position="top-center"
-                        autoClose={5000}
+                        autoClose={3000}
                         hideProgressBar={false}
                         newestOnTop={false}
                         closeOnClick
@@ -137,7 +135,6 @@ const Login = () => {
                         draggable
                         pauseOnHover
                       />
-                      {toast.success}
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <TextField
                           variant="outlined"

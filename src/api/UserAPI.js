@@ -1,6 +1,7 @@
 import callAPI from "./utils/callAPI";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { delay } from "q";
 
 /*************************************************************************************************
  * Returns jwt token and user details to be updated in UserContext and stored in Cookies client side
@@ -11,31 +12,49 @@ import { toast } from "react-toastify";
  *
  *************************************************************************************************/
 
-export function login(data) {
-  console.log("logindata:", data);
-  return new Promise((resolve, reject) => {
-    // console.log("login");
-    axios
-      .post("/api/user/login", data)
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          resolve(response.data);
-          if (response.data.token !== undefined) {
-            window.location.href = "/public_request";
-          } else {
-            toast.error(response.data.message);
-          }
-        } else {
-          // console.log(response)
-          reject(response.data);
-        }
-      })
-      .catch(reject => {
-        // console.log(reject.response)
-        toast.error(reject.response.data);
-      });
-  });
+export async function login(data) {
+  try {
+    const response = await axios.post("/api/user/login", data);    
+    if (response.status >= 200 && response.status < 300) {                        
+      toast.success("Successfully logged into account, taking you to the Public Request screen");
+
+      await delay(3000);
+      window.location.href = "/public_request";
+      return response.data;
+    } else {
+      toast.error(response.data);
+      return response.data;
+    }
+  } catch {
+    toast.error("There was an error logging into your account");
+  }
 }
+
+// export async function login(data) {
+//   // console.log("logindata:", data);
+//   return new Promise((resolve, reject) => {
+//     // console.log("login");
+//     axios
+//       .post("/api/user/login", data)
+//       .then(response => {
+//         if (response.status >= 200 && response.status < 300) {
+//           resolve(response.data);
+//           if (response.data.token !== undefined) {
+//             window.location.href = "/public_request";
+//           } else {
+//             toast.error(response.data.message);
+//           }
+//         } else {
+//           // console.log(response)
+//           reject(response.data);
+//         }
+//       })
+//       .catch(reject => {
+//         // console.log(reject.response)
+//         toast.error(reject.response.data);
+//       });
+//   });
+// }
 
 /*************************************************************************************************
  * Returns jwt token and user details to be updated in UserContext and stored in Cookies client side
@@ -46,26 +65,43 @@ export function login(data) {
  *
  *************************************************************************************************/
 
-export function register(data) {
-  console.log("registerdata:", data);
-  return new Promise((resolve, reject) => {
-    console.log("login");
-    axios
-      .post("/api/user/register", data)
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          resolve(response.data);
-          window.location.href = "/login";
-        } else {
-          reject(response.data);
-        }
-      })
-      .catch(reject => {
-        //console.log(reject.response);
-        toast.error(reject.response.data);
-      });
-  });
+export async function register(data) {
+  try {
+    const response = await axios.post("/api/user/register", data);    
+    if (response.status >= 200 && response.status < 300) {                        
+      toast.success("Successfully created account, taking you to the login screen");
+
+      await delay(3000);
+      window.location.href = "/login";
+      return response.data;
+    } else {
+      toast.error(response.data);
+      return response.data;
+    }
+  } catch {
+    toast.error("There was an error creating your account");
+  }
 }
+
+// export async function register(data) {
+//   return new Promise((resolve, reject) => {
+//     axios
+//       .post("/api/user/register", data)
+//       .then(response => {
+//         if (response.status >= 200 && response.status < 300) {
+//           resolve(response.data);
+          
+//           window.location.href = "/login";
+//           toast.success("Account successfully created, you've been taken to the login page");
+//         } else {
+//           reject(response.data);
+//         }
+//       })
+//       .catch(reject => {
+//         toast.error(reject.response.data);
+//       });
+//   });
+// }
 
 export const getUserDetails = () => callAPI("get", "/api/user/profile");
 

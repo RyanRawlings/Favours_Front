@@ -3,10 +3,10 @@ import { toast } from "react-toastify";
 import callAPI from "./utils/callAPI";
 
 export const getPublicRequestUserDetails = data =>
-  callAPI("post", "/api/publicRequest/get-user-emails", data);
+  callAPI("post", "/api/user/get/user-emails", data);
 
 export function getPublicRequests() {
-  //check cookies' data
+  // Check cookies' data
   return new Promise((resolve, reject) => {
     document.cookie.split(";").map(item => {
       console.log("cookies:", item);
@@ -41,7 +41,6 @@ export const createPublicRequest = data =>
  * @return {array} response -> contains the msg from backend "success" or "error"
  *
  *************************************************************************************************/
-
 export function addReward(favourId, newReward, newUserDetails) {
   const query = {
     _id: favourId,
@@ -73,7 +72,6 @@ export function addReward(favourId, newReward, newUserDetails) {
  * @return {array} response -> contains the msg from backend "success" or "error"
  *
  *************************************************************************************************/
-
 export function claimPublicRequest(data) {
   return new Promise((resolve, reject) => {
     axios
@@ -81,6 +79,7 @@ export function claimPublicRequest(data) {
       .then(response => {
         if (response.status >= 200 && response.status < 300) {
           resolve(response.data);
+          
         } else {
           reject(response.data);
         }
@@ -100,7 +99,6 @@ export function claimPublicRequest(data) {
  * @return {array} response -> contains the msg from backend "success" or "error"
  *
  *************************************************************************************************/
-
 export function deletePublicRequest(id) {
   const query = {
     _id: id

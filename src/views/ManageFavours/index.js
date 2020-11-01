@@ -26,6 +26,7 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import PartyDetection from "../../components/partyDetection/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -441,8 +442,7 @@ const ManageFavours = props => {
                 </div>
               </div>
               <div className="cards_container">
-                <Fragment>
-                  {loading ? (
+                {loading ? (
                     <center>
                       <img
                         src={LoadingGif}
@@ -450,8 +450,26 @@ const ManageFavours = props => {
                         height="100px"
                         alt="Loading..."
                       />
-                    </center>
-                  ) : (
+                    </center> ) :
+                  searchResult.length === 0? 
+                  <center>
+                    <Typography 
+                      variant="h5"
+                    > {
+                      activeButton === "all" ? 
+                        "No Favours to display" :
+                        activeButton === "debit" ? 
+                        "No Debit Favours to display":
+                        activeButton === "credit" ? 
+                        "No Credit Favours to display":
+                        activeButton === "forgiven" ? 
+                        "No Forgiven Favours to display": 
+                        ""
+                      }
+                    </Typography>
+                  </center> :                
+                <Fragment>
+                   {
                     searchResult
                       .slice(indexOfFirstFavour, indexOfLastFavour)
                       .map((data, key) => {
@@ -512,8 +530,9 @@ const ManageFavours = props => {
                           </Card>
                         );
                       })
-                  )}
+                  }
                 </Fragment>
+                }
               </div>
               {searchResult ? (
                 <Pagination

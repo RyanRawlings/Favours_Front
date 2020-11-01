@@ -6,14 +6,15 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUsers
+} from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
 import * as FavourAPI from "../../api/FavourAPI";
 import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
 import Pagination from "../../components/pagination/index";
 import FavourModal from "../../components/favourModal/index";
-import { useLocation } from "react-router-dom";
 import SearchBar from "../../components/searchBar/index";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
@@ -90,6 +91,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+/**********************************************************************************************
+* Summary: This is the Public Request page, that users and anonymous users can utilise to view
+* active Public Requests. Only signed in users are able to meaningfully interact with
+* existing Public Requests i.e. add a new Favour reward, Claim the Public Request or delete
+* the Public Request
+***********************************************************************************************/
+
 const PublicRequest = props => {
   const [publicRequests, setPublicRequests] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
@@ -102,45 +110,68 @@ const PublicRequest = props => {
   const [resetPublicRequestList, setResetPublicRequestList] = useState();
 
   const classes = useStyles();
-  const location = useLocation();
 
+/**********************************************************************************************
+* Summary: The active Public Request list is retrived from MongoDB. The API call is wrapped
+* in a try catch, to handle any retrieval errors. The API call is re-rendered when the as the
+* user paginates through the list so to reflect update the list with any new Public Request
+* records.
+***********************************************************************************************/ 
   useEffect(() => {
     async function getPublicRequestList() {
-      const getPublicRequests = await PublicRequestAPI.getPublicRequests();
-      let result = getPublicRequests.filter(item => {
-        return item.completed === false;
-      });
-
-      setPublicRequests(result);
-      setSearchResult(result);
-      setLoading(false);
+      try {
+        const getPublicRequests = await PublicRequestAPI.getPublicRequests();
+        let result = getPublicRequests.filter(item => {
+          return item.completed === false;
+        });
+  
+        setPublicRequests(result);
+        setSearchResult(result);
+        setLoading(false);
+      } catch (error) {
+        toast.error("There was an error retrieving the Public Request data, please refresh the page");
+        setLoading(false);
+      }      
     }
 
     getPublicRequestList();
   }, [resetPublicRequestList, currentPage]);
 
+/**********************************************************************************************
+* Summary: The Favour Reward types are retrived from MongoDB. The API call is wrapped
+* in a try catch, to handle any retrieval errors. The useEffect is not subsequently called
+* after the component is mounted the first time.
+***********************************************************************************************/   
   useEffect(() => {
     async function getFavourType() {
-      const getFavourTypes = await FavourAPI.getFavourTypes();
-      // Return array and set the Favours state
-      const { favourTypes } = getFavourTypes;
-      const favourTypesArray = Object.values(favourTypes);
-      setFavourRewards(favourTypesArray);
-    }
+      try {
+        const getFavourTypes = await FavourAPI.getFavourTypes();
 
+        // Return array and set the Favours state
+        const { favourTypes } = getFavourTypes;
+        const favourTypesArray = Object.values(favourTypes);
+
+        setFavourRewards(favourTypesArray);
+      } catch (err) {
+        toast.error("There was an error retrieving the Favour types, please refresh your page");
+      }      
+    }
     getFavourType();
   }, []);
 
-  // Get current Public Requests
+/**********************************************************************************************
+* Summary: Pagination details
+***********************************************************************************************/     
   const indexOfLastRequest = currentPage * requestsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
-  const getLocation = () => {
-    return location.pathname;
-  };
 
+/**********************************************************************************************
+* Summary: Search logic implementation, will update the searchResult state array, but will
+* not trigger the useEffect to recall the API for the Public Request list.
+***********************************************************************************************/       
   // Search keywords or reward item
   const handleSearch = input => {
     setSearchBarPlaceHolder(input);
@@ -189,17 +220,17 @@ const PublicRequest = props => {
         <NavMenu props={props} />
         <div className="container_right">
           <Paper className={classes.container}>
-            <ToastContainer
-              position="top-center"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
             <div className="container_right_bottom">
               <div className={classes.headingContainer}>
                 <h2 className={classes.heading}>
@@ -282,15 +313,14 @@ const PublicRequest = props => {
                                   key={key + "-cardRight"}
                                 >
                                   <div className={classes.modal}>
-                                    {/* {console.log(data.title, data.rewards)} */}
                                     <FavourModal
                                       key={key + "-modal"}
                                       FavourId={data._id}
                                       FavourTitle={data.title}
                                       Requester={data.requestUser}
                                       FavourDescription={data.description}
-                                      Rewards={data.rewards}
-                                      Location={getLocation()}
+                                      Rewards={data.rewards}                                      
+                                      Location={props.location.pathname}
                                       User={props.user}
                                       CurrentPage={currentPage}
                                       TriggerResetPublicRequestList={

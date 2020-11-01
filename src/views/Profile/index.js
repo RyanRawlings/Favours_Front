@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import "./style.scss";
 import Paper from "@material-ui/core/Paper";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
@@ -9,7 +8,6 @@ import NavMenu from "../../components/navMenu/index";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 import * as UserAPI from "../../api/UserAPI";
 import UserContext from "../../context/UserContext";
-import DateDiff from "date-diff";
 import Pagination from "../../components/pagination/index";
 import SortObjectsArray from "sort-objects-array";
 import axios from "axios";
@@ -19,6 +17,12 @@ import * as ImageAPI from "../../api/ImageAPI";
 import Button from "@material-ui/core/Button";
 import { delay } from "q";
 import PartyDetection from "../../components/partyDetection/index";
+
+/*********************************************************************************
+ * DateDiff required for calculating how recent the user activities were 
+ * performed, an error is thrown when this import is deleted
+**********************************************************************************/ 
+import DateDiff from "date-diff";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -89,6 +93,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+/*************************************************************************************************
+ * Summary: This page is where the user can see all of their activity in the system, they can 
+ * upload a profile image and activate the party detection functionality
+ *************************************************************************************************/
 const Profile = props => {
   const classes = useStyles();
   const [userActivity, setUserActivity] = useState([]);
@@ -104,30 +112,35 @@ const Profile = props => {
   /*************************************************************************************************
    * Summary: Returns the extended user details for the current logged in user. The data is
    * re-rendered if the user uploads a new profile image, so that the s3 url can be inserted as the
-   * source for the image tag.
+   * source for the image tag. API call wrapped in a try catch for error handling
    *************************************************************************************************/
   useEffect(() => {
     async function getUserData() {
-      const user = await UserAPI.getUser({ _id: userData.user._id });
+      try {
+        const user = await UserAPI.getUser({ _id: userData.user._id });
 
-      if (user) {
-        setUser(user);
-        setImageUploaded(false);
-        setImageUploadComponent(<ImageDragAndDrop addFile={addFile} />);
-      }
+        if (user) {
+          setUser(user);
+          setImageUploaded(false);
+          setImageUploadComponent(<ImageDragAndDrop addFile={addFile} />);
+        }
+      } catch (err) {
+        toast.error("There was error retrieving your details, please refresh the page");
+      }      
     }
 
     getUserData();
   }, [imageUploaded]);
 
   /*************************************************************************************************
-   * Summary: Returns the user activity details. Date.diff performed to determine the recency of the
-   * activity. Re-render performed as the user paginates through their activity, to recalculate the
-   * time value.
+   * Summary: Returns the user activity details. Date.diff used to determine how long ago the
+   * activity or action was performed (recency). API is re-called as user paginates through their 
+   * activity, to recalculate the time value. The API call and business logic is wrapped in a 
+   * try catch for error handling.
    *************************************************************************************************/
-
   useEffect(() => {
     async function getUserActions() {
+      try {
       const userActions = await UserAPI.getUserActivity({
         _id: userData.user._id
       });
@@ -141,9 +154,7 @@ const Profile = props => {
         console.log(delta);
 
         let days = Math.floor(delta / 86400);
-
         let hours = Math.floor(delta / 3600) % 24;
-
         let minutes = Math.floor(delta / 60) % 60;
 
         if (days && hours && minutes) {
@@ -166,18 +177,27 @@ const Profile = props => {
         userActions.push({ action: "No activity to show" });
         setUserActivity(userActions);
       }
+    } catch (err) {      
+      toast.error("There was an error process your user activity details, please refresh the page");      
     }
-
+    }
     getUserActions();
   }, [currentPage]);
 
-  //Get current activity
+  /*************************************************************************************************
+   * Summary: Pagination details
+   *************************************************************************************************/
   const indexOfLastUserActivity = currentPage * userActivityPerPage;
   const indexOfFirstUserActivity =
     indexOfLastUserActivity - userActivityPerPage;
 
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
+  /*************************************************************************************************
+   * Summary: Handles the upload process of the profile images to s3. Creates new form data based
+   * on the File Array, and calls the image upload API. The API call is wrapped in try catch for 
+   * error handling.
+   *************************************************************************************************/  
   const handleSubmit = async () => {
     if (fileList.length > 1) {
       toast.error("You have tried to upload more than one image...");
@@ -187,36 +207,52 @@ const Profile = props => {
       return console.log("No file added...");
     }
 
-    let imageForm = new FormData();
-    imageForm.append("image", fileList[0][0]);
+    try {
+      const response = await ImageAPI.uploadImageToS3(fileList);
 
-    const uploadToS3 = await axios
-      .post("/api/image/upload", imageForm)
-      .then(function(response) {
-        uploadToMongoDB(response);
-      })
-      .catch(function(error) {
-        toast.error(error);
-      });
-  };
-
-  const uploadToMongoDB = async response => {
-    let newProfileImageData = {
-      _id: userData.user._id,
-      imageUrl: response.data.locationArray[0]
-    };
-
-    const storeProfileImageData = await ImageAPI.storeProfileImageData(
-      newProfileImageData
-    );
-    if (storeProfileImageData) {
-      toast.success("Successfully uploaded image");
-      await delay(3000);
-      setImageUploaded(true);
-      setImageUploadComponent(null);
+      if (response[0] === "200") {
+        uploadToMongoDB(response[1]);
+      } else if (response[0] === "400") {
+        toast.error("There was an error in uploading the profile image");
+        console.error("There was an error in uploading the profile image to the database " + response[1]);
+      }   
+    } catch (err) {
+      toast.error("There was an error uploading the profile image");
+      console.error("There was an error uploading the profile image to the database " + err);
     }
+    
   };
 
+  /*************************************************************************************************
+   * Summary: If the profile image upload to s3 is successful, this function will subsequently be
+   * called to update the imageUrl field for the relevant user to the aws s3 url passed back by the
+   * server.
+   *************************************************************************************************/    
+  const uploadToMongoDB = async response => {
+    try {
+      let newProfileImageData = {
+        _id: userData.user._id,
+        imageUrl: response.data.locationArray[0]
+      };
+  
+      const storeProfileImageData = await ImageAPI.storeProfileImageData(
+        newProfileImageData
+      );
+
+      if (storeProfileImageData) {
+        toast.success("Successfully uploaded image");
+        await delay(3000);
+        setImageUploaded(true);
+        setImageUploadComponent(null);
+      }
+    } catch (err) {
+      toast.error("There was an error in uploading the profile image")
+    }    
+  };
+
+  /*************************************************************************************************
+   * Summary: Inserts a new File object into the File Array
+   *************************************************************************************************/
   const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);

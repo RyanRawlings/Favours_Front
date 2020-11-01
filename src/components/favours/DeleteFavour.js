@@ -29,7 +29,8 @@ const DeleteFavour = (
 ) => {
   const executeDeleteFavour = async () => {
     const response = await FavourAPI.deleteOneFavour({ _id: FavourId });
-
+    console.log(response);
+    
     if (response.ok === true) {
       let userId = userData.user._id;
       let requesterEmail = getUserEmail(Requester, "", "", false, true);

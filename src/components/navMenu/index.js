@@ -26,6 +26,9 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import UserContext from "../../context/UserContext";
 import Cookies from "js-cookie";
 import PaymentIcon from "@material-ui/icons/Payment";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { delay } from "q";
 
 const drawerWidth = 180;
 
@@ -233,12 +236,15 @@ const NavMenu = props => {
   };
 
   const handleLogout = async function() {
+    
+    toast.success("Successfully logged out taking you back to the home page");
+
+    await delay(3000);
     setUserData({
       token: null,
       user: null
     });
-
-    Cookies.set("auth-token", "");
+    Cookies.set("auth-token", "");    
     window.location.href = "/home";
   };
 
