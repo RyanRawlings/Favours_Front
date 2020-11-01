@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import Avatar from "@material-ui/core/Avatar";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -9,7 +8,6 @@ import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
-import AccountBox from "@material-ui/icons/AccountBox";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import HeroImage from "../../assets/images/uts-hero-image.png";
@@ -19,7 +17,6 @@ import NavMenu from "../../components/navMenu/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
-import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -97,8 +94,7 @@ const Login = () => {
 
     try {
       const response = await UserAPI.login(user);
-
-      if (!response.message) {
+      if (response) {
         Cookie.set("auth-token", response.token);
       }
     } catch (error) {
@@ -130,7 +126,7 @@ const Login = () => {
                       </div>
                       <ToastContainer
                         position="top-center"
-                        autoClose={5000}
+                        autoClose={3000}
                         hideProgressBar={false}
                         newestOnTop={false}
                         closeOnClick
@@ -139,7 +135,6 @@ const Login = () => {
                         draggable
                         pauseOnHover
                       />
-                      {toast.success}
                       <form className={classes.form} onSubmit={handleSubmit}>
                         <TextField
                           variant="outlined"

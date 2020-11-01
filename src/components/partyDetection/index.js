@@ -27,7 +27,6 @@ const PartyDetection = ({ userData }) => {
       const partyDetection = await UserAPI.partyDetection({
         _id: userData.user._id
       });
-      console.log(partyDetection);
 
       if (
         partyDetection !== null &&
@@ -46,7 +45,7 @@ const PartyDetection = ({ userData }) => {
 
   return (
     <>
-      {location && location.pathname === "/manage_favours" ? (
+      {location && (location.pathname === "/manage_favours" || location.pathname === "/public_request") ? (
         <ToastContainer
           position="top-center"
           autoClose={3000}

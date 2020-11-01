@@ -310,6 +310,7 @@ const FavourModal = ({
 
       if (getPublicRequestsUserDetails) {
         // Return array and set the request user details state
+        // console.log("Users returned: ", getPublicRequestsUserDetails );
         setPublicRequestUserDetails(getPublicRequestsUserDetails);
       } else {
         console.log("There was an issue with getting the data");

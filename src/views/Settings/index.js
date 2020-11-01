@@ -1,24 +1,9 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Avatar from "@material-ui/core/Avatar";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { Button } from "@material-ui/core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoffee, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
-import LoadingGif from "../../assets/images/loading.gif";
-import Pagination from "../../components/pagination/index";
-import FavourModal from "../../components/favourModal/index";
-import LaunchIcon from "@material-ui/icons/Launch";
-import SearchBar from "../../components/searchBar/index";
-import { useLocation } from "react-router-dom";
-import LoadingSkeleton from "../../components/loadingSkeleton/index";
-import PropTypes from "prop-types";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { FixedSizeList } from "react-window";
 import Typography from "@material-ui/core/Typography";
 import * as UserAPI from "../../api/UserAPI";
 import UserContext from "../../context/UserContext";
@@ -26,6 +11,16 @@ import List from "@material-ui/core/List";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+  /**************************************************************************
+  * Summary: This component is a way of the user finding out more details
+  * about the groups that they are in including the emails of other users
+  * 
+  * Comment: Customised page structure using the Material UI component
+  * library
+  ***************************************************************************/
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -124,85 +119,58 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const renderRow = (props, groups) => {
-  const { index, style } = props;
-
-  return (
-    <ListItem button style={style} key={index}>
-      <ListItemText primary={`Item ${index + 1}`} />
-    </ListItem>
-  );
-};
-
-renderRow.propTypes = {
-  index: PropTypes.number.isRequired,
-  style: PropTypes.object.isRequired
-};
 
 const Settings = props => {
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [favoursPerPage, setFavoursPerPage] = useState(4);
-  const location = useLocation();
   const { userData } = useContext(UserContext);
   const [groups, setGroups] = useState([]);
   const [groupUsers, setGroupUsers] = useState([]);
   const [activeGroup, setActiveGroup] = useState([]);
   const [groupUserDetails, setGroupUserDetails] = useState([]);
+  const classes = useStyles();
 
+
+/**********************************************************************
+* The API call in the useEffect hook is wrapped in a try catch, 
+* that will fire a toast error message if there was any issue getting
+* the data
+***********************************************************************/  
   useEffect(() => {
     async function getUserGroupList() {
-      const userGroups = await UserAPI.getUserGroups({
-        userId: userData.user._id
-      });
-
-      if (userGroups) {
-        setGroups(userGroups);
-        setActiveGroup(userGroups ? userGroups[0] : []);
-
-        const groupUserEmails = await UserAPI.getGroupUserEmails({
-          groups: userGroups
+      try {
+        const userGroups = await UserAPI.getUserGroups({
+          userId: userData.user._id
         });
-        console.log("response from backend", groupUserEmails);
-
-        if (groupUserEmails.length > 0) {
-          setGroupUserDetails(groupUserEmails);
-          setGroupUsers(groupUserEmails[0]["users"]);
-        } else {
-          let defaultGroup = [
-            {
-              create_time: "",
-              department: "",
-              group_name: "",
-              image_url: "",
-              location: {
-                country: "",
-                state: "",
-                suburb: "",
-                postcode: ""
-              },
-              parentGroupId: "",
-              _id: ""
-            }
-          ];
-
-          let defaultUsers = [
-            {
-              emails: ""
-            }
-          ];
-
-          setGroups(defaultGroup);
-          setGroupUsers(defaultUsers);
+        
+        /**********************************************************************
+        * By default all users are created with the same default group (UTS) so 
+        * there will always be at least one group to select as the active group
+        ***********************************************************************/
+        if (userGroups) {
+          setGroups(userGroups);        
+          setActiveGroup(userGroups ? userGroups[0] : []);
+  
+          const groupUserEmails = await UserAPI.getGroupUserEmails({
+            groups: userGroups
+          });
+  
+          if (groupUserEmails.length > 0) {
+            setGroupUserDetails(groupUserEmails);
+            setGroupUsers(groupUserEmails[0]["users"]);
+          } else {
+            console.log("No users were returned for the group");
+          }
         }
-      }
+      } catch (err) {
+        toast.error("Error occurred retrieving the data, please refresh the page");
+      }      
     }
-
     getUserGroupList();
   }, []);
 
-  const classes = useStyles();
-
+  /**************************************************************************
+  * Summary: Handles the on click event between the groups available to the
+  * user. This change will trigger a re-render of the data
+  ***************************************************************************/  
   const handleGroupUpdate = groupId => {
     for (let i = 0; i < groups.length; i++) {
       if (groupId === groups[i]._id) {
@@ -220,6 +188,17 @@ const Settings = props => {
         <NavMenu props={props} />
         <div className="container_right">
           <Paper className={classes.container}>
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
             <div className={classes.container_right_bottom}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
@@ -232,8 +211,6 @@ const Settings = props => {
                     className={classes.listComponent}
                     aria-label="contacts"
                   >
-                    {console.log(activeGroup)}
-                    {console.log("groups: ", groups)}
                     {groups
                       ? groups.map((item, index) => (
                           <ListItem
@@ -256,9 +233,12 @@ const Settings = props => {
                       : ""}
                   </List>
                 </Grid>
-                {groups.group_name !== undefined && groups.length === 1 ? (
-                  ""
-                ) : (
+                {/****************************************************************
+                * Checks whether the activeGroup.location property has value, 
+                * won't render the Grid on screen until the relevant data is 
+                * available
+                *****************************************************************/}
+                {activeGroup.location? (
                   <Grid item xs={12} sm={6}>
                     <Paper className={classes.groupForm}>
                       <Grid container spacing={3}>
@@ -267,14 +247,7 @@ const Settings = props => {
                         </Grid>
                         <Grid item xs={6}>
                           <TextField
-                            value={
-                              groups.group_name !== undefined &&
-                              groups.length === 1
-                                ? ""
-                                : activeGroup
-                                ? activeGroup.group_name
-                                : ""
-                            }
+                            value={activeGroup.group_name}
                             variant="outlined"
                             label="Group name"
                             InputLabelProps={{ shrink: true }}
@@ -282,14 +255,7 @@ const Settings = props => {
                         </Grid>
                         <Grid item xs={6}>
                           <TextField
-                            value={
-                              groups.group_name !== undefined &&
-                              groups.length === 1
-                                ? ""
-                                : activeGroup
-                                ? activeGroup.department
-                                : ""
-                            }
+                            value={activeGroup.department}
                             variant="outlined"
                             label="Department"
                             InputLabelProps={{ shrink: true }}
@@ -302,14 +268,7 @@ const Settings = props => {
                         </Grid>
                         <Grid item xs={3}>
                           <TextField
-                            value={
-                              groups.group_name !== undefined &&
-                              groups.length === 1
-                                ? ""
-                                : activeGroup.location
-                                ? activeGroup.location.suburb
-                                : ""
-                            }
+                            value={activeGroup.location.suburb}
                             variant="outlined"
                             label="Suburb"
                             InputLabelProps={{ shrink: true }}
@@ -317,14 +276,7 @@ const Settings = props => {
                         </Grid>
                         <Grid item xs={3}>
                           <TextField
-                            value={
-                              groups.group_name !== undefined &&
-                              groups.length === 1
-                                ? ""
-                                : activeGroup.location
-                                ? activeGroup.location.state
-                                : ""
-                            }
+                            value={activeGroup.location.state}
                             variant="outlined"
                             label="State"
                             InputLabelProps={{ shrink: true }}
@@ -332,14 +284,7 @@ const Settings = props => {
                         </Grid>
                         <Grid item xs={3}>
                           <TextField
-                            value={
-                              groups.group_name !== undefined &&
-                              groups.length === 1
-                                ? ""
-                                : activeGroup.location
-                                ? activeGroup.location.country
-                                : ""
-                            }
+                            value={activeGroup.location.country}
                             variant="outlined"
                             label="Country"
                             InputLabelProps={{ shrink: true }}
@@ -347,14 +292,7 @@ const Settings = props => {
                         </Grid>
                         <Grid item xs={3}>
                           <TextField
-                            value={
-                              groups.group_name !== undefined &&
-                              groups.length === 1
-                                ? ""
-                                : activeGroup.location
-                                ? activeGroup.location.postcode
-                                : ""
-                            }
+                            value={activeGroup.location.postcode}
                             variant="outlined"
                             label="Postcode"
                             InputLabelProps={{ shrink: true }}
@@ -366,6 +304,10 @@ const Settings = props => {
                           <Typography variant="h6">Users in Group</Typography>
                         </Grid>
                         <Grid item xs={12} sm={6}>
+                          {/********************************************************
+                           * Autocomplete component used so to minimise the overflow
+                           * of the user emails display in the details section. 
+                          **********************************************************/}
                           <Autocomplete
                             id="combo-box-demo"
                             options={groupUsers}
@@ -383,6 +325,8 @@ const Settings = props => {
                       </Grid>
                     </Paper>
                   </Grid>
+                ):(
+                  ""
                 )}
               </Grid>
             </div>

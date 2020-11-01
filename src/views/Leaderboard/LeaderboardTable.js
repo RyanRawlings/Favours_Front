@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import * as UserAPI from "../../api/UserAPI";
-import { GridOverlay, DataGrid } from '@material-ui/data-grid';
+import { GridOverlay, DataGrid } from "@material-ui/data-grid";
 import LoadingGif from "../../assets/images/loading.gif";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 const columns = [
-  { field: 'id', headerName: 'Rank', width: 100 },
-  { field: 'user', headerName: 'User', width: 280 },
-  { field: 'favoursForgiven',headerName: 'Favours Forgiven', width: 180 },
-  { field: 'favourDebits', headerName: 'Favour Debits', width: 180 },
-  { field: 'favourCredits',headerName: 'Favours Credits',width: 180 },
+  { field: "id", headerName: "Rank", width: 100 },
+  { field: "user", headerName: "User", width: 280 },
+  { field: "favoursForgiven", headerName: "Favours Forgiven", width: 180 },
+  { field: "favourDebits", headerName: "Favour Debits", width: 180 },
+  { field: "favourCredits", headerName: "Favours Credits", width: 180 }
 ];
 
 function CustomNoRowsOverlay(loading) {
@@ -66,22 +58,29 @@ function CustomNoRowsOverlay(loading) {
           </g>
         </g>
       </svg>
-      {loading === true? (
+      {loading === true ? (
         <center>
-            <img src={LoadingGif} width="100px" height="100px" alt="Loading..."/>
-        </center>) :
-      <div className={classes.label}>Could not retrieve data from server <FontAwesomeIcon className={classes.noRowsIcon} icon={faExclamationTriangle}/></div>}
+          <img src={LoadingGif} width="100px" height="100px" alt="Loading..." />
+        </center>
+      ) : (
+        <div className={classes.label}>
+          Could not retrieve data from server{" "}
+          <FontAwesomeIcon
+            className={classes.noRowsIcon}
+            icon={faExclamationTriangle}
+          />
+        </div>
+      )}
     </GridOverlay>
   );
 }
 
-
 const useStyles = makeStyles({
   root: {
-    width: '100%',
+    width: "100%"
   },
   container: {
-    maxHeight: 440,
+    maxHeight: 440
   },
   noRowsIcon: {
     color: "red"
@@ -93,7 +92,6 @@ const useStyles = makeStyles({
 });
 
 const LeaderboardTable = () => {
-
   const [rows, setRows] = useState([]);
   const classes = useStyles();
   const [page, setPage] = useState(0);
@@ -101,41 +99,41 @@ const LeaderboardTable = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchLeaderboard() {    
-        const fetchLeaderboardData = await UserAPI.getLeaderboard();        
-        let rows = [];
-        let newRow = {};
+    async function fetchLeaderboard() {
+      const fetchLeaderboardData = await UserAPI.getLeaderboard();
+      let rows = [];
+      let newRow = {};
 
-        if(fetchLeaderboardData && fetchLeaderboardData.length > 0) {      
-          for (let i = 0; i < fetchLeaderboardData.length; i++) {
-            newRow = {
-              id: i + 1,
-              user: fetchLeaderboardData[i].user,
-              favoursForgiven: fetchLeaderboardData[i].favoursForgiven,
-              favourDebits: fetchLeaderboardData[i].favourDebits,
-              favourCredits: fetchLeaderboardData[i].favourCredits,
-            }
-            rows.push(newRow);
-          }          
-        }  
-        setRows(rows);
-        setLoading(false);
-    }    
+      if (fetchLeaderboardData && fetchLeaderboardData.length > 0) {
+        for (let i = 0; i < fetchLeaderboardData.length; i++) {
+          newRow = {
+            id: i + 1,
+            user: fetchLeaderboardData[i].user,
+            favoursForgiven: fetchLeaderboardData[i].favoursForgiven,
+            favourDebits: fetchLeaderboardData[i].favourDebits,
+            favourCredits: fetchLeaderboardData[i].favourCredits
+          };
+          rows.push(newRow);
+        }
+      }
+      setRows(rows);
+      setLoading(false);
+    }
 
     fetchLeaderboard();
   }, []);
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid 
-          rows={rows? rows: rows}
-          columns={columns}
-          pageSize={5} 
-          components={{noRowsOverlay: () => CustomNoRowsOverlay(loading)}}
-          className={classes.leaderBoard}
+    <div style={{ height: 400, width: "100%" }}>
+      <DataGrid
+        rows={rows ? rows : rows}
+        columns={columns}
+        pageSize={5}
+        components={{ noRowsOverlay: () => CustomNoRowsOverlay(loading) }}
+        className={classes.leaderBoard}
       />
     </div>
   );
-}
+};
 
 export default LeaderboardTable;

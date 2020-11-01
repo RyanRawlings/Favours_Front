@@ -10,4 +10,4 @@ export const deleteOneFavour = data =>
 export const forgiveFavour = data =>
   callAPI("post", "/api/favour/forgive-debt", data);
 
-export const getFavourTypes = () => callAPI("get", "/api/get/get-favourType");
+export const getFavourTypes = () => callAPI("get", "/api/favour/get/favourType");

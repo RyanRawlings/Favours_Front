@@ -1,25 +1,15 @@
-import React, { useState, useEffect, useContext, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Paper from "@material-ui/core/Paper";
 import NavMenu from "../../components/navMenu/index";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 import * as ImageAPI from "../../api/ImageAPI";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useLocation } from "react-router-dom";
 import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
@@ -95,28 +85,45 @@ const RepaySelectedFavours = props => {
   };
 
   const handleSubmit = async () => {
-    let imageForm = new FormData();
-
-    for (let i = 0; i < fileList.length; i++) {
-      // console.log(fileList[i][0]);
-      imageForm.append("image", fileList[i][0]);
+    try {
+      const response = await ImageAPI.uploadImageToS3(fileList, "multiple");
+      if (response) {
+        if(response[0] === "200") {
+          uploadToMongoDB(response[1]);
+        } else {
+          toast.error(response[1]);
+        }
+      } else {
+        toast.error("There was an error uploading the image(s)")
+      }
+      
+    } catch (err) {
+      toast.error("There was an error in image processing " + err);
     }
 
-    //   const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
-    const uploadToS3 = await axios
-      .post("/api/image/upload", imageForm)
-      .then(function(response) {
-        toast.success(
-          "Successfully stored images on AWS... Now starting database processing"
-        );
-        uploadToMongoDB(response);
-      })
-      .catch(function(error) {
-        toast.error(error);
-      });
+    // let imageForm = new FormData();
+
+    // for (let i = 0; i < fileList.length; i++) {
+    //   // console.log(fileList[i][0]);
+    //   imageForm.append("image", fileList[i][0]);
+    // }
+
+    // const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
+    // const uploadToS3 = await axios
+    //   .post("/api/image/upload", imageForm)
+    //   .then(function(response) {
+    //     toast.success(
+    //       "Successfully stored images on AWS... Now starting database processing"
+    //     );
+    //     uploadToMongoDB(response);
+    //   })
+    //   .catch(function(error) {
+    //     toast.error(error);
+    //   });
   };
 
   const uploadToMongoDB = async response => {
+    try {    
     let imageArray = [];
     if (response) {
       for (let i = 0; i < response.data.locationArray.length; i++) {
@@ -128,7 +135,6 @@ const RepaySelectedFavours = props => {
     }
 
     imageArray.push({ type: "Repay" });
-    console.log("Sending off the data to the server now");
 
     const storeImageData = await ImageAPI.storeImageData(imageArray);
     if (storeImageData) {
@@ -139,6 +145,10 @@ const RepaySelectedFavours = props => {
       await delay(5000);
       props.history.push("/multi_repay");
     }
+  } catch (err) {
+    toast.error("There was an error in image processing, please refresh the page");
+  }
+
   };
 
   return (

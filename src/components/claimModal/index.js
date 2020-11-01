@@ -166,7 +166,9 @@ const ClaimModal = ({
         }
       });
     });
-    await PublicRequestAPI.claimPublicRequest(query);
+    const response = await PublicRequestAPI.claimPublicRequest(query);
+
+    console.log(response)
   };
 
   /**************************************************************************************************

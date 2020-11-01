@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import "./style.scss";
 import Paper from "@material-ui/core/Paper";
-import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
@@ -17,23 +16,17 @@ import NavMenu from "../../components/navMenu/index";
 import LoadingGif from "../../assets/images/loading.gif";
 import Pagination from "../../components/pagination/index";
 import FavourModal from "../../components/favourModal/index";
-import LaunchIcon from "@material-ui/icons/Launch";
 import SearchBar from "../../components/searchBar/index";
 import { useLocation } from "react-router-dom";
-import LoadingSkeleton from "../../components/loadingSkeleton/index";
-import Alert from "@material-ui/lab/Alert";
-import IconButton from "@material-ui/core/IconButton";
-import Collapse from "@material-ui/core/Collapse";
-import CloseIcon from "@material-ui/icons/Close";
 import NewPublicRequest from "../../components/publicRequests/newPublicRequestForm";
 import NewFavour from "../../components/favours/NewFavourForm";
-import { Link } from "react-router-dom";
 import * as FavourAPI from "../../api/FavourAPI";
 import UserContext from "../../context/UserContext";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import PartyDetection from "../../components/partyDetection/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -449,8 +442,7 @@ const ManageFavours = props => {
                 </div>
               </div>
               <div className="cards_container">
-                <Fragment>
-                  {loading ? (
+                {loading ? (
                     <center>
                       <img
                         src={LoadingGif}
@@ -458,8 +450,26 @@ const ManageFavours = props => {
                         height="100px"
                         alt="Loading..."
                       />
-                    </center>
-                  ) : (
+                    </center> ) :
+                  searchResult.length === 0? 
+                  <center>
+                    <Typography 
+                      variant="h5"
+                    > {
+                      activeButton === "all" ? 
+                        "No Favours to display" :
+                        activeButton === "debit" ? 
+                        "No Debit Favours to display":
+                        activeButton === "credit" ? 
+                        "No Credit Favours to display":
+                        activeButton === "forgiven" ? 
+                        "No Forgiven Favours to display": 
+                        ""
+                      }
+                    </Typography>
+                  </center> :                
+                <Fragment>
+                   {
                     searchResult
                       .slice(indexOfFirstFavour, indexOfLastFavour)
                       .map((data, key) => {
@@ -520,8 +530,9 @@ const ManageFavours = props => {
                           </Card>
                         );
                       })
-                  )}
+                  }
                 </Fragment>
+                }
               </div>
               {searchResult ? (
                 <Pagination

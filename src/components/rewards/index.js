@@ -1,11 +1,7 @@
-import React, { Fragment, useState, useContext } from "react";
-import List from "@material-ui/core/List";
+import React, { Fragment } from "react";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Paper from "@material-ui/core/Paper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -47,11 +43,12 @@ const Rewards = ({
 }) => {
   const classes = useStyles();
 
-/*****************************************************************************************
-* Summary: An array of user information is passed as a parameter to the Rewards component
-* this array is used to determine what the email is of the user that has added a reward to
-* an existing Public Request
-******************************************************************************************/    
+  /*****************************************************************************************
+   * Summary: An array of user information is passed as a parameter to the Rewards component
+   * this array is used to determine what the email is of the user that has added a reward to
+   * an existing Public Request
+   ******************************************************************************************/
+
   const getUserEmail = (userId, type) => {
     if (users) {
       for (let i = 0; i < users.length; i++) {
@@ -76,9 +73,10 @@ const Rewards = ({
     }
   };
 
-/*****************************************************************************************
-* Summary: Checks that the user context data is still valid and avialable for use
-******************************************************************************************/  
+  /*****************************************************************************************
+   * Summary: Checks that the user context data is still valid and avialable for use
+   ******************************************************************************************/
+
   const userDataAvailable = () => {
     try {
       if (userData.user.email) {
@@ -156,6 +154,6 @@ const Rewards = ({
       </Paper>
     </Fragment>
   );
-}
+};
 
 export default Rewards;
