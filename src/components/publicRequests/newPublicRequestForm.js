@@ -22,6 +22,13 @@ import { useLocation } from "react-router-dom";
 import * as UserAPI from "../../api/UserAPI";
 import { delay } from "q";
 
+/***************************************************************************************************
+* Summary: This component is comprised of a button that launches a modal that is used to 
+* create new Public Requests.
+* 
+* Code Attribution: https://material-ui.com/
+****************************************************************************************************/
+
 const useStyles = makeStyles(theme => ({
   modal: {
     display: "flex",
@@ -194,36 +201,41 @@ const NewPublicRequestForm = () => {
    ********************************************************************************************/
 
   const createPublicRequestHelper = async data => {
-    const response = await PublicRequestAPI.createPublicRequest(data);
-    if (response) {
-      // console.log(response)
-      let userId = userData.user._id;
-      if (response.newPublicRequest) {
+    try {
+      const response = await PublicRequestAPI.createPublicRequest(data);
+      if (response) {
+        // console.log(response)
+        let userId = userData.user._id;
+        if (response.newPublicRequest) {
+        }
+        let action = `Created new Public Request ${response.newPublicRequest.title} - ${response.newPublicRequest.rewards.length} Reward(s)`;
+        let newActivityData = {
+          userId: userId,
+          action: action
+        };
+
+        // Create new user activity
+        await UserAPI.createUserActivity(newActivityData);
+
+        // // Set toast details
+        toast.success("Successfully created the Public Request");
+
+        // Reset the rewards state variable
+        setRewards([]);
+
+        // Hold execution for 3s then close the modal
+        await delay(3000);
+        handleClose();
+      } else {
+        // Set toast details
+        toast.error("Error creating the Public Request");
+
+        await delay(3000);
+        handleClose();
       }
-      let action = `Created new Public Request ${response.newPublicRequest.title} - ${response.newPublicRequest.rewards.length} Reward(s)`;
-      let newActivityData = {
-        userId: userId,
-        action: action
-      };
-
-      // Create new user activity
-      await UserAPI.createUserActivity(newActivityData);
-
-      // // Set toast details
-      toast.success("Successfully created the Public Request");
-
-      // Reset the rewards state variable
-      setRewards([]);
-
-      // Hold execution for 3s then close the modal
-      await delay(3000);
-      handleClose();
-    } else {
-      // Set toast details
-      toast.error("Error creating the Public Request");
-
-      await delay(3000);
-      handleClose();
+    } catch (err) {
+      toast.error("An error occurred creating the new Public Request");
+      console.error("An error occurred processing the new Public Request " + err);
     }
   };
 
@@ -289,7 +301,7 @@ const NewPublicRequestForm = () => {
           <Grid container className={classes.modalContent} spacing={3}>
             <ToastContainer
               position="top-center"
-              autoClose={2000}
+              autoClose={3000}
               hideProgressBar={false}
               newestOnTop={false}
               closeOnClick

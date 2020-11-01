@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 
+/**********************************************************************************************
+ * Summary: login and sign up button component. It can take props to change the color assigned
+ * to the buttons
+ * 
+ * Code Attribution: 
+ * - https://material-ui.com/
+ ***********************************************************************************************/
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",

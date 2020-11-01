@@ -6,15 +6,19 @@ import UserContext from "../../context/UserContext";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import TextField from "@material-ui/core/TextField";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
-import axios from "axios";
 import * as ImageAPI from "../../api/ImageAPI";
 import { delay } from "q";
 import * as UserAPI from "../../api/UserAPI";
 import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 
+/**************************************************************************************************
+* Summary: Claim modal, allows users to upload proof to claim public requests
+* 
+* Code Attribution: https://material-ui.com/
+**************************************************************************************************/
 const useStyles = makeStyles(theme => ({
   root: {
     "& .MuiTextField-root": {
@@ -81,9 +85,7 @@ const ClaimModal = ({
 }) => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
-  console.log(userData);
   const [open, setOpen] = useState(false);
-  // todo upload successfully or not
   const [fileList, setFileList] = useState([]);
   const [snippet, setSnippet] = useState("Thank you");
 
@@ -114,33 +116,27 @@ const ClaimModal = ({
       return console.log("No file added...");
     }
 
-    let imageForm = new FormData();
+    try {
+      const response = await ImageAPI.uploadImageToS3(fileList, "single");
 
-    for (let i = 0; i < fileList.length; i++) {
-      imageForm.append("image", fileList[i][0]);
-    }
-
-    const uploadToS3 = await axios
-      .post("/api/image/upload", imageForm)
-      .then(function(response) {
-        toast.success(
-          "Successfully stored images on AWS... Now starting database processing"
-        );
+      if (response) {
         uploadToMongoDB(response);
         transferToFavour(response);
-      })
-      .catch(function(error) {
-        toast.error(error);
-      });
-
-    let userId = userData.user._id;
-    let action = "Claimed a public request";
-    let newActivityData = {
-      userId: userId,
-      action: action
-    };
-
-    const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+      }
+  
+      let userId = userData.user._id;
+      let action = "Claimed a public request";
+      let newActivityData = {
+        userId: userId,
+        action: action
+      };
+  
+      const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+    } catch (err) {
+      console.error("An error occurred claiming the Public Request " + err);
+      toast.error("An error occurred claiming the Public Request");
+    }
+    
   };
 
   /**************************************************************************************************
@@ -166,15 +162,23 @@ const ClaimModal = ({
         }
       });
     });
-    const response = await PublicRequestAPI.claimPublicRequest(query);
 
-    console.log(response)
+    try {
+      const response = await PublicRequestAPI.claimPublicRequest(query);
+      if (response) {
+        toast.success("Successfully claimed Public Request");
+      }
+    } catch (err) {
+      console.error("An error occurred while claiming the Public Request " + err)
+      toast.error("An error occurred while claiming the Public Request");
+    }
+    
+
   };
 
   /**************************************************************************************************
    * Summary: Handles the post s3 image upload, updating the Image URL for the new Favours
    ***************************************************************************************************/
-
   const uploadToMongoDB = async response => {
     let imageArray = [];
     if (response) {
@@ -192,15 +196,21 @@ const ClaimModal = ({
       snippet: snippet
     });
 
-    const storeImageData = await ImageAPI.storeImageData(imageArray);
-    if (storeImageData) {
-      toast.success("Completed image update process...");
-
-      await delay(3000);
-      handleClose();
-      handleParentModalClose();
-      TriggerResetPublicRequestList();
+    try {
+      const storeImageData = await ImageAPI.storeImageData(imageArray);
+      if (storeImageData) {
+        toast.success("Completed image update process...");
+  
+        await delay(3000);
+        handleClose();
+        handleParentModalClose();
+        TriggerResetPublicRequestList();
+      }
+    } catch (err) {
+      console.error("An error occurred uploading the image " + err);
+      toast.error("An error occurred uploading the image");
     }
+    
   };
 
   /**************************************************************************************************
@@ -220,32 +230,36 @@ const ClaimModal = ({
    ***************************************************************************************************/
 
   const handleDelete = async () => {
-    console.log("favourid", favourId);
+    try {
+      let response = await PublicRequestAPI.deletePublicRequest(favourId);
 
-    let response = await PublicRequestAPI.deletePublicRequest(favourId);
-
-    if (response) {
-      let userId = userData.user._id;
-      let action = `Deleted Public Request ${favourTitle} - ${favourOwed.length} Reward(s)`;
-      let newActivityData = {
-        userId: userId,
-        action: action
-      };
-
-      const newUserActivity = await UserAPI.createUserActivity(newActivityData);
-
-      console.log("delete response:", response.message);
-
-      toast.success("Successfully deleted public request");
-
-      await delay(3000);
-      handleClose();
-      handleParentModalClose();
-      TriggerResetPublicRequestList();
-    } else {
-      toast.error("There was an error deleting the public request");
-      TriggerResetPublicRequestList();
+      if (response) {
+        let userId = userData.user._id;
+        let action = `Deleted Public Request ${favourTitle} - ${favourOwed.length} Reward(s)`;
+        let newActivityData = {
+          userId: userId,
+          action: action
+        };
+  
+        const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+  
+        console.log("delete response:", response.message);
+  
+        toast.success("Successfully deleted public request");
+  
+        await delay(3000);
+        handleClose();
+        handleParentModalClose();
+        TriggerResetPublicRequestList();
+      } else {
+        toast.error("There was an error deleting the public request");
+        TriggerResetPublicRequestList();
+      }
+    } catch (err) {
+      console.error("An error occurred deleting the public request " + err);
+      toast.error("An error occurred deleting the public request");
     }
+  
   };
 
   return (

@@ -8,11 +8,14 @@ import LaunchIcon from "@material-ui/icons/Launch";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import CancelPresentationIcon from "@material-ui/icons/CancelPresentation";
-import UserContext from "../../context/UserContext";
 import RecordFavour from "../../components/favours/RecordFavour";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
+/**********************************************************************************************
+ * Summary: Modal skeleton for the component to create new Favours.
+ * 
+ * Code Attribution: 
+ * - https://material-ui.com/
+ ***********************************************************************************************/
 const useStyles = makeStyles(theme => ({
   modal: {
     display: "flex",
@@ -110,9 +113,6 @@ const useStyles = makeStyles(theme => ({
 
 const NewFavourForm = ({ TriggerResetFavourList }) => {
   const classes = useStyles();
-
-  // User information from JWT
-  const { userData, setUserData } = useContext(UserContext);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {

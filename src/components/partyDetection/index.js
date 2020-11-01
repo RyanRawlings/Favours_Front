@@ -6,6 +6,16 @@ import * as UserAPI from "../../api/UserAPI";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation } from "react-router-dom";
 
+/*****************************************************************************************
+* Summary: Party detection component, can be triggered across many pages
+*
+* Code Attribution: 
+* - https://material-ui.com/
+* - https://www.npmjs.com/package/react-toastify
+* - https://reactrouter.com/web/guides/quick-start
+*
+******************************************************************************************/
+
 const useStyles = makeStyles(theme => ({
   partyDetection: {
     fontSize: "10px",
@@ -22,6 +32,10 @@ const PartyDetection = ({ userData }) => {
   const classes = useStyles();
   const location = useLocation();
 
+/*****************************************************************************************
+* partyDetection API returns an array of user emails, the current user should create a
+* party with
+******************************************************************************************/  
   const handlePartyDetection = async () => {
     try {
       const partyDetection = await UserAPI.partyDetection({
@@ -31,7 +45,8 @@ const PartyDetection = ({ userData }) => {
       if (
         partyDetection !== null &&
         partyDetection !== undefined &&
-        partyDetection.length > 0
+        partyDetection.length > 0 &&
+        partyDetection.length !== 1
       ) {
         let partyString = partyDetection.join(", ");
         toast.success("You should create a \nparty with " + partyString);

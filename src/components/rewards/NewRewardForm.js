@@ -6,8 +6,21 @@ import { makeStyles } from "@material-ui/core/styles";
 import * as FavourAPI from "../../api/FavourAPI";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CounterButtonGroup from "../counterButtonGroup/index";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+/***************************************************************************************************
+* Summary: This component handles the process of adding new reward items to Public requests both
+* New and Existing records.
+* 
+* Code Attribution: 
+* https://www.digitalocean.com/community/tutorials/how-to-build-a-react-to-do-app-with-react-hooks
+*
+* Author: Kapehe Jorgenson
+*
+* Comment: Aspects of the todo list application within the tutorial linked above, was used
+* to create the add new reward items feature.
+****************************************************************************************************/
 
 const useStyles = makeStyles(theme => ({
   listHeading: {
@@ -17,18 +30,26 @@ const useStyles = makeStyles(theme => ({
 
 const NewRewardForm = ({ addReward, userData }) => {
   const classes = useStyles();
-  const [, setValue] = useState("");
+  const [value,setValue] = useState("");
   const [favourRewards, setFavourRewards] = useState([]);
 
+
+/***************************************************************************************************
+* Summary: Get Favour types called once has the component is first mounted
+****************************************************************************************************/  
   useEffect(() => {
     async function getFavourType() {
-      const getFavourTypes = await FavourAPI.getFavourTypes();
-      // Return array and set the Favours state
-      const { favourTypes } = getFavourTypes;
-      const favourTypesArray = Object.values(favourTypes);
-      setFavourRewards(favourTypesArray);
+      try {
+        const getFavourTypes = await FavourAPI.getFavourTypes();
+        // Return array and set the Favours state
+        const { favourTypes } = getFavourTypes;
+        const favourTypesArray = Object.values(favourTypes);
+        setFavourRewards(favourTypesArray);
+      } catch (err) {
+        toast.error("There was an error retrieving the Favour Reward types");
+        console.error("There was an error retrieving the Favour Reward types " + err);
+      }      
     }
-
     getFavourType();
   }, []);
 
@@ -40,8 +61,11 @@ const NewRewardForm = ({ addReward, userData }) => {
   );
   const [rewardId, setRewardId] = useState(null);
 
+/***************************************************************************************************
+* Summary: Handles when the user clicks the Add button, adds a new reward item to the list by
+* calling the function that was passed in by props to the component.
+****************************************************************************************************/    
   const handleSubmit = e => {
-    console.log("Add reward called...");
     e.preventDefault();
 
     // Pass the user id instead
@@ -52,13 +76,19 @@ const NewRewardForm = ({ addReward, userData }) => {
       offeredBy: userData.user.email,
       providedBy: userData.user._id
     });
+
     toast.success(
       "Reward successfully added. Only you can remove the reward from the request"
     );
+
     setValue("");
     setRewardName(null);
   };
 
+/***************************************************************************************************
+* Summary: Iterates through the list of Favour Types to return the object id matching the Favour
+* Name (value) passed as a parameter
+****************************************************************************************************/      
   const setRewardIdHelper = (object, value) => {
     const rewardsObject = Object.values(object);
     for (let i = 0; i < rewardsObject.length; i++) {

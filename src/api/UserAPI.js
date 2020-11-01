@@ -15,12 +15,17 @@ import { delay } from "q";
 export async function login(data) {
   try {
     const response = await axios.post("/api/user/login", data);    
-    if (response.status >= 200 && response.status < 300) {                        
-      toast.success("Successfully logged into account, taking you to the Public Request screen");
+    if (response.status >= 200 && response.status < 300) {   
+      if (!response.data.message) {
+        toast.success("Successfully logged into account, taking you to the Public Request screen");
+        
+        await delay(3000);
+        window.location.href = "/public_request";
+        return response.data;
+      } else {
+        toast.error(response.data.message);
+      }
 
-      await delay(3000);
-      window.location.href = "/public_request";
-      return response.data;
     } else {
       toast.error(response.data);
       return response.data;
@@ -68,14 +73,18 @@ export async function login(data) {
 export async function register(data) {
   try {
     const response = await axios.post("/api/user/register", data);    
-    if (response.status >= 200 && response.status < 300) {                        
-      toast.success("Successfully created account, taking you to the login screen");
+    if (response.status >= 200 && response.status < 300) {  
+      if (!response.data.message) {
+        toast.success("Successfully created account, taking you to the login screen");
 
-      await delay(3000);
-      window.location.href = "/login";
-      return response.data;
+        await delay(3000);
+        window.location.href = "/login";
+        return response.data;
+      } else {
+        toast.error(response.data.message);
+      }
     } else {
-      toast.error(response.data);
+      toast.error(response.data.message);
       return response.data;
     }
   } catch {

@@ -9,11 +9,18 @@ import SaveIcon from "@material-ui/icons/Save";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as UserAPI from "../../api/UserAPI";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as FavourAPI from "../../api/FavourAPI";
 import ImageDragAndDrop from "../uploadImage/imageDragAndDrop";
 import { SingleImageUpload } from "../uploadImage/singleImageUpload";
+
+/**********************************************************************************************
+ * Summary: Component for creating new Favours
+ * 
+ * Code Attribution: 
+ * - https://material-ui.com/
+ ***********************************************************************************************/
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -76,10 +83,10 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
   const [favourType, setFavourType] = useState([]);
   const [debtor, setDebtor] = useState(null);
   const [creditor, setCreditor] = useState(null);
-  const [, setFavourTypeId] = useState(null);
+  const [favourTypeId,setFavourTypeId] = useState(null);
   const [favourName, setFavourName] = useState(null);
   const [favourDescription, setFavourDescription] = useState(null);
-  const [, setFavourDate] = useState(null);
+  const [favourDate,setFavourDate] = useState(null);
   const [userList, setUserList] = useState([]);
   const [fileList, setFileList] = useState([]);
 
@@ -88,33 +95,40 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
   /**************************************************************************************************
    * Summary: Returns the Types of Favours that can be selected in an Array, on page load
    ***************************************************************************************************/
-
   useEffect(() => {
     async function getFavourType() {
-      const getFavourTypes = await FavourAPI.getFavourTypes();
-      // Return array and set the Favours state
-      const { favourTypes } = getFavourTypes;
-      const favourTypesArray = Object.values(favourTypes);
-      setFavourType(favourTypesArray);
+      try {
+        const getFavourTypes = await FavourAPI.getFavourTypes();
+        // Return array and set the Favours state
+        const { favourTypes } = getFavourTypes;
+        const favourTypesArray = Object.values(favourTypes);
+        setFavourType(favourTypesArray);
+      } catch (err) {
+        toast.error("There was an error retrieving the Favour Types");
+        console.error("There was an error retrieving the Favour Types " + err);
+      }      
     }
-
     getFavourType();
   }, []);
 
   /**************************************************************************************************
    * Summary: Returns all Users in an Array, on page load
    ***************************************************************************************************/
-
   useEffect(() => {
     async function getUserList() {
-      const getUsers = await UserAPI.getUsers();
-      // Return array of users
-      if (getUsers) {
-        setUserList(getUsers);
-        console.log("Users set...");
-      } else {
-        console.log("Error occurred fetching the user data... Please refresh");
-      }
+      try {
+        const getUsers = await UserAPI.getUsers();
+        // Return array of users
+        if (getUsers) {
+          setUserList(getUsers);
+          console.log("Users set...");
+        } else {
+          console.log("Error occurred fetching the user data... Please refresh");
+        }
+      } catch (err) {
+        toast.error("There was an error retrieving the users");
+        console.error("There was an error retrieving the users " + err);
+      }      
     }
     getUserList();
   }, []);
@@ -123,7 +137,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
    * Summary: On Input Change to the Favour dropdown list, update the FavourId state variable with
    * the corressponding object id.
    ***************************************************************************************************/
-
   const setFavourIdHelper = (object, value) => {
     const favourTypesArray = Object.values(object);
     for (let i = 0; i < favourTypesArray.length; i++) {
@@ -137,7 +150,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
    * Summary: Additional layer of validation, will return a boolean as to whether the Record button
    * should be enabled/disabled
    ***************************************************************************************************/
-
   const enableSubmitButton = () => {
     try {
       if (
@@ -159,7 +171,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
    * Summary: Favour validation to ensure the integrity of the data, before the image upload function
    * is called
    ***************************************************************************************************/
-
   const favourValidation = () => {
     if (creditor === debtor) {
       return [false, "You have set the creditor and debtor to the same value"];
@@ -181,7 +192,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
    * Summary: Handles the image upload to s3, on success Favour is created in Mongo db. On success of
    * the creation of the Favour, a new UserActivity record is also created in Mongo db
    ***************************************************************************************************/
-
   const handleSubmit = async () => {
     SingleImageUpload(
       "",
@@ -202,7 +212,6 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
   /**************************************************************************************************
    * Summary: Handles adding a new file to the fileList state variable Array
    ***************************************************************************************************/
-
   const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);

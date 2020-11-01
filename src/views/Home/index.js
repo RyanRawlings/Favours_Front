@@ -9,6 +9,7 @@ import Link from "@material-ui/core/Link";
 import NavMenu from "../../components/navMenu/index";
 import BackgroundImage from "../../assets/images/hero-image-people-cartoon-tb.png";
 import UserContext from "../../context/UserContext";
+import Cookie from "js-cookie";
 
 /*************************************************************************************************************
 * Code Attribution: https://material-ui.com/getting-started/templates/ -> Album
@@ -82,6 +83,7 @@ const useStyles = makeStyles(theme => ({
 const HomePage = () => {
   const classes = useStyles();
   const { userData } = useContext(UserContext);
+  const cookie = Cookie.get("auth-token");
 
   return (
     <React.Fragment>
@@ -127,7 +129,7 @@ const HomePage = () => {
                 **************************************************************************/}
                 <Grid item>                  
                 {
-                  !userData?                   
+                  !cookie?                   
                   <Button
                     className={classes.signupButton}
                     variant="contained"

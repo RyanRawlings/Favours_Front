@@ -30,6 +30,16 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { delay } from "q";
 
+
+/**********************************************************************************************
+ * Summary: NavMenu takes props to track the drawerOpen status while navigating between pages
+ * if the drawer is open as a new page link is clicked, the drawer will remain open on the new
+ * page load.
+ * 
+ * Code Attribution: 
+ * - Mini Variant Drawer
+ * - https://material-ui.com/
+ ***********************************************************************************************/
 const drawerWidth = 180;
 
 const useStyles = makeStyles(theme => ({
@@ -172,6 +182,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+/**********************************************************************************************
+ * Returns a String to append to the breadcrumb, based on the location of current page
+ ***********************************************************************************************/
 const getTitle = location => {
   switch (location) {
     case "/":
@@ -201,12 +214,6 @@ const getTitle = location => {
   }
 };
 
-/**********************************************************************************************
- * Summary: NavMenu takes props to track the drawerOpen status while navigating between pages
- * if the drawer is open as a new page link is clicked, the drawer will remain open on the new
- * page load.
- ***********************************************************************************************/
-
 const NavMenu = props => {
   const history = useHistory();
   const classes = useStyles();
@@ -235,14 +242,17 @@ const NavMenu = props => {
     setOpen(false);
   };
 
+/**********************************************************************************************
+ * Logs the user out of the system
+ ***********************************************************************************************/  
   const handleLogout = async function() {
     
     toast.success("Successfully logged out taking you back to the home page");
 
     await delay(3000);
     setUserData({
-      token: null,
-      user: null
+      token: undefined,
+      user: undefined
     });
     Cookies.set("auth-token", "");    
     window.location.href = "/home";
@@ -286,6 +296,10 @@ const NavMenu = props => {
             )}
           </div>
           <div>
+            {/******************************************************************
+              * If the UserContext data is available show the logout button, 
+              * otherwise show the login and sign up buttons
+              * ****************************************************************/}
             {userData.user ? (
               <Button
                 className={classes.logoutBtn}
@@ -329,6 +343,13 @@ const NavMenu = props => {
           </div>
         </div>
         <Divider />
+        {/********************************************************************
+          * Handles the styling of the drawer list item if it is the current
+          * page or if it is not.
+          * 
+          * Also checks whether the userData is available to determine
+          * whether to include the protected routes in the side bar
+          *******************************************************************/}
         {location.pathname === "/public_request" ? (
           <ListItem
             className={classes.topMenuItem}

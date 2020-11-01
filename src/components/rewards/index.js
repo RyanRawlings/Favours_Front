@@ -6,6 +6,19 @@ import Paper from "@material-ui/core/Paper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
+/***************************************************************************************************
+* Summary: This component handles the rendering of the reward records stored on the public
+* request
+* 
+* Code Attribution: 
+* https://www.digitalocean.com/community/tutorials/how-to-build-a-react-to-do-app-with-react-hooks
+*
+* Author: Kapehe Jorgenson
+*
+* Comment: The structure of the todo list application within the tutorial linked above, was used
+* to create the interactive reward items
+****************************************************************************************************/
+
 const useStyles = makeStyles(theme => ({
   removeButton: {
     width: "100%",

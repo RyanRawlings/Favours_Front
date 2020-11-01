@@ -1,5 +1,4 @@
-import React from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { delay } from "q";
 import * as FavourAPI from "../../api/FavourAPI";
@@ -20,6 +19,7 @@ import * as UserAPI from "../../api/UserAPI";
 
 const ForgiveFavour = (userData, Requester, FavourTitle, FavourId, handleClose, TriggerResetFavourList, getUserEmail) => {        
     const executeforgiveFavour = async () => {
+      try {      
         const response = await FavourAPI.forgiveFavour({ _id: FavourId });
         if (response) {
 
@@ -50,6 +50,10 @@ const ForgiveFavour = (userData, Requester, FavourTitle, FavourId, handleClose, 
           handleClose();
           TriggerResetFavourList();
         }
+      } catch (err) {
+        toast.error("There was an error forgiving the Favour");
+        console.error("There was an error forgiving the Favour " + err);
+      }
     }
 
     executeforgiveFavour();

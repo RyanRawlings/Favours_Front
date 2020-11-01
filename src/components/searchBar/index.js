@@ -4,6 +4,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Button, Input } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 
+/*************************************************************************************************************
+* Summary: Search bar component, that takes input from the user and performs the search on enter key stroke
+* or on button click
+*
+* Code Attribution: https://material-ui.com
+**************************************************************************************************************/
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",

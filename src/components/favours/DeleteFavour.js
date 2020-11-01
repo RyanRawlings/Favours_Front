@@ -1,5 +1,4 @@
-import React from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { delay } from "q";
 import * as FavourAPI from "../../api/FavourAPI";
@@ -28,36 +27,40 @@ const DeleteFavour = (
   getUserEmail
 ) => {
   const executeDeleteFavour = async () => {
-    const response = await FavourAPI.deleteOneFavour({ _id: FavourId });
-    console.log(response);
-    
-    if (response.ok === true) {
-      let userId = userData.user._id;
-      let requesterEmail = getUserEmail(Requester, "", "", false, true);
-      let action = `Deleted Favour ${FavourTitle} - Paid By user ${requesterEmail}`;
-      let newActivityData = {
-        userId: userId,
-        action: action
-      };
-
-      const newUserActivity = await UserAPI.createUserActivity(newActivityData);
-
-      if (newUserActivity) {
-        console.log("new user action log: 200");
+    try {
+      const response = await FavourAPI.deleteOneFavour({ _id: FavourId });
+      
+      if (response.ok === true) {
+        let userId = userData.user._id;
+        let requesterEmail = getUserEmail(Requester, "", "", false, true);
+        let action = `Deleted Favour ${FavourTitle} - Paid By user ${requesterEmail}`;
+        let newActivityData = {
+          userId: userId,
+          action: action
+        };
+  
+        const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+  
+        if (newUserActivity) {
+          console.log("new user action log: 200");
+        }
+  
+        toast.success("Successfully deleted Favour");
+  
+        await delay(3000);
+        handleClose();
+        TriggerResetFavourList();
+      } else {
+        toast.error("There was an error deleting the Favour");
+  
+        await delay(3000);
+        handleClose();
+        TriggerResetFavourList();
       }
-
-      toast.success("Successfully deleted Favour");
-
-      await delay(3000);
-      handleClose();
-      TriggerResetFavourList();
-    } else {
-      toast.error("Error deleting the Favour, execution has halted");
-
-      await delay(3000);
-      handleClose();
-      TriggerResetFavourList();
-    }
+    } catch (err) {
+      toast.error("There was an error deleting the Favour");
+      console.error("There was an error deleting the Favour " + err);
+    }    
   };
 
   executeDeleteFavour();
