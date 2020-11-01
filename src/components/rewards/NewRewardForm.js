@@ -1,19 +1,11 @@
-import React, {
-  useState,
-  useRef,
-  forwardRef,
-  useContext,
-  useEffect
-} from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import * as UserAPI from "../../api/UserAPI";
 import * as FavourAPI from "../../api/FavourAPI";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CounterButtonGroup from "../counterButtonGroup/index";
-import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,10 +17,8 @@ const useStyles = makeStyles(theme => ({
 
 const NewRewardForm = ({ addReward, userData }) => {
   const classes = useStyles();
-  const [value, setValue] = useState("");
+  const [, setValue] = useState("");
   const [favourRewards, setFavourRewards] = useState([]);
-  const [clearOptionText, setClearOptionText] = useState(false);
-  const [userList, setUserList] = useState([]);
 
   useEffect(() => {
     async function getFavourType() {

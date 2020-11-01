@@ -1,11 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
@@ -24,8 +23,6 @@ import LocalActivityIcon from "@material-ui/icons/LocalActivity";
 import { useLocation, Link } from "react-router-dom";
 import LoginSignupButtonGroup from "../loginSignupButtonGroup/index";
 import SettingsIcon from "@material-ui/icons/Settings";
-import GroupDropDown from "../userGroupDropDown/index";
-import { NavLink } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Cookies from "js-cookie";
 import PaymentIcon from "@material-ui/icons/Payment";
@@ -137,7 +134,8 @@ const useStyles = makeStyles(theme => ({
     display: "inline-block"
   },
   groupDropDown: {
-    display: "inline-block"
+    display: "inline-block",
+    marginRight: "5%"
   },
   logoutBtn: {
     width: "80px",
@@ -168,9 +166,6 @@ const useStyles = makeStyles(theme => ({
   listItemText: {
     marginLeft: "-5%",
     fontSize: "12px"
-  },
-  groupDropDown: {
-    marginRight: "5%"
   }
 }));
 
@@ -197,6 +192,8 @@ const getTitle = location => {
     case "/multi_repay":
       return "> Multi Repay";
     case "/home":
+      return "";
+    default:
       return "";
   }
 };

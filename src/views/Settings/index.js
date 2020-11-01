@@ -1,24 +1,11 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Avatar from "@material-ui/core/Avatar";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { Button } from "@material-ui/core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoffee, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
-import LoadingGif from "../../assets/images/loading.gif";
-import Pagination from "../../components/pagination/index";
-import FavourModal from "../../components/favourModal/index";
-import LaunchIcon from "@material-ui/icons/Launch";
-import SearchBar from "../../components/searchBar/index";
 import { useLocation } from "react-router-dom";
-import LoadingSkeleton from "../../components/loadingSkeleton/index";
 import PropTypes from "prop-types";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { FixedSizeList } from "react-window";
 import Typography from "@material-ui/core/Typography";
 import * as UserAPI from "../../api/UserAPI";
 import UserContext from "../../context/UserContext";
@@ -140,10 +127,6 @@ renderRow.propTypes = {
 };
 
 const Settings = props => {
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [favoursPerPage, setFavoursPerPage] = useState(4);
-  const location = useLocation();
   const { userData } = useContext(UserContext);
   const [groups, setGroups] = useState([]);
   const [groupUsers, setGroupUsers] = useState([]);

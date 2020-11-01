@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
  *************************************************************************************************/
 
 export function login(data) {
-  // console.log("logindata:", data);
+  console.log("logindata:", data);
   return new Promise((resolve, reject) => {
     // console.log("login");
     axios

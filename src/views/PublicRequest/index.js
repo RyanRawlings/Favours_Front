@@ -2,24 +2,15 @@ import React, { Fragment, useEffect, useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import "./style.scss";
 import Paper from "@material-ui/core/Paper";
-import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Button } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCoffee,
-  faTrash,
-  faThumbsUp,
-  faThumbsDown,
-  faUsers,
-  faSprayCan
-} from "@fortawesome/free-solid-svg-icons";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import NavMenu from "../../components/navMenu/index";
 import * as FavourAPI from "../../api/FavourAPI";
 import * as PublicRequestAPI from "../../api/PublicRequestAPI";
 import LoadingGif from "../../assets/images/loading.gif";
-import PublicRequestIcon from "../../assets/images/public-requests-alternate.png";
 import Pagination from "../../components/pagination/index";
 import FavourModal from "../../components/favourModal/index";
 import { useLocation } from "react-router-dom";
@@ -27,7 +18,6 @@ import SearchBar from "../../components/searchBar/index";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import UserContext from "../../context/UserContext";
-import DateDiff from "date-diff";
 import PartyDetection from "../../components/partyDetection";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

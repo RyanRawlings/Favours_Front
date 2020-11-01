@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import Chip from "@material-ui/core/Chip";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-
 import { Paper, Button, Input } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 
@@ -33,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SearchBar = (props) => {
+const SearchBar = props => {
   const { onSearch, placeHolder, className, ...rest } = props;
   const [inputVal, setInputVal] = useState("");
   const classes = useStyles();
@@ -66,6 +62,6 @@ const SearchBar = (props) => {
       </Button>
     </div>
   );
-}
+};
 
 export default SearchBar;

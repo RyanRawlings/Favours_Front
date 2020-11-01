@@ -90,18 +90,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Profile = props => {
-  const uploadedImage = React.useRef(null);
-  const imageUploader = React.useRef(null);
   const classes = useStyles();
-  const [personalDetails, setPersonalDetails] = useState({});
   const [userActivity, setUserActivity] = useState([]);
   const { userData } = useContext(UserContext);
   const [fileList, setFileList] = useState([]);
   const [user, setUser] = useState([]);
-  const [partyDetectionEmails, setPartyDetectionEmails] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [userActivityPerPage, setUserActivityPerPage] = useState(5);
+  const [userActivityPerPage] = useState(5);
   const [imageUploaded, setImageUploaded] = useState(null);
   const [imageUploadComponent, setImageUploadComponent] = useState(null);
 

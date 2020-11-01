@@ -4,17 +4,14 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import List from "@material-ui/core/List";
-import ListItemText from "@material-ui/core/ListItemText";
 import RewardForm from "../../components/rewards/NewRewardForm";
 import Reward from "../../components/rewards/index";
 import Button from "@material-ui/core/Button";
 import LaunchIcon from "@material-ui/icons/Launch";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import CancelPresentationIcon from "@material-ui/icons/CancelPresentation";
-import AppBar from "@material-ui/core/AppBar";
 import UserContext from "../../context/UserContext";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import * as PublicRequestAPI from "../../api/PublicRequestAPI";
@@ -23,7 +20,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import * as UserAPI from "../../api/UserAPI";
-import { Title } from "material-ui-icons";
 import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
@@ -129,7 +125,7 @@ const NewPublicRequestForm = () => {
   const classes = useStyles();
 
   // User information from JWT
-  const { userData, setUserData } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   const location = useLocation();
 
@@ -210,7 +206,8 @@ const NewPublicRequestForm = () => {
         action: action
       };
 
-      const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+      // Create new user activity
+      await UserAPI.createUserActivity(newActivityData);
 
       // // Set toast details
       toast.success("Successfully created the Public Request");

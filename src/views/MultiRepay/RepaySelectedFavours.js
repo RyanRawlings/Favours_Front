@@ -1,25 +1,16 @@
-import React, { useState, useEffect, useContext, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Paper from "@material-ui/core/Paper";
 import NavMenu from "../../components/navMenu/index";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import ImageDragAndDrop from "../../components/uploadImage/imageDragAndDrop";
 import * as ImageAPI from "../../api/ImageAPI";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useLocation } from "react-router-dom";
 import { delay } from "q";
 
 const useStyles = makeStyles(theme => ({
