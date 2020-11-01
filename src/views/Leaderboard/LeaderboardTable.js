@@ -4,8 +4,19 @@ import * as UserAPI from "../../api/UserAPI";
 import { GridOverlay, DataGrid } from "@material-ui/data-grid";
 import LoadingGif from "../../assets/images/loading.gif";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "@material-ui/core/Button";
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+/*****************************************************************************************
+* Summary: The leaderboard table component for the Live Leaderboard page
+*
+* Code Attribution: Material UI Grid component
+* Grid: https://material-ui.com/components/grid/#grid
+* NoRowsCustomOverlay: https://material-ui.com/components/data-grid/rendering/
+*****************************************************************************************/
 const columns = [
   { field: "id", headerName: "Rank", width: 100 },
   { field: "user", headerName: "User", width: 280 },
@@ -88,40 +99,70 @@ const useStyles = makeStyles({
   leaderBoard: {
     backgroundColor: "white",
     boxShadow: "0 0 3px #515151"
+  },
+  refreshButton: {
+    marginTop: "1%"
   }
 });
 
 const LeaderboardTable = () => {
   const [rows, setRows] = useState([]);
   const classes = useStyles();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [loading, setLoading] = useState(true);
+  const [refreshLeaderboard, setRefreshLeaderboard] = useState(false);
 
+/*****************************************************************************************
+* Summary: The useEffect hook makes api call to fetch Leaderboard data. Is called as the
+* component initially mounts on screen. Re-renders when the refreshLeaderboard state is
+* changed, when the user clicks the Refresh Leaderboard button.
+*****************************************************************************************/  
   useEffect(() => {
     async function fetchLeaderboard() {
-      const fetchLeaderboardData = await UserAPI.getLeaderboard();
-      let rows = [];
-      let newRow = {};
-
-      if (fetchLeaderboardData && fetchLeaderboardData.length > 0) {
-        for (let i = 0; i < fetchLeaderboardData.length; i++) {
-          newRow = {
-            id: i + 1,
-            user: fetchLeaderboardData[i].user,
-            favoursForgiven: fetchLeaderboardData[i].favoursForgiven,
-            favourDebits: fetchLeaderboardData[i].favourDebits,
-            favourCredits: fetchLeaderboardData[i].favourCredits
-          };
-          rows.push(newRow);
+      try {
+        const fetchLeaderboardData = await UserAPI.getLeaderboard();
+        let rows = [];
+        let newRow = {};
+  
+        if (fetchLeaderboardData && fetchLeaderboardData.length > 0) {
+          for (let i = 0; i < fetchLeaderboardData.length; i++) {
+            newRow = {
+              id: i + 1,
+              user: fetchLeaderboardData[i].user,
+              favoursForgiven: fetchLeaderboardData[i].favoursForgiven,
+              favourDebits: fetchLeaderboardData[i].favourDebits,
+              favourCredits: fetchLeaderboardData[i].favourCredits
+            };
+            rows.push(newRow);
+          }
         }
-      }
-      setRows(rows);
-      setLoading(false);
+        setRows(rows);
+        setLoading(false);
+      } catch (err) {
+        toast.error("There was an error retrieving the Leaderboard data, please refresh the page");
+      }      
     }
 
     fetchLeaderboard();
-  }, []);
+  }, [refreshLeaderboard]);
+
+/*****************************************************************************************
+* Summary: This function updates the refreshLeaderboard state variable, this change 
+* triggers the useEffect hook that fetches the leaderboard data to re-fire. This is a way of 
+* the user updating the leaderboard, without having to navigate in and out of  the page, 
+* or manually refreshing in the browser.
+*****************************************************************************************/  
+const handleRefreshLeaderboard = () => {
+  if (refreshLeaderboard === false) {
+    setRefreshLeaderboard(true);
+    toast.success("Leaderboard updated");
+  } else if (refreshLeaderboard === true) {
+    setRefreshLeaderboard(false);
+    toast.success("Leaderboard updated");
+  } else {
+    setRefreshLeaderboard(true);
+    toast.success("Leaderboard updated");
+  }
+}
 
   return (
     <div style={{ height: 400, width: "100%" }}>
@@ -132,6 +173,15 @@ const LeaderboardTable = () => {
         components={{ noRowsOverlay: () => CustomNoRowsOverlay(loading) }}
         className={classes.leaderBoard}
       />
+      <Button
+        onClick={() => handleRefreshLeaderboard()}
+        variant="contained"
+        color="primary"
+        className={classes.refreshButton}
+        startIcon={<RefreshIcon />}                  
+      >
+        Refresh Leaderboard
+      </Button>
     </div>
   );
 };

@@ -12,6 +12,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { delay } from "q";
 
+/*****************************************************************************************
+* Summary: This is the page that allows the user to upload multiple proof images and 
+* subsequently repay multiple favours at once.
+*
+* Code Attribution: Material UI -> https://material-ui.com/
+*****************************************************************************************/
 const useStyles = makeStyles(theme => ({
   root: {},
   paper: {
@@ -74,6 +80,11 @@ const RepaySelectedFavours = props => {
   const [fileList, setFileList] = useState([]);
   const [fileCount, setFileCount] = useState(0);
 
+/*****************************************************************************************
+* Summary: This method adds a new file object to the File Array (fileList) state variable 
+* and increments the fileCount by one (can't use fileArray.length to determine how many 
+* elements exist).
+*****************************************************************************************/
   const addFile = data => {
     let tempFileList = fileList;
     tempFileList.push(data);
@@ -84,6 +95,11 @@ const RepaySelectedFavours = props => {
     setFileCount(tempFileCount);
   };
 
+/*****************************************************************************************
+* Summary: As the user clicks the Repay Favours button, the uploadImageToS3 api is called.
+* The mulitple value passed as parameter, changes how the fileList array variable is 
+* processed before uploading the images to s3.
+*****************************************************************************************/  
   const handleSubmit = async () => {
     try {
       const response = await ImageAPI.uploadImageToS3(fileList, "multiple");
@@ -100,55 +116,43 @@ const RepaySelectedFavours = props => {
     } catch (err) {
       toast.error("There was an error in image processing " + err);
     }
-
-    // let imageForm = new FormData();
-
-    // for (let i = 0; i < fileList.length; i++) {
-    //   // console.log(fileList[i][0]);
-    //   imageForm.append("image", fileList[i][0]);
-    // }
-
-    // const uploadImagesToS3 = await ImageAPI.uploadS3Image(imageForm);
-    // const uploadToS3 = await axios
-    //   .post("/api/image/upload", imageForm)
-    //   .then(function(response) {
-    //     toast.success(
-    //       "Successfully stored images on AWS... Now starting database processing"
-    //     );
-    //     uploadToMongoDB(response);
-    //   })
-    //   .catch(function(error) {
-    //     toast.error(error);
-    //   });
   };
 
+/*****************************************************************************************
+* Summary: If the upload to s3 was successful, the response will return an Array of urls.
+* The position of these urls match the order of the fileList.
+*****************************************************************************************/    
   const uploadToMongoDB = async response => {
     try {    
-    let imageArray = [];
-    if (response) {
-      for (let i = 0; i < response.data.locationArray.length; i++) {
-        imageArray.push({
-          _id: favoursToBeRepayed[i].id,
-          imageUrl: response.data.locationArray[i]
-        });
+      let imageArray = [];
+      if (response) {
+        for (let i = 0; i < response.data.locationArray.length; i++) {
+          imageArray.push({
+            _id: favoursToBeRepayed[i].id,
+            imageUrl: response.data.locationArray[i]
+          });
+        }
       }
-    }
 
-    imageArray.push({ type: "Repay" });
+      imageArray.push({ type: "Repay" });
 
-    const storeImageData = await ImageAPI.storeImageData(imageArray);
-    if (storeImageData) {
-      toast.success(
-        "Completed image update process... Taking you back to the Repay favours screen"
-      );
+      /*****************************************************************************************
+      * Summary: storeImageData api is called to update the imageUrl fields on the respective
+      * Favours. If that is completed successfully the user will recieve a toast message and
+      * will be returned to the Multi Repay screen.
+      *****************************************************************************************/    
+      const storeImageData = await ImageAPI.storeImageData(imageArray);
+      if (storeImageData) {
+        toast.success(
+          "Completed image upload process... Taking you back to the Repay favours screen"
+        );
 
-      await delay(5000);
-      props.history.push("/multi_repay");
-    }
+        await delay(3000);
+        props.history.push("/multi_repay");
+      }
   } catch (err) {
     toast.error("There was an error in image processing, please refresh the page");
-  }
-
+    }
   };
 
   return (

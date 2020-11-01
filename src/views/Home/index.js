@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
@@ -8,7 +8,19 @@ import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 import NavMenu from "../../components/navMenu/index";
 import BackgroundImage from "../../assets/images/hero-image-people-cartoon-tb.png";
+import UserContext from "../../context/UserContext";
 
+/*************************************************************************************************************
+* Code Attribution: https://material-ui.com/getting-started/templates/ -> Album
+* Author: Eric Semenuic
+* 
+* Comment: The component uses the structure provided by the free "Album" template, but is customised to suit
+* the requirements and styling of our project.
+**************************************************************************************************************/
+
+/**************************************************************************************************************
+* Summary: method dynamically updates the year for the copyright value
+***************************************************************************************************************/
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -69,6 +81,7 @@ const useStyles = makeStyles(theme => ({
 
 const HomePage = () => {
   const classes = useStyles();
+  const { userData } = useContext(UserContext);
 
   return (
     <React.Fragment>
@@ -108,7 +121,13 @@ const HomePage = () => {
                     View Public Requests
                   </Button>
                 </Grid>
-                <Grid item>
+                {/************************************************************************
+                * Summary: If the user is not logged in show the Sign up button, if they 
+                * are logged in show the to Leaderboard button
+                **************************************************************************/}
+                <Grid item>                  
+                {
+                  !userData?                   
                   <Button
                     className={classes.signupButton}
                     variant="contained"
@@ -116,7 +135,16 @@ const HomePage = () => {
                   >
                     Sign up to Favours
                   </Button>
-                </Grid>
+                 : 
+                <Button
+                  className={classes.signupButton}
+                  variant="contained"
+                  href={"/leaderboard"}
+                >
+                  Go to Leaderboard
+                </Button>
+                }
+              </Grid>
               </Grid>
             </div>
             <center>

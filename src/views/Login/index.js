@@ -17,9 +17,21 @@ import NavMenu from "../../components/navMenu/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Container from "@material-ui/core/Container";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+/*************************************************************************************************************
+* Code Attribution: Material UI Sign in template
+* Url: https://github.com/mui-org/material-ui/tree/master/docs/src/pages/getting-started/templates/sign-in
+* Author(s): Oliver Tassinari & Eric Semeniuc
+*
+* Comment: The structure of the sign in template was sourced from the Material UI free templates, however 
+* the appearance was customised by our team
+**************************************************************************************************************/
+
+/**************************************************************************************************************
+* Summary: method dynamically updates the year for the copyright value
+***************************************************************************************************************/
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -42,7 +54,6 @@ const useStyles = makeStyles(theme => ({
     backgroundSize: "auto auto",
     backgroundRepeat: "no-repeat",
     backgroundColor: "white",
-    //   theme.palette.type === 'light' ? theme.palette.[50] : theme.palette.grey[900],
     backgroundPosition: "center"
   },
   paper: {
@@ -88,6 +99,11 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+/****************************************************************************
+ * Summary: Calls the login function within the UserAPI file. The
+ * success and error toast method calls are made within the login function
+ * and are displayed on this page.
+ ***************************************************************************/  
   const handleSubmit = async function(event) {
     event.preventDefault();
     let user = { email: email, password: password };
@@ -97,8 +113,8 @@ const Login = () => {
       if (response) {
         Cookie.set("auth-token", response.token);
       }
-    } catch (error) {
-      console.log("Error setting cookie");
+    } catch (error) {      
+      console.error("Error setting cookie");
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import ManageFavours from "./views/ManageFavours/index";
 import Profile from "./views/Profile/index";
@@ -28,7 +28,7 @@ const Routes = () => {
         Cookies.remove("auth-token");
       } else {
         const userAttributes = JWTDecode(authToken);
-        console.log("userAttributes,", userAttributes);
+
         setUserData({
           token: authToken,
           user: {
@@ -36,7 +36,6 @@ const Routes = () => {
             firstname: userAttributes.firstname,
             lastname: userAttributes.lastname,
             email: userAttributes.email
-            // activeGroupId: userAttributes.group[0]
           }
         });
       }

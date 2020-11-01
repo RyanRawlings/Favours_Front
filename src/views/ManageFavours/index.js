@@ -28,6 +28,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Typography from "@material-ui/core/Typography";
 
+/*****************************************************************************************
+* Summary: This is where the management of the Favours occur. A user can create, delete,
+* forgive a Favour, as well as create Public Requests. 
+*
+* Code Attribution: Material UI -> https://material-ui.com/ 
+*****************************************************************************************/
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -151,67 +157,73 @@ const ManageFavours = props => {
 
   /****************************************************************************************************
    * Summary: State is rendered then re-rendered when the resetFavoursList value is updated or as the
-   * user clicks through the different pages. The component will maintain the list that was active
-   * before the re-render, so to make it appear as if the only thing that has changed is what the user
-   * has done.
+   * user clicks through the different pages. 
    ****************************************************************************************************/
   useEffect(() => {
     async function fetchFavours() {
-      const { _id } = userData.user;
-      const fetchFavours = await FavourAPI.getFavours({ userId: _id });
+      try {      
+        const { _id } = userData.user;
+        const fetchFavours = await FavourAPI.getFavours({ userId: _id });
 
-      if (fetchFavours) {
-        setAllFavours(
-          fetchFavours[0].credits.concat(
-            fetchFavours[1].debits,
-            fetchFavours[2].forgivenFavours
-          )
-        );
-        setCreditFavours(fetchFavours[0].credits);
-        setDebitFavours(fetchFavours[1].debits);
-        setForgivenFavours(fetchFavours[2].forgivenFavours);
-
-        if (
-          activeButton !== null &&
-          activeButton !== undefined &&
-          activeButton === "all"
-        ) {
-          setFavours(
+        if (fetchFavours) {
+          setAllFavours(
             fetchFavours[0].credits.concat(
               fetchFavours[1].debits,
               fetchFavours[2].forgivenFavours
             )
           );
-          setSearchResult(
-            fetchFavours[0].credits.concat(
-              fetchFavours[1].debits,
-              fetchFavours[2].forgivenFavours
-            )
-          );
-        } else if (
-          activeButton !== null &&
-          activeButton !== undefined &&
-          activeButton === "credit"
-        ) {
-          setFavours(fetchFavours[0].credits);
-          setSearchResult(fetchFavours[0].credits);
-        } else if (
-          activeButton !== null &&
-          activeButton !== undefined &&
-          activeButton === "debit"
-        ) {
-          setFavours(fetchFavours[1].debits);
-          setSearchResult(fetchFavours[1].debits);
-        } else if (
-          activeButton !== null &&
-          activeButton !== undefined &&
-          activeButton === "forgiven"
-        ) {
-          setFavours(fetchFavours[2].forgivenFavours);
-          setSearchResult(fetchFavours[2].forgivenFavours);
+          setCreditFavours(fetchFavours[0].credits);
+          setDebitFavours(fetchFavours[1].debits);
+          setForgivenFavours(fetchFavours[2].forgivenFavours);
+
+          /****************************************************************************************************
+          * Summary: The component will maintain the list that was active before the re-render, so to make 
+          * it appear as if the only thing that has changed is what the user has done.
+          ****************************************************************************************************/
+          if (
+            activeButton !== null &&
+            activeButton !== undefined &&
+            activeButton === "all"
+          ) {
+            setFavours(
+              fetchFavours[0].credits.concat(
+                fetchFavours[1].debits,
+                fetchFavours[2].forgivenFavours
+              )
+            );
+            setSearchResult(
+              fetchFavours[0].credits.concat(
+                fetchFavours[1].debits,
+                fetchFavours[2].forgivenFavours
+              )
+            );
+          } else if (
+            activeButton !== null &&
+            activeButton !== undefined &&
+            activeButton === "credit"
+          ) {
+            setFavours(fetchFavours[0].credits);
+            setSearchResult(fetchFavours[0].credits);
+          } else if (
+            activeButton !== null &&
+            activeButton !== undefined &&
+            activeButton === "debit"
+          ) {
+            setFavours(fetchFavours[1].debits);
+            setSearchResult(fetchFavours[1].debits);
+          } else if (
+            activeButton !== null &&
+            activeButton !== undefined &&
+            activeButton === "forgiven"
+          ) {
+            setFavours(fetchFavours[2].forgivenFavours);
+            setSearchResult(fetchFavours[2].forgivenFavours);
+          }
+
+          setLoading(false);
         }
-
-        setLoading(false);
+      } catch (err) {
+        toast.error("There was an error processing the Favours data");
       }
     }
 
@@ -226,43 +238,47 @@ const ManageFavours = props => {
    * with the values that were matched in the filtering process.
    *************************************************************************************************/
   const handleSearch = input => {
-    setLoading(true);
-    setSearchBarPlaceHolder(input);
+    try {
+        setLoading(true);
+        setSearchBarPlaceHolder(input);
 
-    let newData = [];
-    let tempData = [];
+        let newData = [];
+        let tempData = [];
 
-    favours.map(item => {
-      tempData = Object.entries(item);
+        favours.map(item => {
+          tempData = Object.entries(item);
 
-      // Check favours array
-      let checkFavour;
-      let tempVar = null;
+          // Check favours array
+          let checkFavour;
+          let tempVar = null;
 
-      tempData.map(i => {
-        tempVar = i[1].toString();
-        if (tempVar.toLowerCase().match(input.toLowerCase())) {
-          checkFavour = true;
-        }
-      });
-      if (
-        item.description
-          .toString()
-          .toLowerCase()
-          .match(input.toLowerCase()) ||
-        item.favourOwed
-          .toString()
-          .toLowerCase()
-          .match(input.toLowerCase()) ||
-        checkFavour
-      ) {
-        newData.push(item);
+          tempData.map(i => {
+            tempVar = i[1].toString();
+            if (tempVar.toLowerCase().match(input.toLowerCase())) {
+              checkFavour = true;
+            }
+          });
+          if (
+            item.description
+              .toString()
+              .toLowerCase()
+              .match(input.toLowerCase()) ||
+            item.favourOwed
+              .toString()
+              .toLowerCase()
+              .match(input.toLowerCase()) ||
+            checkFavour
+          ) {
+            newData.push(item);
+          }
+          return 0;
+        });
+
+        setLoading(false);
+        setSearchResult(newData);
+      } catch (err) {
+        toast.error("There was an error in processing your search request");
       }
-      return 0;
-    });
-
-    setLoading(false);
-    setSearchResult(newData);
   };
 
   // Sets the page parameters to be passed to the pagination component

@@ -4,6 +4,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { useLocation } from "react-router-dom";
 
+/*************************************************************
+* Summary: Code utilised from react-dropzone library
+* Code Attribution:
+*   Author: react-dropzone
+*   Comment: Solution taken from documentation and updated to
+*   conditionally configure input display based on location
+**************************************************************/
+
 const useStyles = makeStyles(theme => ({
   btnContainer: {
     // padding: "50px"
@@ -44,14 +52,6 @@ const useStyles = makeStyles(theme => ({
     dispay: "inline"
   }
 }));
-
-/*************************************************************
-* Summary: Code utilised from react-dropzone library
-* Code Attribution:
-*   Author: react-dropzone
-*   Comment: Solution taken from documentation and updated to
-*   conditionally configure input display based on location
-**************************************************************/
 
 const ImageDragAndDrop = ({ props, addFile }) => {
   const classes = useStyles();

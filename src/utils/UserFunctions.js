@@ -2,6 +2,23 @@ import React from "react";
 import * as PublicRequestAPI from "../api/PublicRequestAPI";
 import TextField from "@material-ui/core/TextField";
 
+/**************************************************************************************************************
+* Summary: This method is used by the favourModal (shared by Favours and Public Requests) to fetch and 
+* update the email values for the userIds directly stored with the records in the database. These userIds are 
+* pushed into a userArray, that is passed to the getPublicRequestUserDetails api, to retrieve the 
+* corressponding email values in an Array. This array is finally stored in a state variable, where it is
+* available for use by other methods.
+*
+* @param userDataAvailable Function -> Method that returns Boolean value to check whether the userData is still
+* valid
+* @param setPublicRequestUserDetails Function -> Method that updates the publicRequestUserDetails state 
+* variable on the PublicRequest page
+* @param requester Array -> Array with the user details about the requester.
+* @param userData Array -> Array with the user details about the currently logged in user
+* @param Requester String -> object id/ userId for the Requester of the Public Request/ Favour
+* @param OwingUser String -> object id/ userId for the OwingUser of the Favour
+* @param rewards Array -> Array of the rewards attached to a Public Request
+***************************************************************************************************************/
 const GetUserDetails = async (
   userDataAvailable,
   setPublicRequestUserDetails,
@@ -51,6 +68,19 @@ const GetUserDetails = async (
   }
 };
 
+
+/**************************************************************************************************************
+* Summary: Depending on what is passed through as parameters, the value returned will be an email value wrapped
+* in a JSX element or just the email value itself.
+*
+* @param publicRequestUserDetails Array -> emails of all users relating to a particular Public Request
+* @param userId String -> the objectId of the currently logged in user
+* @param nameId String -> the value to be used as the id and name properties of the returned JSX element
+* @param label String -> the value to be used as the label property of the returned JSX element
+* @param disabled Boolean -> the value used to determine if the returned JSX element is disabled or not
+* @param value Boolean -> the value used to determine whether to return JSX element or just String value
+* @returns -> The userId matching the userEmail provided
+***************************************************************************************************************/
 const GetUserEmail = (
   publicRequestUserDetails,
   userId,
@@ -103,6 +133,13 @@ const GetUserEmail = (
   }
 };
 
+/**************************************************************************************************************
+* Summary: Returns the user id from the userList, that matches the email value also provided as a parameter
+*
+* @param email -> email address of a user
+* @param userList -> array containing user details [userId, userEmail]
+* @returns -> The userId matching the userEmail provided
+***************************************************************************************************************/
 const GetUserIdFromEmail = async (email, userList) => {
   for (let i = 0; i < userList.length; i++) {
     if (email === userList[i].email) {
