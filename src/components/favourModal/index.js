@@ -211,7 +211,8 @@ const FavourModal = ({
   Complete,
   OwingUser,
   TriggerResetFavourList,
-  TriggerResetPublicRequestList
+  TriggerResetPublicRequestList,
+  DebtForgiven
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -514,7 +515,18 @@ const FavourModal = ({
    * @param data refers to the File array that is being handled by the ImageDragAndDrop component
    ***************************************************************************************************/
   const handleRepayFavour = async () => {
-    SingleImageUpload(FavourId, TriggerResetFavourList, fileList, handleClose);
+    console.log(SingleImageUpload(  FavourId,
+      TriggerResetFavourList,
+      fileList,
+      handleClose,
+      "Repay",
+      null,
+      userData,
+      null,
+      null,
+      null,
+      null,
+      null));
   };
 
   /**************************************************************************************************
@@ -622,6 +634,7 @@ const FavourModal = ({
                   value={favourTitle}
                 />
               </Grid>
+              {console.log(Requester)}
               <Grid item xs={12} sm={6}>
                 {Location === "/public_request" ? (
                   <TextField
@@ -727,6 +740,13 @@ const FavourModal = ({
               ) : (
                 ""
               )}
+
+              {/***********************************************************************************
+              * If the user is owed the Favour show the Delete Button and Forgive Debt Button.
+              * The debt_forgiven boolean value from the Favour is passed as a prop (DebtForgiven) 
+              * to this component. If the Favour has been Forgiven, user who was owed the debt
+              * cannot Forgive the debt again, only Delete it
+              *************************************************************************************/}
               {Location === "/public_request" ? (
                 ""
               ) : Location === "/manage_favours" &&
@@ -747,6 +767,7 @@ const FavourModal = ({
                         onClick={() => forgiveFavour(FavourId)}
                         color="primary"
                         variant="contained"
+                        disabled={DebtForgiven}
                       >
                         Forgive Debt
                       </Button>
@@ -764,8 +785,16 @@ const FavourModal = ({
                     </div>
                   )}
                 </>
-              ) : (
+              ) : 
+              (
                 <>
+                  {/***********************************************************************************
+                  * If the user is owing the Favour, then only show the Repay button.
+                  * The is_completed boolean value from the Favour record is passed as a prop 
+                  * (Complete) to this component. If the Favour has been Completed, it means that the 
+                  * user has repayed the the Favour, and cannot Repay the Favour again. Once the Favour 
+                  * has been Forgiven, the owing by user can delete the Favour.
+                  *************************************************************************************/}
                   <div className={classes.repayFavour}>
                     <Button
                       color="primary"
@@ -775,6 +804,19 @@ const FavourModal = ({
                     >
                       Repay
                     </Button>
+                  </div>
+                  <div className={classes.repayFavour}>
+                  {
+                    DebtForgiven === true? 
+                    <Button
+                      key={"deleteFavour"}
+                      onClick={() => deleteFavour(FavourId)}
+                      color="primary"
+                      variant="contained"
+                    >
+                    Delete
+                    </Button>: ""
+                  }
                   </div>
                   <div className={classes.imageRepayFavours}>
                     {Complete === true ? (

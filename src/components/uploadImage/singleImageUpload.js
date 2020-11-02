@@ -307,19 +307,21 @@ async function imageUploadRepayFavour(
   ***************************************************************************************************************/ 
   try {
     const response = await ImageAPI.uploadImageToS3(fileList, "single");
-
-    if (response[0] === "200") {
-      updateRepayedFavourMongo(
-        response,
-        FavourId,
-        handleClose,
-        TriggerResetFavourList,
-        userData
-      );
-    }
-
+    
+    if (response) {
+      if (response[0] === "200") {
+        console.log(response);
+        updateRepayedFavourMongo(
+          response,
+          FavourId,
+          handleClose,
+          TriggerResetFavourList,
+          userData
+        );
+      }
+    }    
   } catch (err) {
-    console.error("There was an error uploading the images to s3");
+    console.error("There was an error uploading the images to s3 " + err);
     toast.error("An error occurred in image processing");
   }
 }
@@ -341,10 +343,10 @@ const updateRepayedFavourMongo = async (
   let imageArray = [];
 
   if (response) {
-    for (let i = 0; i < response.data.locationArray.length; i++) {
+    for (let i = 0; i < response[1].data.locationArray.length; i++) {
       imageArray.push({
         _id: FavourId,
-        imageUrl: response.data.locationArray[i]
+        imageUrl: response[1].data.locationArray[i]
       });
     }
   }

@@ -10,6 +10,7 @@ export const storeProfileImageData = data =>
 
 export async function uploadImageToS3(fileList, type) {
   let imageForm = new FormData();
+  let result = [];
 
   if (type === "single") {
     imageForm.append("image", fileList[0][0]);
@@ -24,16 +25,16 @@ export async function uploadImageToS3(fileList, type) {
   
   try {
     await axios
-    .post("/api/image/upload", imageForm)
+    .post("http://localhost:4000/api/image/upload", imageForm)
     .then(function(response) {
-      console.log(200);
-      return ["200", response];
+      result = ["200", response];
     })
     .catch(function(error) {
       toast.error(error);
-      return ["400", error];
+      result = ["400", error];
     });
   } catch (err) {    
-    return ["400", err];
+    result = ["400", err];
   }    
+  return result;
 }

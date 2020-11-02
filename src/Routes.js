@@ -15,12 +15,23 @@ import ProtectedRoute from "./components/protectedRoute/index";
 import MultiRepay from "./views/MultiRepay/MultiRepay";
 import RepaySelectedFavour from "./views/MultiRepay/RepaySelectedFavours";
 
+/***************************************************************************************************
+* Summary: Page routes available to the application. 
+* Code Attribution: 
+* - checkLoggedIn -> Devistry -> MERN stack user authentication (tutorial series)
+* - URL: https://www.youtube.com/watch?v=sWfD20ortB4&list=PLJM1tXwlGdaf57oUx0rIqSW668Rpo_7oU&index=5
+****************************************************************************************************/
 const Routes = () => {
   const [userData, setUserData] = useState({
     token: undefined,
     user: undefined
   });
 
+  /**********************************************************************************
+  * As the user logs in a jwt is returned by the server. This information is 
+  * stored in the browser Cookies. The jwt is retrived from the Cookies, decoded
+  * and then stored in the UserContext. Only run once as the page loads
+  ***********************************************************************************/
   useEffect(() => {
     const checkLoggedIn = async () => {
       let authToken = Cookies.get("auth-token");

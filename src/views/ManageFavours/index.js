@@ -537,6 +537,7 @@ const ManageFavours = props => {
                                       TriggerResetFavourList={
                                         TriggerResetFavourList
                                       }
+                                      DebtForgiven={data.debt_forgiven}
                                     />
                                   </div>
                                   <div className={classes.button}></div>
