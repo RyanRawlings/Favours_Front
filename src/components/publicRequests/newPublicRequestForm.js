@@ -321,7 +321,7 @@ const NewPublicRequestForm = () => {
                   onClick={handleClose}
                 >
                   <CancelPresentationIcon
-                    fontSize="medium"
+                    fontSize="small"
                     className={classes.closeButton}
                   />
                 </IconButton>

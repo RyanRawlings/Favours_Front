@@ -224,6 +224,8 @@ const FavourModal = ({
   const [favourTitle, setFavourTitle] = useState(FavourTitle);
   const [requester, setRequester] = useState(Requester);
   const [owingUser, setOwingUser] = useState(OwingUser);
+  const [requesterEmail, setRequesterEmail] = useState(null);
+  const [owingUserEmail, setOwingUserEmail] = useState(null);
   const [favourDescription, setFavourDescription] = useState(FavourDescription);
   const [favourImageKey, setFavourImageKey] = useState(FavourImageKey);
   const [publicRequestUserDetails, setPublicRequestUserDetails] = useState([]);
@@ -312,7 +314,7 @@ const FavourModal = ({
           // Returns an array of user objects      
           const getPublicRequestsUserDetails = await PublicRequestAPI.getPublicRequestUserDetails(
             userArray
-          );
+          );        
 
           if (getPublicRequestsUserDetails) {
             // Return array and set the request user details state
@@ -443,7 +445,9 @@ const FavourModal = ({
    * @param disabled Determines whether the TextField element returned, can be interacted with
    ***************************************************************************************************/
   const getUserEmail = (userId, nameId, label, disabled, value) => {
-    return UserFunctions.GetUserEmail(userId, nameId, label, disabled, value);    
+    let result = UserFunctions.GetUserEmail(publicRequestUserDetails, userId, nameId, label, disabled, value, Location);
+
+    return result? result : "";
   };
 
   /**************************************************************************************************
@@ -634,7 +638,6 @@ const FavourModal = ({
                   value={favourTitle}
                 />
               </Grid>
-              {console.log(Requester)}
               <Grid item xs={12} sm={6}>
                 {Location === "/public_request" ? (
                   <TextField
@@ -654,14 +657,32 @@ const FavourModal = ({
                     }
                   />
                 ) : Location === "/manage_favours" ? (
-                  getUserEmail(Requester, "paidBy", "Paid By", true)
+                  <TextField
+                    id="paidBy"
+                    name="paidBy"
+                    label="Paid By"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    disabled={true}
+                    value={getUserEmail(Requester, "paidBy", "Paid By", true, true)}
+                  />
                 ) : (
                   ""
                 )}
               </Grid>
               <Grid item xs={12} sm={6}>
                 {Location === "/manage_favours"
-                  ? getUserEmail(OwingUser, "owingBy", "Owing By", true)
+                  ?  <TextField
+                  id="owingBy"
+                  name="owingBy"
+                  label="Owing By"
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  disabled={true}
+                  value={getUserEmail(OwingUser, "owingBy", "Owing By", true, true)}
+                />                  
                   : ""}
               </Grid>
               <Grid item xs={12} sm={12}>

@@ -10,7 +10,6 @@ import * as UserAPI from "../../api/UserAPI";
 import UserContext from "../../context/UserContext";
 import Pagination from "../../components/pagination/index";
 import SortObjectsArray from "sort-objects-array";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as ImageAPI from "../../api/ImageAPI";
@@ -150,8 +149,8 @@ const Profile = props => {
           new Date(),
           new Date(userActions[i].time)
         ).seconds();
+        
         userActions[i]["delta"] = delta;
-        console.log(delta);
 
         let days = Math.floor(delta / 86400);
         let hours = Math.floor(delta / 3600) % 24;
@@ -208,7 +207,7 @@ const Profile = props => {
     }
 
     try {
-      const response = await ImageAPI.uploadImageToS3(fileList);
+      const response = await ImageAPI.uploadImageToS3(fileList, "single");
 
       if (response[0] === "200") {
         uploadToMongoDB(response[1]);

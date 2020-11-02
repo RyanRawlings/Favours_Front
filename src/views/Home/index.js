@@ -52,9 +52,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1)
   },
   publicRequestButton: {
-    textDecoration: "none"
-  },
-  publicRequestButton: {
+    textDecoration: "none",
     backgroundColor: "#1B9AAA",
     color: "white",
     textTransform: "capitalize",
@@ -82,7 +80,6 @@ const useStyles = makeStyles(theme => ({
 
 const HomePage = () => {
   const classes = useStyles();
-  const { userData } = useContext(UserContext);
   const cookie = Cookie.get("auth-token");
 
   return (
@@ -150,7 +147,7 @@ const HomePage = () => {
               </Grid>
             </div>
             <center>
-              <img src={BackgroundImage} height="60%" width="90%" />
+              <img src={BackgroundImage} height="60%" width="90%" alt="Favours Home Page"/>
             </center>
           </Container>
         </div>

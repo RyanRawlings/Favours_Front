@@ -31,7 +31,7 @@ const ForgiveFavour = (userData, Requester, FavourTitle, FavourId, handleClose, 
               action: action
             }
     
-            const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+          await UserAPI.createUserActivity(newActivityData);
 
           toast.success(
             "Successfully forgave favour debt... page will update"

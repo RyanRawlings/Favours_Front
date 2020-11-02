@@ -87,17 +87,15 @@ const GetUserEmail = (
   nameId,
   label,
   disabled,
-  value
+  value,
+  Location
 ) => {
-  // console.log(userId)
-  console.log("get user email: ", userId, nameId, label, disabled, value);
-  // console.log(publicRequestUserDetails);
-  // Evaluate reward user id against data retrieved from db, and return relevant email
+  // Evaluate user id against data retrieved from db, and return relevant email
   if (publicRequestUserDetails) {
     for (let i = 0; i < publicRequestUserDetails.length; i++) {
-      if (userId === publicRequestUserDetails[i]._id && value !== true) {
+      if (userId === publicRequestUserDetails[i]._id) {
         // Return relevant user email
-        if (Location === "/public_request" && value !== true) {
+        if (Location === "/public_request" && value !== true) {          
           return (
             <TextField
               id={nameId}
@@ -110,9 +108,9 @@ const GetUserEmail = (
               value={publicRequestUserDetails[i].requestUser.email}
             />
           );
-        } else if (value === true) {
+        } else if (value === true) {          
           return publicRequestUserDetails[i].email;
-        } else {
+        } else {          
           return (
             <TextField
               id={nameId}

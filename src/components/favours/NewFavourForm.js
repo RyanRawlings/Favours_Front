@@ -157,7 +157,7 @@ const NewFavourForm = ({ TriggerResetFavourList }) => {
                   onClick={handleClose}
                 >
                   <CancelPresentationIcon
-                    fontSize="medium"
+                    fontSize="small"
                     className={classes.closeButton}
                   />
                 </IconButton>

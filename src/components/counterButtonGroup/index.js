@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
       border: "1px black"
   },
   icons: {
-      fontSize: "40px"
+      fontSize: "small"
   }
 }));
 
