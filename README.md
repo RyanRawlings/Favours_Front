@@ -34,6 +34,9 @@ To ensure that the user recieves adequate messaging from the application, this p
 react-toasify. It provides a light-weight toast message component to be displayed on screen with minimal 
 configuration and maintainence required.
 
+Where applicable code attribution has been provided in the files, linking the original source and if applicable the
+original author
+
 ## Requirements
 No special requirements
 
