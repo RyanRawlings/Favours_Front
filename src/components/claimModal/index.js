@@ -131,7 +131,8 @@ const ClaimModal = ({
         action: action
       };
   
-      const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+      await UserAPI.createUserActivity(newActivityData);
+
     } catch (err) {
       console.error("An error occurred claiming the Public Request " + err);
       toast.error("An error occurred claiming the Public Request");
@@ -161,6 +162,7 @@ const ClaimModal = ({
           snippet: snippet
         }
       });
+    return 0;
     });
 
     try {
@@ -241,7 +243,7 @@ const ClaimModal = ({
           action: action
         };
   
-        const newUserActivity = await UserAPI.createUserActivity(newActivityData);
+        await UserAPI.createUserActivity(newActivityData);
   
         console.log("delete response:", response.message);
   

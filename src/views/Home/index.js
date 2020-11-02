@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
@@ -8,7 +8,6 @@ import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 import NavMenu from "../../components/navMenu/index";
 import BackgroundImage from "../../assets/images/hero-image-people-cartoon-tb.png";
-import UserContext from "../../context/UserContext";
 import Cookie from "js-cookie";
 
 /*************************************************************************************************************

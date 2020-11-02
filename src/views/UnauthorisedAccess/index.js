@@ -39,10 +39,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1)
   },
   publicRequestButton: {
-    textDecoration: "none"
-  },
-  publicRequestButton: {
     backgroundColor: "#1B9AAA",
+    textDecoration: "none",
     color: "white",
     textTransform: "capitalize",
     "&:hover": {

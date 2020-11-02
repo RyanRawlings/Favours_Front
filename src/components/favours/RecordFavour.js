@@ -83,10 +83,10 @@ const RecordFavourForm = ({ TriggerResetFavourList, handleClose }) => {
   const [favourType, setFavourType] = useState([]);
   const [debtor, setDebtor] = useState(null);
   const [creditor, setCreditor] = useState(null);
-  const [favourTypeId,setFavourTypeId] = useState(null);
+  const [,setFavourTypeId] = useState(null);
   const [favourName, setFavourName] = useState(null);
   const [favourDescription, setFavourDescription] = useState(null);
-  const [favourDate,setFavourDate] = useState(null);
+  const [,setFavourDate] = useState(null);
   const [userList, setUserList] = useState([]);
   const [fileList, setFileList] = useState([]);
 

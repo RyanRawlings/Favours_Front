@@ -216,18 +216,13 @@ const FavourModal = ({
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { userData, setUserData } = useContext(UserContext ? UserContext : {});
+  const { userData } = useContext(UserContext ? UserContext : {});
   const [rewards, setRewards] = useState(Rewards);
-  const [currentPage, setCurrentPage] = useState(1);
 
   const [favourId, setFavourId] = useState(FavourId);
   const [favourTitle, setFavourTitle] = useState(FavourTitle);
   const [requester, setRequester] = useState(Requester);
-  const [owingUser, setOwingUser] = useState(OwingUser);
-  const [requesterEmail, setRequesterEmail] = useState(null);
-  const [owingUserEmail, setOwingUserEmail] = useState(null);
   const [favourDescription, setFavourDescription] = useState(FavourDescription);
-  const [favourImageKey, setFavourImageKey] = useState(FavourImageKey);
   const [publicRequestUserDetails, setPublicRequestUserDetails] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [changeReward, setChangeReward] = useState(false);
@@ -261,7 +256,7 @@ const FavourModal = ({
         deletePublicRequest();
       }
     }
-  }, [favourId, rewards]);
+  }, [favourId, rewards, TriggerResetFavourList, Location]);
 
   /**************************************************************************************************
    * Summary: Controls how the Favour or Public Request component is opened and to show more details
@@ -798,7 +793,7 @@ const FavourModal = ({
                   {FavourImageKey ? (
                     <div className={classes.imageRepayFavours}>
                       <div>Uploaded Proof</div>
-                      <img src={FavourImageKey} width="100px" height="100px" />
+                      <img src={FavourImageKey} width="100px" height="100px" alt="Favour proof"/>
                     </div>
                   ) : (
                     <div className={classes.imageRepayFavours}>
@@ -849,6 +844,7 @@ const FavourModal = ({
                               src={FavourImageKey}
                               width="100px"
                               height="100px"
+                              alt="Favour proof"
                             />
                           ) : (
                             ""

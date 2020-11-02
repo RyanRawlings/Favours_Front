@@ -158,8 +158,6 @@ const MultiRepay = props => {
     async function fetchFavours() {
       const userId = userData.user._id
         ? userData.user._id
-        : props.location.state.userData.user._id
-        ? props.location.state.userData.user._id
         : "";
 
       /*********************************************************************************************
@@ -251,7 +249,7 @@ const MultiRepay = props => {
     }
 
     fetchFavours();
-  }, [refreshFavours]);
+  }, [refreshFavours, userData.user._id]);
 
 /*****************************************************************************************
 * Summary: As a new Favour is checked or selected in the grid by the user, all of the

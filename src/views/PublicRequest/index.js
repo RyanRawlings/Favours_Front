@@ -103,7 +103,7 @@ const PublicRequest = props => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [requestsPerPage, setRequestsPerPage] = useState(4);
+  const [requestsPerPage] = useState(4);
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
   const [favourRewards, setFavourRewards] = useState([]);
   const { userData } = useContext(UserContext);
@@ -183,6 +183,7 @@ const PublicRequest = props => {
         if (i.item.toLowerCase().match(input.toLowerCase())) {
           checkReward = true;
         }
+        return 0;
       });
       if (
         item.requestUser.firstname.toLowerCase().match(input.toLowerCase()) ||

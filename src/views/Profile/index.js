@@ -16,11 +16,6 @@ import * as ImageAPI from "../../api/ImageAPI";
 import Button from "@material-ui/core/Button";
 import { delay } from "q";
 import PartyDetection from "../../components/partyDetection/index";
-
-/*********************************************************************************
- * DateDiff required for calculating how recent the user activities were 
- * performed, an error is thrown when this import is deleted
-**********************************************************************************/ 
 import DateDiff from "date-diff";
 
 const useStyles = makeStyles(theme => ({
@@ -106,7 +101,7 @@ const Profile = props => {
   const [currentPage, setCurrentPage] = useState(1);
   const [userActivityPerPage] = useState(5);
   const [imageUploaded, setImageUploaded] = useState(null);
-  const [imageUploadComponent, setImageUploadComponent] = useState(null);
+  // const [imageUploadComponent, setImageUploadComponent] = useState(null);
 
   /*************************************************************************************************
    * Summary: Returns the extended user details for the current logged in user. The data is
@@ -121,7 +116,7 @@ const Profile = props => {
         if (user) {
           setUser(user);
           setImageUploaded(false);
-          setImageUploadComponent(<ImageDragAndDrop addFile={addFile} />);
+          // setImageUploadComponent(<ImageDragAndDrop addFile={addFile} />);
         }
       } catch (err) {
         toast.error("There was error retrieving your details, please refresh the page");
@@ -129,7 +124,7 @@ const Profile = props => {
     }
 
     getUserData();
-  }, [imageUploaded]);
+  }, [imageUploaded, userData.user._id]);
 
   /*************************************************************************************************
    * Summary: Returns the user activity details. Date.diff used to determine how long ago the
@@ -145,7 +140,7 @@ const Profile = props => {
       });
 
       for (let i = 0; i < userActions.length; i++) {
-        let delta = Date.diff(
+        let delta = new DateDiff(
           new Date(),
           new Date(userActions[i].time)
         ).seconds();
@@ -178,10 +173,11 @@ const Profile = props => {
       }
     } catch (err) {      
       toast.error("There was an error process your user activity details, please refresh the page");      
+      console.error("There was an error processing user activity details " + err);      
     }
     }
     getUserActions();
-  }, [currentPage]);
+  }, [currentPage, userData.user._id]);
 
   /*************************************************************************************************
    * Summary: Pagination details
@@ -239,10 +235,10 @@ const Profile = props => {
       );
 
       if (storeProfileImageData) {
-        toast.success("Successfully uploaded image");
+        toast.success("Successfully uploaded image... refresh the page if you wish to upload a different one");
         await delay(3000);
         setImageUploaded(true);
-        setImageUploadComponent(null);
+        // setImageUploadComponent(null);
       }
     } catch (err) {
       toast.error("There was an error in uploading the profile image")
@@ -286,15 +282,15 @@ const Profile = props => {
                           src={user.profileImageUrl}
                           width="230px"
                           height="230px"
-                          alt="profile image"
+                          alt="User Profile"
                         />
                       ) : (
                         ""
                       )}
                     </Avatar>
                     <div className={classes.actionButtons}>
-                      {imageUploadComponent}
-                      {/* <ImageDragAndDrop addFile={addFile}/> */}
+                      {/* {imageUploadComponent} */}
+                      <ImageDragAndDrop addFile={addFile}/>
                       <Button
                         variant="contained"
                         color="primary"

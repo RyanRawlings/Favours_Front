@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 const NewRewardForm = ({ addReward, userData }) => {
   const classes = useStyles();
-  const [value,setValue] = useState("");
+  const [,setValue] = useState("");
   const [favourRewards, setFavourRewards] = useState([]);
 
 

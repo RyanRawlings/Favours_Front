@@ -165,7 +165,7 @@ const Settings = props => {
       }      
     }
     getUserGroupList();
-  }, []);
+  }, [userData.user._id]);
 
   /**************************************************************************
   * Summary: Handles the on click event between the groups available to the

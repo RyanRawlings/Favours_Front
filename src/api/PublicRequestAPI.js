@@ -9,10 +9,10 @@ export function getPublicRequests() {
   // Check cookies' data
   return new Promise((resolve, reject) => {
     document.cookie.split(";").map(item => {
-      console.log("cookies:", item);
       if (item.match("auth-token")) {
         console.log(item.replace(" auth-token=", ""));
       }
+      return 0;
     });
     axios
       .get("/api/publicRequest/get")

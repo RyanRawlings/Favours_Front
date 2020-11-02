@@ -5,8 +5,8 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import axios from "axios";
 import { getApiUrl } from "./url/url";
-import { provider } from "react-redux";
-import { configureStore } from "./store";
+// import { provider } from "react-redux";
+// import { configureStore } from "./store";
 
 axios.defaults.baseURL = getApiUrl();
 

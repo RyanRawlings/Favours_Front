@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Redirect, useHistory } from "react-router-dom";
+import { Route } from "react-router-dom";
 import UnauthorisedAccess from "../../views/UnauthorisedAccess/index";
 
 /*****************************************************************************************
@@ -12,7 +12,6 @@ import UnauthorisedAccess from "../../views/UnauthorisedAccess/index";
 ******************************************************************************************/
 
 const ProtectedRoute = ({ component: Component, user, ...rest}) => {
-    const history = useHistory();
     return (
         <Route 
             {...rest} 

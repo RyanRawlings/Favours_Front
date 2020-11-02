@@ -24,7 +24,7 @@ import * as FavourAPI from "../../api/FavourAPI";
 import UserContext from "../../context/UserContext";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import PartyDetection from "../../components/partyDetection/index";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Typography from "@material-ui/core/Typography";
 
@@ -104,9 +104,6 @@ const useStyles = makeStyles(theme => ({
   headingButtonsContainer: {
     display: "flex"
   },
-  icons: {
-    transform: "translateY(-0.1em)"
-  },
   listlinks: {
     textDecoration: "none"
   },
@@ -146,14 +143,14 @@ const ManageFavours = props => {
 
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [favoursPerPage, setFavoursPerPage] = useState(4);
+  const [favoursPerPage] = useState(4);
   const { userData } = useContext(UserContext);
   const location = useLocation();
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [activeButton, setActiveButton] = useState("all");
 
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   /****************************************************************************************************
    * Summary: State is rendered then re-rendered when the resetFavoursList value is updated or as the
@@ -228,7 +225,7 @@ const ManageFavours = props => {
     }
 
     fetchFavours();
-  }, [resetFavourList, currentPage]);
+  }, [resetFavourList, currentPage, activeButton, userData.user]);
 
   const classes = useStyles();
 
@@ -257,6 +254,7 @@ const ManageFavours = props => {
             if (tempVar.toLowerCase().match(input.toLowerCase())) {
               checkFavour = true;
             }
+            return 0;
           });
           if (
             item.description
@@ -278,6 +276,8 @@ const ManageFavours = props => {
         setSearchResult(newData);
       } catch (err) {
         toast.error("There was an error in processing your search request");
+        console.error("There was an error processing search");
+        return 0;
       }
   };
 
